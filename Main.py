@@ -1,19 +1,42 @@
-import pygame
+import pygame,time,sys,random
 
-pygame.init()                                             #initializes pygame
 
-display = pygame.display.set_mode((800,600))
-pygame.display.update()                                   #updates the window with new dimensions
+pygame.init()                                            
+mainclock = pygame.time.Clock()
 
-pygame.display.set_caption('Game window xxx')             #set the window name  
+#window creation
+width = 1024
+height = 768
+screen = pygame.display.set_mode([width,height])                                 
 
+#window name, change it later
+pygame.display.set_caption('Quiz Game')   
+
+#window icon, change it later
+image_icon = pygame.image.load('images/icon.jpg')    # make sure icon res is 512x512
+pygame.display.set_icon(image_icon)
+
+#background
+green = (0,255,0) 
+red = (255,0,0)
+#screen.fill(green)  
+background = pygame.image.load("images/background_boxed.png").convert()
+background_poistion = [0,0]
+screen.blit(background,background_poistion)
+
+score = 0
+
+#exit loop
 open = True
 while open:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            open = False
-#we use the above loop so that the window doesn't close immediately. Hitting the X will close the window.
+            pygame.quit()
+            quit()
+    pygame.display.update() 
 
+
+pygame.display.flip()       #idk if this is needed here
 
 pygame.quit()
 quit()
