@@ -18,9 +18,6 @@ image_icon = pygame.image.load('images/icon.jpg')    # make sure icon res is 512
 pygame.display.set_icon(image_icon)
 
 #background
-green = (0,255,0) 
-red = (255,0,0)
-#screen.fill(green)  
 background = pygame.image.load("images/background_boxed.png").convert()
 background_poistion = [0,0]
 screen.blit(background,background_poistion)
