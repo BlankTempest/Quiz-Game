@@ -31,12 +31,10 @@ open = True
 while open:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            open = False
             pygame.quit()
             quit()
     pygame.display.update() 
 
 
 pygame.display.flip()       #idk if this is needed here
-
-pygame.quit()
-quit()
