@@ -31,14 +31,13 @@ def question_import(filename):
 
     questions_file.close()
 
-#------------menu-------------
+#----------------------menu-------------------------
 pygame.display.set_caption("Menu Screen")
-
 
 show_menu = True
 done = False
 
-#page loop
+#menu loop
 while not done and  show_menu:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -52,7 +51,7 @@ while not done and  show_menu:
         if event.type == pygame.MOUSEBUTTONDOWN:
                 show_menu = False
                 
-    #background
+    #background, change this, it looks like crap
     ibackground = pygame.image.load("images\instructions_background.png").convert()
     ibackground_position = [0,0]
     screen.blit(ibackground,ibackground_position)
@@ -67,15 +66,10 @@ while not done and  show_menu:
 
     text = font.render("Click anywhere to start", True, black)
     screen.blit(text, [300, 350])
-        
 
     pygame.display.flip()
     mainclock.tick(60)
-
-
-
-
-
+#-------------------------------------------------
 
 
 #window name, change it later
@@ -91,8 +85,10 @@ screen.blit(background,background_position)
 l=["text\q&a1.txt","text\q&a2.txt","text\q&a3.txt","text\q&a4.txt","text\q&a5.txt","text\q&a6.txt","text\q&a6.txt","text\q&a7.txt","text\q&a8.txt","text\q&a9.txt","text\q&a10.txt"
     ,"text\q&a11.txt","text\q&a12.txt","text\q&a13.txt","text\q&a14.txt","text\q&a15.txt"]
 
+random.shuffle(l)
+
 def question_selecter():
-    random.shuffle(l)
+    
     fname = l[0]
     l.pop(0)
     question_import(fname)
