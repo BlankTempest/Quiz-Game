@@ -4,65 +4,20 @@ import pygame,time,sys,random
 pygame.init()                                            
 mainclock = pygame.time.Clock()
 
-
 #window creation
-width = 1024
-height = 768
-screen = pygame.display.set_mode([width,height])                                 
-
-#window name, change it later
-pygame.display.set_caption('Quiz Game')   
+size = [1024, 768]
+screen = pygame.display.set_mode(size)                                 
 
 #window icon, change it later
-image_icon = pygame.image.load('images/icon.jpg')    # make sure icon res is 512x512
+image_icon = pygame.image.load('images\icon.jpg')    # make sure icon res is smol
 pygame.display.set_icon(image_icon)
-
-#background
-background = pygame.image.load("images/background_boxed.png").convert()
-background_poistion = [0,0]
-screen.blit(background,background_poistion)
 
 #tabs
 score = 0
 lives = 3
 
-#assigning the questions' file
-def question_assign():
-    global filename
-    if question_no == 1:
-        filename = "text\q&a1.txt"
-    elif question_no == 2:
-        filename = "text\q&a2.txt"
-    elif question_no == 3:
-        filename = "text\q&a3.txt"
-    elif question_no == 4:
-        filename = "text\q&a4.txt"
-    elif question_no == 5:
-        filename = "text\q&a5.txt"
-    elif question_no == 6:
-        filename = "text\q&a6.txt"
-    elif question_no == 7:
-        filename = "text\q&a7.txt"
-    elif question_no == 8:
-        filename = "text\q&a8.txt"
-    elif question_no == 9:
-        filename = "text\q&a9.txt"
-    elif question_no == 10:
-        filename = "text\q&a10.txt"
-    elif question_no == 11:
-        filename = "text\q&a11.txt"
-    elif question_no == 12:
-        filename = "text\q&a12.txt"
-    elif question_no == 13:
-        filename = "text\q&a13.txt"
-    elif question_no == 14:
-        filename = "text\q&a14.txt"
-    elif question_no == 15:
-        filename = "text\q&a15.txt"
-
-
 #importing the questions
-def question_import():  
+def question_import(filename):  
     questions_file = open(filename, "r" , encoding='cp1252')
     #we'll use this outside
     global question,option_1,option_2,option_3,option_4,right_answer
@@ -76,17 +31,73 @@ def question_import():
 
     questions_file.close()
 
-
-#gamu start
-question_no=1
-question_assign()
-question_import()
+#------------menu-------------
+pygame.display.set_caption("Menu Screen")
 
 
+show_menu = True
+done = False
+
+#page loop
+while not done and  show_menu:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            quit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:         
+                done = False
+                pygame.quit()
+                quit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+                show_menu = False
+                
+    #background
+    ibackground = pygame.image.load("images\instructions_background.png").convert()
+    ibackground_position = [0,0]
+    screen.blit(ibackground,ibackground_position)
+    black = [0,0,0]
+    
+    font = pygame.font.Font(None, 80)
+
+    text = font.render("Quiz Game", True, black)
+    screen.blit(text, [300, 280])
+
+    font = pygame.font.Font(None, 30)
+
+    text = font.render("Click anywhere to start", True, black)
+    screen.blit(text, [300, 350])
+        
+
+    pygame.display.flip()
+    mainclock.tick(60)
 
 
 
 
+
+
+
+#window name, change it later
+pygame.display.set_caption('Quiz Game')   
+
+#background
+background = pygame.image.load("images/background_boxed.png").convert()
+background_position = [0,0]
+screen.blit(background,background_position)
+
+
+#---------------gamu start----------------
+l=["text\q&a1.txt","text\q&a2.txt","text\q&a3.txt","text\q&a4.txt","text\q&a5.txt","text\q&a6.txt","text\q&a6.txt","text\q&a7.txt","text\q&a8.txt","text\q&a9.txt","text\q&a10.txt"
+    ,"text\q&a11.txt","text\q&a12.txt","text\q&a13.txt","text\q&a14.txt","text\q&a15.txt"]
+
+def question_selecter():
+    random.shuffle(l)
+    fname = l[0]
+    l.pop(0)
+    question_import(fname)
+
+question_selecter()
 
 
 #exit loop
