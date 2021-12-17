@@ -25,45 +25,47 @@ screen.blit(background,background_poistion)
 #tabs
 score = 0
 lives = 3
-question_no=1
-
 
 #assigning the questions' file
-if question_no == 1:
-    filename = "text\q&a1.txt"
-if question_no == 2:
-    filename = "text\q&a2.txt"
-if question_no == 3:
-    filename = "text\q&a3.txt"
-if question_no == 4:
-    filename = "text\q&a4.txt"
-if question_no == 5:
-    filename = "text\q&a5.txt"
-if question_no == 6:
-    filename = "text\q&a6.txt"
-if question_no == 7:
-    filename = "text\q&a7.txt"
-if question_no == 8:
-    filename = "text\q&a8.txt"
-if question_no == 9:
-    filename = "text\q&a9.txt"
-if question_no == 10:
-    filename = "text\q&a10.txt"
-if question_no == 11:
-    filename = "text\q&a11.txt"
-if question_no == 12:
-    filename = "text\q&a12.txt"
-if question_no == 13:
-    filename = "text\q&a13.txt"
-if question_no == 14:
-    filename = "text\q&a14.txt"
-if question_no == 15:
-    filename = "text\q&a15.txt"
+def question_assign():
+    global filename
+    if question_no == 1:
+        filename = "text\q&a1.txt"
+    elif question_no == 2:
+        filename = "text\q&a2.txt"
+    elif question_no == 3:
+        filename = "text\q&a3.txt"
+    elif question_no == 4:
+        filename = "text\q&a4.txt"
+    elif question_no == 5:
+        filename = "text\q&a5.txt"
+    elif question_no == 6:
+        filename = "text\q&a6.txt"
+    elif question_no == 7:
+        filename = "text\q&a7.txt"
+    elif question_no == 8:
+        filename = "text\q&a8.txt"
+    elif question_no == 9:
+        filename = "text\q&a9.txt"
+    elif question_no == 10:
+        filename = "text\q&a10.txt"
+    elif question_no == 11:
+        filename = "text\q&a11.txt"
+    elif question_no == 12:
+        filename = "text\q&a12.txt"
+    elif question_no == 13:
+        filename = "text\q&a13.txt"
+    elif question_no == 14:
+        filename = "text\q&a14.txt"
+    elif question_no == 15:
+        filename = "text\q&a15.txt"
 
 
 #importing the questions
-while question_no < 16:   
+def question_import():  
     questions_file = open(filename, "r" , encoding='cp1252')
+    #we'll use this outside
+    global question,option_1,option_2,option_3,option_4,right_answer
 
     question = questions_file.readline()
     option_1 = questions_file.readline()
@@ -71,12 +73,14 @@ while question_no < 16:
     option_3 = questions_file.readline()
     option_4 = questions_file.readline()
     right_answer = questions_file.readline()
+
     questions_file.close()
 
 
 #gamu start
-
-        
+question_no=1
+question_assign()
+question_import()
 
 
 
@@ -97,7 +101,9 @@ while open:
                 open = False
                 pygame.quit()
                 quit()
-    pygame.display.update() 
+    pygame.display.update()                           #idk if this is needed here
+    pygame.display.flip()       
 
+    #framerate limiter/vsync
+    mainclock.tick(60)
 
-pygame.display.flip()       #idk if this is needed here
