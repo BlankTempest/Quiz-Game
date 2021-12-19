@@ -11,10 +11,6 @@ screen = pygame.display.set_mode(size)
 image_icon = pygame.image.load('images\icon.jpg')    # make sure icon res is smol
 pygame.display.set_icon(image_icon)
 
-#tabs, implement later
-score = 0
-lives = 3
-game_over = False
 
 #we're using the main function to loop the game after the game over screen
 def main():
@@ -360,8 +356,9 @@ def main():
                         quit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     #loop back to menu screen
-                    main()
                     end_theme.stop()
+                    return
+                    
 
             #vsync
             mainclock.tick(60)   
@@ -400,4 +397,9 @@ def main():
         mainclock.tick(60)
 
     '''
-main()
+while True:
+    score = 0
+    lives = 3
+    game_over = False
+
+    main()
