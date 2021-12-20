@@ -1,4 +1,4 @@
-import pygame,random
+import pygame,random,time
 
 pygame.init()                                            
 mainclock = pygame.time.Clock()
@@ -341,6 +341,16 @@ def main():
         done = False
         end_screen = True
         
+        #time
+        t = time.localtime()
+        current_time = time.strftime("%H:%M:%S", t)
+
+        #score_saver
+        score_file = open('text\scoreboard\saved_user_responses.txt','a')
+        score_file.write('Blank '+ 'Score:' + str(score) + ' ' +current_time + '\n')
+        score_file.close()     
+
+
         while not done and end_screen:
 
             #exit loop
@@ -372,7 +382,7 @@ def main():
         game_over_screen()
 
 
-
+    
 
     ###########################################################################
 
