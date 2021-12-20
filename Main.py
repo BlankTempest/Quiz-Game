@@ -106,7 +106,7 @@ def main():
 
     #background, make sure not to mess with the boxes if you change it,
     # or you'll have to redefine x1-y1 etc again
-    background = pygame.image.load("images/background_boxed.png").convert()
+    background = pygame.image.load("images/hollow_purple.png").convert()
     background_position = [0,0]
     screen.blit(background,background_position)
 
