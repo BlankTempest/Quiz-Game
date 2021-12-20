@@ -49,18 +49,19 @@ def main():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    quit()
+                    exit()
                 #esc key to exit
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:         
                         done = False
                         pygame.quit()
-                        quit()
+                        exit()
 
             #checks if the button is clicked within the constraints
                 if event.type == pygame.MOUSEBUTTONDOWN:
                         if x <= mouse[0] <= x+140 and y <= mouse[1] <= y+40:
                             pygame.quit()
+                            exit()
                         else:
                             #'click anywhere'
                             menu_theme.stop()
@@ -195,10 +196,12 @@ def main():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
+                    exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:          #turn this into a pause menu later on
                         open = False
                         pygame.quit()
+                        exit()
                 #option1
                 if event.type == pygame.MOUSEBUTTONDOWN: 
                     music_theme.stop()
@@ -219,6 +222,7 @@ def main():
                                 open = False
                         else:
                             pygame.quit()
+                            exit()
                 #option2
                 if event.type == pygame.MOUSEBUTTONDOWN: 
                     if 170 <= mouse[0] <= 843 and 582 <= mouse[1] <= 630:
@@ -238,6 +242,7 @@ def main():
                                 open = False
                         else:
                             pygame.quit()
+                            exit()
                 #option3
                 if event.type == pygame.MOUSEBUTTONDOWN: 
                     if 545 <= mouse[0] <= x3+320 and 493 <= mouse[1] <= 540:
@@ -257,6 +262,7 @@ def main():
                                 open = False
                         else:
                             pygame.quit()
+                            exit()
                 #option4
                 if event.type == pygame.KEYDOWN and event.key == pygame.MOUSEBUTTONDOWN:          #exception
                     if 544 <= mouse[0] <= 842 and 581 <= mouse[1] <= 632:
@@ -276,6 +282,7 @@ def main():
                                 open = False
                         else:
                             pygame.quit()
+                            exit()
             
             
             #to test the boundaries of the option boxes when needed
@@ -357,13 +364,13 @@ def main():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
-                    quit()
+                    exit()
                 #esc key to exit
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:         
                         done = False
                         pygame.quit()
-                        quit()
+                        exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     #loop back to menu screen
                     end_theme.stop()
@@ -394,12 +401,12 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
-                quit()
+                exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:          #turn this into a pasue menu later on
                     open = False
                     pygame.quit()
-                    quit()
+                    exit()
         pygame.display.update()                           #idk if this is needed here
         pygame.display.flip()       
 
