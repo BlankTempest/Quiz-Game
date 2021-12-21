@@ -1,6 +1,7 @@
 import pygame,random,time
 
-pygame.init()                                            
+pygame.init()              
+pygame.font.init()           
 mainclock = pygame.time.Clock()
 
 #window creation
@@ -221,8 +222,8 @@ def main():
                                 game_over = True
                                 open = False
                         else:
-                            pygame.quit()
-                            exit()
+                            game_over = False
+                            open = False
                 #option2
                 if event.type == pygame.MOUSEBUTTONDOWN: 
                     if 170 <= mouse[0] <= 843 and 582 <= mouse[1] <= 630:
@@ -241,8 +242,8 @@ def main():
                                 game_over = True
                                 open = False
                         else:
-                            pygame.quit()
-                            exit()
+                            game_over = False
+                            open = False
                 #option3
                 if event.type == pygame.MOUSEBUTTONDOWN: 
                     if 545 <= mouse[0] <= x3+320 and 493 <= mouse[1] <= 540:
@@ -261,8 +262,8 @@ def main():
                                 game_over = True
                                 open = False
                         else:
-                            pygame.quit()
-                            exit()
+                            game_over = False
+                            open = False
                 #option4
                 if event.type == pygame.KEYDOWN and event.key == pygame.MOUSEBUTTONDOWN:          #exception
                     if 544 <= mouse[0] <= 842 and 581 <= mouse[1] <= 632:
@@ -281,8 +282,8 @@ def main():
                                 game_over = True
                                 open = False
                         else:
-                            pygame.quit()
-                            exit()
+                            game_over = False
+                            open = False
             
             
             #to test the boundaries of the option boxes when needed
@@ -348,15 +349,6 @@ def main():
         done = False
         end_screen = True
         
-        #time
-        t = time.localtime()
-        current_time = time.strftime("%H:%M:%S", t)
-
-        #score_saver
-        score_file = open('text\scoreboard\saved_user_responses.txt','a')
-        score_file.write('Blank '+ 'Score:' + str(score) + ' ' +current_time + '\n')
-        score_file.close()     
-
 
         while not done and end_screen:
 
@@ -368,13 +360,13 @@ def main():
                 #esc key to exit
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:         
-                        done = False
                         pygame.quit()
                         exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     #loop back to menu screen
                     end_theme.stop()
-                    return
+                    #return
+                    done = True
                     
 
             #vsync
@@ -388,10 +380,155 @@ def main():
     if game_over == True:
         game_over_screen()
 
+    ###########################################################################
 
-    
+    #------------------------------Score Board--------------------------------#
+    def score_board():
+        
+        #these are only the recent scores, not the top scores
+        pink = (255, 192, 203)
+        yellow = (255,255,0)
+
+        #replace font with the one from hotline miami
+        score_font2 = pygame.font.SysFont('Arial Rounded MT Bold',60)
+
+        #title
+        pygame.display.set_caption("Score Board")
+
+        #time
+        t = time.localtime()
+        current_time = time.strftime("%H:%M:%S", t)
+
+        #storing and taking scores from text file
+        score_file_temp = open('text\scoreboard\saved_user_responses_temp.txt','w')
+        score_file = open('text\scoreboard\saved_user_responses.txt','r')
+
+        #score_saver
+        #limit name to b/w 5 to 8 for better aligning, replace blank with player name
+        if score > 9:
+            score_file_temp.write('Blank                            ' +str(score)+ '                             '  +current_time + '\n')
+        else: 
+            score_file_temp.write('Blank                            ' +str(score)+ '                               '  +current_time + '\n')
+        #^ to fix alignment
+
+        score_file2 = score_file.read()
+        for line in score_file2:
+            score_file_temp.write(line)
+        
+        score_file.close()
+        score_file_temp.close()
+        
+        score_file_temp = open('text\scoreboard\saved_user_responses_temp.txt','r')
+        score_file = open('text\scoreboard\saved_user_responses.txt','w')
+
+        score_file2 = score_file_temp.read()
+        for line in score_file2:
+            score_file.write(line)
+        score_file.close()
+        score_file_temp.close()
+
+        #display scores
+        score_file = open('text\scoreboard\saved_user_responses.txt','r')
+        #header
+        score_display_top = score_font2.render('Name                         Score                           Time', True , yellow)
+
+        score_font = pygame.font.SysFont('papyrus',48)
+
+        #i guess can be shortended with score_display_i in a loop of some sort
+        var = score_file.readline().strip()
+        score_display_1 = score_font.render( var, True , pink)
+        var = score_file.readline().strip()
+        score_display_2 = score_font.render( var, True , pink)
+        var = score_file.readline().strip()
+        score_display_3 = score_font.render( var, True , pink)
+        var = score_file.readline().strip()
+        score_display_4 = score_font.render( var, True , pink)
+        var = score_file.readline().strip()
+        score_display_5 = score_font.render( var, True , pink)
+        var = score_file.readline().strip()
+        score_display_6 = score_font.render( var, True , pink)
+        var = score_file.readline().strip()
+        score_display_7 = score_font.render( var, True , pink)
+        var = score_file.readline().strip()
+        score_display_8 = score_font.render( var, True , pink)
+        
+        score_file.close()
+        #^ this whole thing took me three hours to figure out
+
+        done = False
+        show_score = True
+
+        while not done and  show_score:
+            #exit loop
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                #esc key to exit
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:         
+                        done = False
+                        pygame.quit()
+                        exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    #loop back to menu screen
+                    return
+            
+            #background
+            sbackground = pygame.image.load("images\hotline_miami.jpg").convert()
+            sbackground_position = [0,0]
+            screen.blit(sbackground,sbackground_position)
+
+            #display scores
+            screen.blit(score_display_top , (40,58))
+            screen.blit(score_display_1 , (40,145))
+            screen.blit(score_display_2 , (40,221))
+            screen.blit(score_display_3 , (40,294))
+            screen.blit(score_display_4 , (40,370))
+            screen.blit(score_display_5 , (40,446))
+            screen.blit(score_display_6 , (40,519))
+            screen.blit(score_display_7 , (40,596))
+            screen.blit(score_display_8 , (40,672))
+
+            #vsync
+            pygame.display.flip()
+            mainclock.tick(60)
+            pygame.display.update()
+
+        
+    '''
+        #score_saver
+        score_file = open('text\scoreboard\saved_user_responses.txt','a')
+        score_file.write(str(score)+ ' ' + 'Blank ' +current_time + '\n')
+        score_file.close()
+
+        #read score file
+        score_file = open('text\scoreboard\saved_user_responses.txt','r')
+
+        score_list=[]
+        for line in score_file:
+            score_list.append(line)
+        
+        score_file.close()
+
+        score_list.sort(reverse = True)
+
+        score_sorted = open("text\scoreboard\sorted_scores.txt",'w')
+        
+        for element in score_list:
+            score_sorted.write(element)
+
+
+        score_sorted.close()
+        #^ broken code sorts strings, can sort correctly only up to 9th score
+
+    '''#^ broken code only sorts strings, can sort correctly only up to 9th score
+
+
+    score_board()
 
     ###########################################################################
+
 
     #the loop below isn't needed since we implement this into every screen
     '''
