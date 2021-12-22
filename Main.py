@@ -208,15 +208,6 @@ def main():
         option_3_display= smallfont.render(option_3 , True, color)           
         option_4_display= smallfont.render(option_4 , True, color)            
 
-        #to debug the code faster
-        
-        #display
-        question_display= smallfont.render(question , True, color)
-        option_1_display= smallfont.render(option_1 , True, color)
-        option_2_display= smallfont.render(option_2 , True, color)
-        option_3_display= smallfont.render(option_3 , True, color)
-        option_4_display= smallfont.render(option_4 , True, color)
-
         screen.blit(question_display, (208,370))
         screen.blit(option_1_display, (x1,y1))
         screen.blit(option_2_display, (x2,y2))
