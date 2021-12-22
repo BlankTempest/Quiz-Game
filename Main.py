@@ -1,8 +1,19 @@
-import pygame,random,time
+import pygame,random,time,pyttsx3
 
 pygame.init()              
 pygame.font.init()           
 mainclock = pygame.time.Clock()
+
+'''
+#tts
+tts = pyttsx3.init()
+tts.setProperty('rate', 200)
+tts.setProperty('volume', 2)
+voice_id = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_EN-US_ZIRA_11.0"
+  
+# Use female voice
+tts.setProperty('voice', voice_id)
+'''
 
 #window creation
 size = [1024, 768]
@@ -190,8 +201,62 @@ def main():
         #sfx score up
         score_up = pygame.mixer.Sound('music\sfx\sfx_score_up_Level Up!.mp3')
 
+        #display
+        question_display= smallfont.render(question , True, color)
+        option_1_display= smallfont.render(option_1 , True, color)            
+        option_2_display= smallfont.render(option_2 , True, color)           
+        option_3_display= smallfont.render(option_3 , True, color)           
+        option_4_display= smallfont.render(option_4 , True, color)            
+
+        #to debug the code faster
+        
+        #display
+        question_display= smallfont.render(question , True, color)
+        option_1_display= smallfont.render(option_1 , True, color)
+        option_2_display= smallfont.render(option_2 , True, color)
+        option_3_display= smallfont.render(option_3 , True, color)
+        option_4_display= smallfont.render(option_4 , True, color)
+
+        screen.blit(question_display, (208,370))
+        screen.blit(option_1_display, (x1,y1))
+        screen.blit(option_2_display, (x2,y2))
+        screen.blit(option_3_display, (x3,y3))
+        screen.blit(option_4_display, (x4,y4))
+        pygame.display.update()
+            
+        #sound_once = True
+
         while open:
             mouse = pygame.mouse.get_pos()
+            '''
+            while sound_once:
+                #sort of a mess, gotta use gtts instead
+                screen.blit(question_display, (208,370))
+                pygame.display.update()
+                tts.say(question)
+                tts.runAndWait()
+
+                screen.blit(option_1_display, (x1,y1))
+                pygame.display.update()
+                tts.say(option_1)
+                tts.runAndWait()
+
+                screen.blit(option_2_display, (x2,y2))
+                pygame.display.update()
+                tts.say(option_2)
+                tts.runAndWait()
+
+                screen.blit(option_3_display, (x3,y3))
+                pygame.display.update()
+                tts.say(option_3)
+                tts.runAndWait()
+                
+                screen.blit(option_4_display, (x4,y4))
+                pygame.display.update()
+                tts.say(option_4)
+                tts.runAndWait()
+
+                sound_once = False'''
 
             #DO NOT TRY TO SHORTEN THIS BIT, or it'll bug out
             for event in pygame.event.get():
@@ -205,8 +270,9 @@ def main():
                         exit()
                 #option1
                 if event.type == pygame.MOUSEBUTTONDOWN: 
-                    music_theme.stop()
+                    
                     if 172 <= mouse[0] <= 471 and 494 <= mouse[1] <= 543:
+                        music_theme.stop()
                         if question_no < 15:
                             answer = option_1
                             if answer == right_answer:
@@ -242,6 +308,7 @@ def main():
                 #option2
                 if event.type == pygame.MOUSEBUTTONDOWN: 
                     if 170 <= mouse[0] <= 843 and 582 <= mouse[1] <= 630:
+                        music_theme.stop()
                         if question_no < 15:
                             answer = option_2
                             if answer == right_answer:
@@ -275,6 +342,7 @@ def main():
                 #option3
                 if event.type == pygame.MOUSEBUTTONDOWN: 
                     if 545 <= mouse[0] <= x3+320 and 493 <= mouse[1] <= 540:
+                        music_theme.stop()
                         if question_no < 15:
                             answer = option_3
                             if answer == right_answer:
@@ -308,6 +376,7 @@ def main():
                 #option4
                 if event.type == pygame.KEYDOWN and event.key == pygame.MOUSEBUTTONDOWN:          #exception
                     if 544 <= mouse[0] <= 842 and 581 <= mouse[1] <= 632:
+                        music_theme.stop()
                         if question_no < 15:
                             answer = option_4
                             if answer == right_answer:
@@ -348,25 +417,16 @@ def main():
                 pygame.draw.rect(screen,color_dark,[x1,y1,320,45])
             '''
 
-            #display
-            question_display= smallfont.render(question , True, color)
-            option_1_display= smallfont.render(option_1 , True, color)
-            option_2_display= smallfont.render(option_2 , True, color)
-            option_3_display= smallfont.render(option_3 , True, color)
-            option_4_display= smallfont.render(option_4 , True, color)
-
-            screen.blit(question_display, (208,370))
-            screen.blit(option_1_display, (x1,y1))
-            screen.blit(option_2_display, (x2,y2))
-            screen.blit(option_3_display, (x3,y3))
-            screen.blit(option_4_display, (x4,y4))
-            
-            
             pygame.display.update()
             pygame.display.flip()
 
+            
+
             #framerate limiter/vsync
             mainclock.tick(60)
+
+        
+            
 
     
     for question_no in range(1,16):
