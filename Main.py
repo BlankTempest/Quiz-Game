@@ -645,7 +645,7 @@ def main():
 
             
             #background
-            sbackground = pygame.image.load("images\hotline_miami.jpg").convert()
+            sbackground = pygame.image.load("images\hotline_miami3.jpg").convert()
             sbackground_position = [0,0]
             screen.blit(sbackground,sbackground_position)
 
@@ -838,7 +838,7 @@ def main():
                             return
             
             #background
-            sbackground = pygame.image.load("images\hotline_miami.jpg").convert()
+            sbackground = pygame.image.load("images\hotline_miami2.jpg").convert()
             sbackground_position = [0,0]
             screen.blit(sbackground,sbackground_position)
 
