@@ -16,7 +16,7 @@ pygame.display.set_icon(image_icon)
 #we're using the main function to loop the game after the game over screen
 def main():
 
-
+    
     #---------------------------------menu--------------------------------------
 
     def menu_function():
@@ -221,9 +221,24 @@ def main():
                                 heavy_hit.play()
                                 game_over = True
                                 open = False
-                        else:
-                            game_over = False
-                            open = False
+                                #last question
+                        elif question_no == 15:
+                            answer = option_1
+                            if answer == right_answer:
+                                score += 1
+                                score_up.play()  
+                                game_over = False
+                                open = False              
+                            else:
+                                lives -= 1
+                                normal_hit.play()
+                                open = False      
+                                game_over = False          #score board goes here
+                            if lives == 0:
+                                heavy_hit.play()
+                                game_over = True
+                                open = False
+                                
                 #option2
                 if event.type == pygame.MOUSEBUTTONDOWN: 
                     if 170 <= mouse[0] <= 843 and 582 <= mouse[1] <= 630:
@@ -241,9 +256,22 @@ def main():
                                 heavy_hit.play()
                                 game_over = True
                                 open = False
-                        else:
-                            game_over = False
-                            open = False
+                        elif question_no == 15:
+                            answer = option_2
+                            if answer == right_answer:
+                                score += 1
+                                score_up.play()  
+                                game_over = False
+                                open = False              
+                            else:
+                                lives -= 1
+                                normal_hit.play()
+                                open = False      
+                                game_over = False          #score board goes here
+                            if lives == 0:
+                                heavy_hit.play()
+                                game_over = True
+                                open = False
                 #option3
                 if event.type == pygame.MOUSEBUTTONDOWN: 
                     if 545 <= mouse[0] <= x3+320 and 493 <= mouse[1] <= 540:
@@ -261,9 +289,22 @@ def main():
                                 heavy_hit.play()
                                 game_over = True
                                 open = False
-                        else:
-                            game_over = False
-                            open = False
+                        elif question_no == 15:
+                            answer = option_3
+                            if answer == right_answer:
+                                score += 1
+                                score_up.play()  
+                                game_over = False
+                                open = False              
+                            else:
+                                lives -= 1
+                                normal_hit.play()
+                                open = False      
+                                game_over = False          #score board goes here
+                            if lives == 0:
+                                heavy_hit.play()
+                                game_over = True
+                                open = False
                 #option4
                 if event.type == pygame.KEYDOWN and event.key == pygame.MOUSEBUTTONDOWN:          #exception
                     if 544 <= mouse[0] <= 842 and 581 <= mouse[1] <= 632:
@@ -281,9 +322,22 @@ def main():
                                 heavy_hit.play()
                                 game_over = True
                                 open = False
-                        else:
-                            game_over = False
-                            open = False
+                        elif question_no == 15:
+                            answer = option_4
+                            if answer == right_answer:
+                                score += 1
+                                score_up.play()  
+                                game_over = False
+                                open = False              
+                            else:
+                                lives -= 1
+                                normal_hit.play()
+                                open = False      
+                                game_over = False          #score board goes here
+                            if lives == 0:
+                                heavy_hit.play()
+                                game_over = True
+                                open = False
             
             
             #to test the boundaries of the option boxes when needed
@@ -382,12 +436,37 @@ def main():
 
     ###########################################################################
 
+    global show_score_menu,show_highscore_menu, first, second
+    show_score_menu = True
+    show_highscore_menu = False
+    first = True
+    second = True
+
+
     #------------------------------Score Board--------------------------------#
     def score_board():
         
-        #these are only the recent scores, not the top scores
+        #these are only the recent scores
         pink = (255, 192, 203)
         yellow = (255,255,0)
+
+        #quit button
+        quit = (255,255,255)
+        quit_dark = (100,100,100)
+        quit_light = (170,170,170)
+        smallfont = pygame.font.SysFont('Raleway',35)
+        quit_text = smallfont.render('QUIT' , True , quit)
+
+        #menu button
+        menu_text = smallfont.render('MENU' , True , quit)
+
+        #recent button
+        time_text = smallfont.render('TIME' , True , quit)
+
+        #highest button
+        score_text = smallfont.render('SCORE' , True , quit)
+
+
 
         #replace font with the one from hotline miami
         score_font2 = pygame.font.SysFont('Arial Rounded MT Bold',60)
@@ -403,36 +482,44 @@ def main():
         score_file_temp = open('text\scoreboard\saved_user_responses_temp.txt','w')
         score_file = open('text\scoreboard\saved_user_responses.txt','r')
 
-        #score_saver
-        #limit name to b/w 5 to 8 for better aligning, replace blank with player name
-        if score > 9:
-            score_file_temp.write('Blank                            ' +str(score)+ '                             '  +current_time + '\n')
-        else: 
-            score_file_temp.write('Blank                            ' +str(score)+ '                               '  +current_time + '\n')
-        #^ to fix alignment
+        global first
+        while first:
+            #score_saver
+            #limit name to b/w 5 to 8 for better aligning, replace blank with player name
+            if score > 9:
+                score_file_temp.write('       '+ str(score)+ '                                    ' + 'Blank ' + '                    ' +current_time + '\n')
+            else: 
+                score_file_temp.write('       '+ '0' + str(score)+ '                                    ' + 'Blank ' + '                    ' +current_time + '\n')
+            #^ to fix alignment
 
-        score_file2 = score_file.read()
-        for line in score_file2:
-            score_file_temp.write(line)
+            score_file2 = score_file.read()
+            for line in score_file2:
+                score_file_temp.write(line)
         
-        score_file.close()
-        score_file_temp.close()
+            score_file.close()
+            score_file_temp.close()
         
-        score_file_temp = open('text\scoreboard\saved_user_responses_temp.txt','r')
-        score_file = open('text\scoreboard\saved_user_responses.txt','w')
+            score_file_temp = open('text\scoreboard\saved_user_responses_temp.txt','r')
+            score_file = open('text\scoreboard\saved_user_responses.txt','w')
 
-        score_file2 = score_file_temp.read()
-        for line in score_file2:
-            score_file.write(line)
-        score_file.close()
-        score_file_temp.close()
+            score_file2 = score_file_temp.read()
+            for line in score_file2:
+                score_file.write(line)
+            score_file.close()
+            score_file_temp.close()
+            first = False
+
+        
 
         #display scores
         score_file = open('text\scoreboard\saved_user_responses.txt','r')
         #header
-        score_display_top = score_font2.render('Name                         Score                           Time', True , yellow)
+        score_display_top = score_font2.render('Score                         Name                           Time', True , yellow)
 
         score_font = pygame.font.SysFont('papyrus',48)
+        score_font3 = pygame.font.SysFont('papyrus',36)
+        #sort scores:
+        sort_text = score_font3.render( 'Sort by:', True , yellow)
 
         #i guess can be shortended with score_display_i in a loop of some sort
         var = score_file.readline().strip()
@@ -449,16 +536,23 @@ def main():
         score_display_6 = score_font.render( var, True , pink)
         var = score_file.readline().strip()
         score_display_7 = score_font.render( var, True , pink)
-        var = score_file.readline().strip()
-        score_display_8 = score_font.render( var, True , pink)
         
         score_file.close()
         #^ this whole thing took me three hours to figure out
 
         done = False
         show_score = True
+        global show_score_menu,show_highscore_menu
 
         while not done and  show_score:
+
+            mouse = pygame.mouse.get_pos()
+            x=870
+            y=710
+            x1 = 700
+            x2 = 200
+            x3 = 370
+
             #exit loop
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -467,12 +561,28 @@ def main():
                 #esc key to exit
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:         
-                        done = False
                         pygame.quit()
                         exit()
+                #quit button
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    #loop back to menu screen
-                    return
+                        if x <= mouse[0] <= x+140 and y <= mouse[1] <= y+40:
+                            pygame.quit()
+                            exit()
+                #menu button
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                        if x1 <= mouse[0] <= x1+140 and y <= mouse[1] <= y+40:
+                            show_score_menu = False
+                            show_highscore_menu = False
+                            done = True
+                            return
+                #highscore button
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                        if x3 <= mouse[0] <= x3+140 and y <= mouse[1] <= y+40:
+                            show_highscore_menu = True
+                            show_score_menu = False
+                            done = True
+                            return
+
             
             #background
             sbackground = pygame.image.load("images\hotline_miami.jpg").convert()
@@ -488,69 +598,252 @@ def main():
             screen.blit(score_display_5 , (40,446))
             screen.blit(score_display_6 , (40,519))
             screen.blit(score_display_7 , (40,596))
-            screen.blit(score_display_8 , (40,672))
+            screen.blit(sort_text , (40,700))
+            
+            #quit button
+            if x <= mouse[0] <= x+140 and y <= mouse[1] <= y+40:
+                pygame.draw.rect(screen,quit_light,[x,y,140,40]) 
+            else:
+                pygame.draw.rect(screen,quit_dark,[x,y,140,40])  
+
+            #menu button
+            if x1 <= mouse[0] <= x1+140 and y <= mouse[1] <= y+40:
+                pygame.draw.rect(screen,quit_light,[x1,y,140,40]) 
+            else:
+                pygame.draw.rect(screen,quit_dark,[x1,y,140,40])
+
+            #time button
+            if x2 <= mouse[0] <= x2+140 and y <= mouse[1] <= y+40:
+                pygame.draw.rect(screen,quit_light,[x2,y,140,40]) 
+            else:
+                pygame.draw.rect(screen,quit_dark,[x2,y,140,40])
+            
+            #highscore button
+            if x3 <= mouse[0] <= x3+140 and y <= mouse[1] <= y+40:
+                pygame.draw.rect(screen,quit_light,[x3,y,140,40]) 
+            else:
+                pygame.draw.rect(screen,quit_dark,[x3,y,140,40])
+
+            screen.blit(quit_text , (x+40,y+10))
+
+            screen.blit(menu_text , (x1+40,y+10))
+
+            screen.blit(time_text , (x2+40,y+10))
+
+            screen.blit(score_text , (x3+30,y+10))
+
+            #vsync
+            pygame.display.flip()
+            mainclock.tick(60)
+            #pygame.display.update()
+
+    #--------------------------------- High Score ----------------------------------
+    
+    def high_score():
+
+        #color
+        pink = (255, 192, 203)
+        yellow = (255,255,0)
+
+        #quit button
+        quit = (255,255,255)
+        quit_dark = (100,100,100)
+        quit_light = (170,170,170)
+        smallfont = pygame.font.SysFont('Raleway',35)
+        quit_text = smallfont.render('QUIT' , True , quit)
+
+        #menu button
+        menu_text = smallfont.render('MENU' , True , quit)
+
+        #recent button
+        time_text = smallfont.render('TIME' , True , quit)
+
+        #highest button
+        score_text = smallfont.render('SCORE' , True , quit)
+
+
+
+        #replace font with the one from hotline miami
+        score_font2 = pygame.font.SysFont('Arial Rounded MT Bold',60)
+
+        #title
+        pygame.display.set_caption("High Score")
+
+        #time
+        t = time.localtime()
+        current_time = time.strftime("%H:%M:%S", t)
+        
+        global second
+        while second:
+            #score_saver
+            score_file = open('text\scoreboard/not_sorted_scores.txt','a')
+            if score > 9:
+                score_file.write('       '+ str(score)+ '                                    ' + 'Blank ' + '                    ' +current_time + '\n')
+            else:
+                score_file.write('       '+ '0' + str(score)+ '                                    ' + 'Blank ' + '                    ' +current_time + '\n')
+            score_file.close()
+
+            #sort scores
+            score_file = open('text\scoreboard/not_sorted_scores.txt','r')
+
+            score_list=[]
+            for line in score_file:
+                score_list.append(line)
+        
+            score_file.close()
+
+            score_list.sort(reverse = True)
+
+            score_sorted = open("text\scoreboard\sorted_scores.txt",'w')
+        
+            for element in score_list:
+                score_sorted.write(element)
+
+            score_sorted.close()
+            second = False
+        
+
+        #display scores
+        score_file = open('text\scoreboard\sorted_scores.txt','r')
+
+        #header
+        score_display_top = score_font2.render('Score                         Name                           Time', True , yellow)
+
+        score_font = pygame.font.SysFont('papyrus',48)
+        score_font3 = pygame.font.SysFont('papyrus',36)
+        #sort scores:
+        sort_text = score_font3.render( 'Sort by:', True , yellow)
+
+        #optimise
+        var = score_file.readline().strip()
+        score_display_1 = score_font.render( var, True , pink)
+        var = score_file.readline().strip()
+        score_display_2 = score_font.render( var, True , pink)
+        var = score_file.readline().strip()
+        score_display_3 = score_font.render( var, True , pink)
+        var = score_file.readline().strip()
+        score_display_4 = score_font.render( var, True , pink)
+        var = score_file.readline().strip()
+        score_display_5 = score_font.render( var, True , pink)
+        var = score_file.readline().strip()
+        score_display_6 = score_font.render( var, True , pink)
+        var = score_file.readline().strip()
+        score_display_7 = score_font.render( var, True , pink)
+        
+        score_file.close()
+
+        done = False
+        show_score = True
+        global show_score_menu,show_highscore_menu
+
+        while not done and  show_score:
+
+            mouse = pygame.mouse.get_pos()
+            x=870
+            y=710
+            x1 = 700
+            x2 = 200
+            x3 = 370
+
+            #exit loop
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                #esc key to exit
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:         
+                        done = False
+                        pygame.quit()
+                        exit()
+                #quit button
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                        if x <= mouse[0] <= x+140 and y <= mouse[1] <= y+40:
+                            pygame.quit()
+                            exit()
+                #menu button
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                        if x1 <= mouse[0] <= x1+140 and y <= mouse[1] <= y+40:
+                            show_highscore_menu = False
+                            show_score_menu = False
+                            done = True
+                            return
+                #recent score button
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                        if x2 <= mouse[0] <= x2+140 and y <= mouse[1] <= y+40:
+                            show_highscore_menu = False
+                            show_score_menu = True
+                            score_board()
+                            done = True
+                            return
+            
+            #background
+            sbackground = pygame.image.load("images\hotline_miami.jpg").convert()
+            sbackground_position = [0,0]
+            screen.blit(sbackground,sbackground_position)
+
+            #display scores
+            screen.blit(score_display_top , (40,58))
+            screen.blit(score_display_1 , (40,145))
+            screen.blit(score_display_2 , (40,221))
+            screen.blit(score_display_3 , (40,294))
+            screen.blit(score_display_4 , (40,370))
+            screen.blit(score_display_5 , (40,446))
+            screen.blit(score_display_6 , (40,519))
+            screen.blit(score_display_7 , (40,596))
+            screen.blit(sort_text , (40,700))
+
+            #quit button
+            if x <= mouse[0] <= x+140 and y <= mouse[1] <= y+40:
+                pygame.draw.rect(screen,quit_light,[x,y,140,40]) 
+            else:
+                pygame.draw.rect(screen,quit_dark,[x,y,140,40])  
+
+            #menu button
+            if x1 <= mouse[0] <= x1+140 and y <= mouse[1] <= y+40:
+                pygame.draw.rect(screen,quit_light,[x1,y,140,40]) 
+            else:
+                pygame.draw.rect(screen,quit_dark,[x1,y,140,40])
+
+            #time button
+            if x2 <= mouse[0] <= x2+140 and y <= mouse[1] <= y+40:
+                pygame.draw.rect(screen,quit_light,[x2,y,140,40]) 
+            else:
+                pygame.draw.rect(screen,quit_dark,[x2,y,140,40])
+            
+            #highscore button
+            if x3 <= mouse[0] <= x3+140 and y <= mouse[1] <= y+40:
+                pygame.draw.rect(screen,quit_light,[x3,y,140,40]) 
+            else:
+                pygame.draw.rect(screen,quit_dark,[x3,y,140,40])
+
+            screen.blit(quit_text , (x+40,y+10))
+
+            screen.blit(menu_text , (x1+40,y+10))
+
+            screen.blit(time_text , (x2+40,y+10))
+
+            screen.blit(score_text , (x3+30,y+10))
 
             #vsync
             pygame.display.flip()
             mainclock.tick(60)
             pygame.display.update()
 
-        
-    '''
-        #score_saver
-        score_file = open('text\scoreboard\saved_user_responses.txt','a')
-        score_file.write(str(score)+ ' ' + 'Blank ' +current_time + '\n')
-        score_file.close()
-
-        #read score file
-        score_file = open('text\scoreboard\saved_user_responses.txt','r')
-
-        score_list=[]
-        for line in score_file:
-            score_list.append(line)
-        
-        score_file.close()
-
-        score_list.sort(reverse = True)
-
-        score_sorted = open("text\scoreboard\sorted_scores.txt",'w')
-        
-        for element in score_list:
-            score_sorted.write(element)
 
 
-        score_sorted.close()
-        #^ broken code sorts strings, can sort correctly only up to 9th score
+    while show_score_menu == True:
+        score_board()
+    while show_highscore_menu == True:
+        if show_score_menu == True:
+            score_board()
+        else:
+            high_score()
 
-    '''#^ broken code only sorts strings, can sort correctly only up to 9th score
+    return
 
+###########################################################################
 
-    score_board()
-
-    ###########################################################################
-
-
-    #the loop below isn't needed since we implement this into every screen
-    '''
-    #exit loop
-    open = True
-    while open:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:          #turn this into a pasue menu later on
-                    open = False
-                    pygame.quit()
-                    exit()
-        pygame.display.update()                           #idk if this is needed here
-        pygame.display.flip()       
-
-        #framerate limiter/vsync
-        mainclock.tick(60)
-
-    '''
 while True:
     score = 0
     lives = 3
