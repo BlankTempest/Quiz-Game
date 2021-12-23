@@ -17,7 +17,11 @@ tts.setProperty('voice', voice_id)
 
 #window creation
 size = [1024, 768]
-screen = pygame.display.set_mode(size)                                 
+screen = pygame.display.set_mode(size, pygame.NOFRAME)        
+
+#for fullscreen
+#screen = pygame.display.set_mode(size, pygame.FULLSCREEN)  
+#pygame.display.toggle_fullscreen()  
 
 #window icon, change it later
 image_icon = pygame.image.load('images\icon.jpg')    # make sure icon res is smol
@@ -40,11 +44,27 @@ def main():
         #title
         pygame.display.set_caption("Menu Screen")
 
-
+        #player name
+        global player_name
+        player_name_font = pygame.font.Font(None, 40)
+        player_text = open('text\scoreboard\player_name.txt', 'r')
+        player_name = player_text.read(5)
+        player_text.close()
+        name_rect = pygame.Rect(320, 387, 175, 32)
+        color_active = pygame.Color('grey')
+        color_inactive = pygame.Color('cyan')
+        color = color_inactive
 
         done = False
         show_menu = True
+        active = False
 
+        #background, change this, it looks like crap
+        mbackground = pygame.image.load("images\instructions_background.png").convert()
+        mbackground_position = [0,0]
+        screen.blit(mbackground,mbackground_position)
+        pygame.display.update()
+        
         #music
         menu_theme = pygame.mixer.Sound('music/theme/menu_mha2.mp3')
         menu_theme.play(-1)            #-1 loops music indefinitely
@@ -53,8 +73,8 @@ def main():
         while not done and  show_menu:
 
             mouse = pygame.mouse.get_pos()
-            x=870
-            y=665
+            x1=870
+            y1=665
 
             #exit loop
             for event in pygame.event.get():
@@ -68,32 +88,37 @@ def main():
                         pygame.quit()
                         exit()
 
-            #checks if the button is clicked within the constraints
+                    if event.key == pygame.K_BACKSPACE:
+                        player_name = player_name[:-1]
+                    elif len(player_name) < 5:
+                        player_name += event.unicode #forms string
+
+                #text box
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                        if x <= mouse[0] <= x+140 and y <= mouse[1] <= y+40:
-                            pygame.quit()
-                            exit()
-                        else:
-                            #'click anywhere'
-                            menu_theme.stop()
-                            show_menu = False
+                    if name_rect.collidepoint(event.pos):
+                        active = True
+
+                    elif x1 <= mouse[0] <= x1+140 and y1 <= mouse[1] <= y1+40:
+                        pygame.quit()
+                        exit()
+                    else:
+                        #'click anywhere'
+                        menu_theme.stop()
+                        show_menu = False
+                        player_text = open('text\scoreboard\player_name.txt', 'w')
+                        player_name = player_name.upper()
+                        player_text.write(player_name)
+                        player_text.close()
 
             #changes the color of the button when mouse is hovered over it
-            if x <= mouse[0] <= x+140 and y <= mouse[1] <= y+40:
-                pygame.draw.rect(screen,quit_light,[x,y,140,40])   
+            if x1 <= mouse[0] <= x1+140 and y1 <= mouse[1] <= y1+40:
+                pygame.draw.rect(screen,quit_light,[x1,y1,140,40])   
             else:
-                pygame.draw.rect(screen,quit_dark,[x,y,140,40])
+                pygame.draw.rect(screen,quit_dark,[x1,y1,140,40])
         
-            screen.blit(quit_text , (x+40,y+10))
-            pygame.display.flip()
+            screen.blit(quit_text , (x1+40,y1+10))
 
-
-            #background, change this, it looks like crap
-            mbackground = pygame.image.load("images\instructions_background.png").convert()
-            mbackground_position = [0,0]
-            screen.blit(mbackground,mbackground_position)
             black = [0,0,0]
-        
             font = pygame.font.Font(None, 80)
 
             #you could get rid of these text blits 
@@ -106,7 +131,19 @@ def main():
             text = font.render("Click anywhere to start", True, black)
             screen.blit(text, [300, 350])
 
+            #player name text box
+            if active:
+                color = color_active
+            else:
+                color = color_inactive
+
+            pygame.draw.rect(screen, color, name_rect)
+            name_surface = player_name_font.render(player_name, True, (0, 0, 0))
+            screen.blit(name_surface, (name_rect.x+5, name_rect.y+5))
+
             #vsync
+            pygame.display.flip()
+            pygame.display.update()
             mainclock.tick(60)
 
     menu_function()
@@ -262,24 +299,27 @@ def main():
                 bulk_exec = False
 
                 if event.type == pygame.MOUSEBUTTONDOWN: 
-                    music_theme.stop()
+
                 #option1
                     if 172 <= mouse[0] <= 471 and 494 <= mouse[1] <= 543:
                         answer = option_1
                         bulk_exec = True
-           
+                        music_theme.stop()
                 #option2
                     elif 170 <= mouse[0] <= 843 and 582 <= mouse[1] <= 630:
                         answer = option_2
                         bulk_exec = True
+                        music_theme.stop()
                 #option3
                     elif 545 <= mouse[0] <= x3+320 and 493 <= mouse[1] <= 540:
                         answer = option_3
                         bulk_exec = True
+                        music_theme.stop()
                 #option4
                     elif 544 <= mouse[0] <= 842 and 581 <= mouse[1] <= 632:
                         answer = option_4
                         bulk_exec = True
+                        music_theme.stop()
                 #counters
                 #if it screams answer isnt defined, do answer = ''
                     while bulk_exec:
@@ -445,13 +485,15 @@ def main():
             #storing and taking scores from text file
             score_file_temp = open('text\scoreboard\saved_user_responses_temp.txt','w')
             score_file = open('text\scoreboard\saved_user_responses.txt','r')
+
+            global player_name
         
             #score_saver
             #limit name to b/w 5 to 8 for better aligning, replace blank with player name
             if score > 9:
-                score_file_temp.write('       '+ str(score)+ '                                    ' + 'Blank ' + '                    ' +current_time + '\n')
+                score_file_temp.write('       '+ str(score)+ '                                    ' + current_time + '                         ' +player_name + '\n')
             else: 
-                score_file_temp.write('       '+ '0' + str(score)+ '                                    ' + 'Blank ' + '                    ' +current_time + '\n')
+                score_file_temp.write('       '+ '0' + str(score)+ '                                    ' + current_time + '                         ' +player_name + '\n')
             #^ to fix alignment
 
             score_file2 = score_file.read()
@@ -476,9 +518,9 @@ def main():
             #score_saver
             score_file = open('text\scoreboard/not_sorted_scores.txt','a')
             if score > 9:
-                score_file.write('       '+ str(score)+ '                                    ' + 'Blank ' + '                    ' +current_time + '\n')
+                score_file.write('       '+ str(score)+ '                                    ' + current_time + '                         ' +player_name + '\n')
             else:
-                score_file.write('       '+ '0' + str(score)+ '                                    ' + 'Blank ' + '                    ' +current_time + '\n')
+                score_file.write('       '+ '0' + str(score)+ '                                    ' + current_time + '                         ' +player_name + '\n')
             score_file.close()
 
             #sort scores
@@ -509,9 +551,9 @@ def main():
             score_file = open('text\scoreboard\saved_user_responses.txt','r')
 
         #header
-        score_display_top = score_font2.render('Score                         Name                           Time', True , yellow)
+        score_display_top = score_font2.render('Score                         Time                           Name', True , yellow)
 
-        score_font = pygame.font.SysFont('papyrus',48)
+        score_font = pygame.font.SysFont('papyrus',40)
         score_font3 = pygame.font.SysFont('papyrus',36)
         #sort scores:
         sort_text = score_font3.render( 'Sort by:', True , yellow)
