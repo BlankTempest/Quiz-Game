@@ -5,6 +5,7 @@
        12                                    Blank                     15:50:19
        06                                    Blank                     15:51:18
        06                                    Blank                     15:51:01
+       05                                    Blank                     17:16:38
        05                                    Blank                     15:50:46
        04                                    Blank                     21:05:58
        04                                    Blank                     17:19:11
@@ -15,13 +16,49 @@
        04                                    Blank                     15:51:31
        03                                    Blank                     19:23:10
        03                                    Blank                     17:23:06
+       03                                    Blank                     17:18:09
        03                                    Blank                     15:49:58
+       02                                    Blank                     17:22:26
        01                                    Blank                     20:58:43
+       01                                    Blank                     17:50:10
+       01                                    Blank                     17:45:57
+       01                                    Blank                     17:36:18
+       01                                    Blank                     17:33:34
+       01                                    Blank                     17:28:32
+       01                                    Blank                     17:27:40
+       01                                    Blank                     17:26:09
        01                                    Blank                     17:26:03
+       01                                    Blank                     17:25:07
+       01                                    Blank                     17:23:36
+       01                                    Blank                     17:20:17
+       01                                    Blank                     17:18:43
        01                                    Blank                     16:30:01
        01                                    Blank                     15:49:41
        00                                    Blank                     21:06:29
+       00                                    Blank                     17:53:30
+       00                                    Blank                     17:52:13
+       00                                    Blank                     17:52:07
+       00                                    Blank                     17:50:03
+       00                                    Blank                     17:48:26
+       00                                    Blank                     17:47:45
+       00                                    Blank                     17:46:23
+       00                                    Blank                     17:44:39
+       00                                    Blank                     17:44:31
+       00                                    Blank                     17:43:13
+       00                                    Blank                     17:39:34
+       00                                    Blank                     17:38:45
+       00                                    Blank                     17:33:54
+       00                                    Blank                     17:33:28
+       00                                    Blank                     17:32:03
+       00                                    Blank                     17:31:27
+       00                                    Blank                     17:27:33
+       00                                    Blank                     17:26:22
+       00                                    Blank                     17:25:59
+       00                                    Blank                     17:25:51
        00                                    Blank                     17:25:49
+       00                                    Blank                     17:22:35
+       00                                    Blank                     17:21:13
+       00                                    Blank                     17:21:07
        00                                    Blank                     17:20:40
        00                                    Blank                     17:20:39
        00                                    Blank                     17:20:38
@@ -68,6 +105,8 @@
        00                                    Blank                     17:19:57
        00                                    Blank                     17:19:56
        00                                    Blank                     17:19:54
+       00                                    Blank                     17:18:35
+       00                                    Blank                     17:18:15
        00                                    Blank                     17:17:05
        00                                    Blank                     17:17:04
        00                                    Blank                     17:17:03
