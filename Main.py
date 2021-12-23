@@ -27,7 +27,6 @@ pygame.display.set_icon(image_icon)
 #we're using the main function to loop the game after the game over screen
 def main():
 
-    
     #---------------------------------menu--------------------------------------
 
     def menu_function():
@@ -49,7 +48,7 @@ def main():
         #music
         menu_theme = pygame.mixer.Sound('music/theme/menu_mha2.mp3')
         menu_theme.play(-1)            #-1 loops music indefinitely
-
+        
         #menu loop
         while not done and  show_menu:
 
@@ -249,7 +248,7 @@ def main():
 
                 sound_once = False'''
 
-            #DO NOT TRY TO SHORTEN THIS BIT, or it'll bug out
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -259,117 +258,33 @@ def main():
                         open = False
                         pygame.quit()
                         exit()
+                
+                bulk_exec = False
+
+                if event.type == pygame.MOUSEBUTTONDOWN: 
+                    music_theme.stop()
                 #option1
-                if event.type == pygame.MOUSEBUTTONDOWN: 
-                    
                     if 172 <= mouse[0] <= 471 and 494 <= mouse[1] <= 543:
-                        music_theme.stop()
-                        if question_no < 15:
-                            answer = option_1
-                            if answer == right_answer:
-                                score += 1
-                                score_up.play()
-                                open = False                    #wrong answe = game over screen or -1 lives
-                            else:
-                                lives -= 1
-                                normal_hit.play()
-                                open = False                #score board goes here
-                            if lives == 0:
-                                heavy_hit.play()
-                                game_over = True
-                                open = False
-                                #last question
-                        elif question_no == 15:
-                            answer = option_1
-                            if answer == right_answer:
-                                score += 1
-                                score_up.play()  
-                                game_over = False
-                                open = False              
-                            else:
-                                lives -= 1
-                                normal_hit.play()
-                                open = False      
-                                game_over = False          #score board goes here
-                            if lives == 0:
-                                heavy_hit.play()
-                                game_over = True
-                                open = False
-                                
+                        answer = option_1
+                        bulk_exec = True
+           
                 #option2
-                if event.type == pygame.MOUSEBUTTONDOWN: 
-                    if 170 <= mouse[0] <= 843 and 582 <= mouse[1] <= 630:
-                        music_theme.stop()
-                        if question_no < 15:
-                            answer = option_2
-                            if answer == right_answer:
-                                score += 1
-                                score_up.play()
-                                open = False
-                            else:
-                                lives -= 1
-                                normal_hit.play()
-                                open = False
-                            if lives == 0:
-                                heavy_hit.play()
-                                game_over = True
-                                open = False
-                        elif question_no == 15:
-                            answer = option_2
-                            if answer == right_answer:
-                                score += 1
-                                score_up.play()  
-                                game_over = False
-                                open = False              
-                            else:
-                                lives -= 1
-                                normal_hit.play()
-                                open = False      
-                                game_over = False          #score board goes here
-                            if lives == 0:
-                                heavy_hit.play()
-                                game_over = True
-                                open = False
+                    elif 170 <= mouse[0] <= 843 and 582 <= mouse[1] <= 630:
+                        answer = option_2
+                        bulk_exec = True
                 #option3
-                if event.type == pygame.MOUSEBUTTONDOWN: 
-                    if 545 <= mouse[0] <= x3+320 and 493 <= mouse[1] <= 540:
-                        music_theme.stop()
-                        if question_no < 15:
-                            answer = option_3
-                            if answer == right_answer:
-                                score += 1
-                                score_up.play()
-                                open = False
-                            else:
-                                lives -= 1
-                                normal_hit.play()
-                                open = False
-                            if lives == 0:
-                                heavy_hit.play()
-                                game_over = True
-                                open = False
-                        elif question_no == 15:
-                            answer = option_3
-                            if answer == right_answer:
-                                score += 1
-                                score_up.play()  
-                                game_over = False
-                                open = False              
-                            else:
-                                lives -= 1
-                                normal_hit.play()
-                                open = False      
-                                game_over = False          #score board goes here
-                            if lives == 0:
-                                heavy_hit.play()
-                                game_over = True
-                                open = False
+                    elif 545 <= mouse[0] <= x3+320 and 493 <= mouse[1] <= 540:
+                        answer = option_3
+                        bulk_exec = True
                 #option4
-                if event.type == pygame.KEYDOWN and event.key == pygame.MOUSEBUTTONDOWN:          #exception
-                    if 544 <= mouse[0] <= 842 and 581 <= mouse[1] <= 632:
-                        music_theme.stop()
+                    elif 544 <= mouse[0] <= 842 and 581 <= mouse[1] <= 632:
+                        answer = option_4
+                        bulk_exec = True
+                #counters
+                #if it screams answer isnt defined, do answer = ''
+                    while bulk_exec:
                         if question_no < 15:
-                            answer = option_4
+                            
                             if answer == right_answer:
                                 score += 1 
                                 score_up.play()
@@ -383,7 +298,6 @@ def main():
                                 game_over = True
                                 open = False
                         elif question_no == 15:
-                            answer = option_4
                             if answer == right_answer:
                                 score += 1
                                 score_up.play()  
@@ -393,11 +307,13 @@ def main():
                                 lives -= 1
                                 normal_hit.play()
                                 open = False      
-                                game_over = False          #score board goes here
+                                game_over = False          
                             if lives == 0:
                                 heavy_hit.play()
                                 game_over = True
                                 open = False
+                        bulk_exec = False
+
             
             
             #to test the boundaries of the option boxes when needed
