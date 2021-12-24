@@ -204,10 +204,6 @@ def main():
         color_light = (170,170,170)
         text = smallfont.render('quit' , True , color)''' #used for boundary check, will get rid of later
 
-        #we need to blit something over the screen so that it 
-        # gets rid of previous text, hence the background again
-        screen.blit(background,background_position)
-
         open = True
         #we don't need to define these, but they'll come in use eventually
         x1 = 216; x2 = 214; x3 = 595; x4 = 596; x5 = 870
@@ -225,15 +221,8 @@ def main():
 
         #counters
         global score,lives,game_over
-        
-        score_counter = smallfont.render('Score:'+str(score) , True , color)
-        lives_counter = smallfont.render(str(lives) , True , color)
-        lives_counter = smallfont.render(str(lives) , True , color)
-        screen.blit(score_counter , (32,18))
-        screen.blit(lives_counter , (32,56))
 
         lives_img = pygame.image.load("images/heart.png").convert()
-        screen.blit(lives_img,(54,60))
 
         #sfx lose life
         normal_hit= pygame.mixer.Sound('music\sfx\Hit Normal Damage.mp3')
@@ -246,7 +235,6 @@ def main():
         #next
         next_c = (255,255,255)
         nextfont = pygame.font.SysFont('Raleway',35)
-        next_text = nextfont.render('NEXT' , True , next_c)
         
         pygame.display.update()
             
@@ -288,6 +276,23 @@ def main():
                 sound_once = False'''
 
             mouse = pygame.mouse.get_pos()
+
+            #we need to blit something over the screen so that it 
+            # gets rid of previous text, hence the background again
+            screen.blit(background,background_position)
+
+            #counters
+            lives_counter = smallfont.render(str(lives) , True , color)
+            lives_counter = smallfont.render(str(lives) , True , color)
+            screen.blit(lives_img,(54,60))
+            score_counter = smallfont.render('Score:'+str(score) , True , color)
+            screen.blit(score_counter , (32,18))
+            screen.blit(lives_counter , (32,56))
+
+            next_text = nextfont.render('NEXT' , True , next_c)
+
+
+
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -356,6 +361,7 @@ def main():
                             open = False
                             music_theme.stop()
 
+            
             #display
             color_white = 'white'
             color_green = 'green'
