@@ -68,7 +68,7 @@ def main():
         #pygame.display.update()
         
         #music
-        menu_theme = pygame.mixer.Sound('music/theme/menu_mha2.mp3')
+        menu_theme = pygame.mixer.Sound('music/theme/menu_dark_knight.mp3')
         menu_theme.play(-1)            #-1 loops music indefinitely
         
         #menu loop
@@ -167,7 +167,7 @@ def main():
     def question_import(filename):  
         questions_file = open(filename, "r" , encoding='cp1252')
         #we'll use these outside
-        global question,option_1,option_2,option_3,option_4,right_answer
+        global question,option_1,option_2,option_3,option_4,right_answer,music_ques
 
         # .strip() gets rid of blank space at the end
         question = questions_file.readline().strip()  
@@ -176,20 +176,33 @@ def main():
         option_3 = questions_file.readline().strip() 
         option_4 = questions_file.readline().strip() 
         right_answer = questions_file.readline().strip() 
+        music_ques = questions_file.readline().strip() 
+        music_ques = 'music/music_based/' + music_ques
 
         questions_file.close()
 
     l=["text\q&a1.txt","text\q&a2.txt","text\q&a3.txt","text\q&a4.txt","text\q&a5.txt","text\q&a6.txt","text\q&a6.txt","text\q&a7.txt","text\q&a8.txt","text\q&a9.txt","text\q&a10.txt"
         ,"text\q&a11.txt","text\q&a12.txt","text\q&a13.txt","text\q&a14.txt","text\q&a15.txt"]
 
+    #if music category selected:
+    l_m = ['text\music_based\q1.txt','text\music_based\q2.txt','text\music_based\q3.txt','text\music_based\q4.txt','text\music_based\q5.txt','text\music_based\q6.txt',
+        'text\music_based\q7.txt','text\music_based\q8.txt','text\music_based\q9.txt','text\music_based\q10.txt','text\music_based\q11.txt','text\music_based\q12.txt',
+        'text\music_based\q13.txt','text\music_based\q14.txt','text\music_based\q15.txt','text\music_based\q16.txt','text\music_based\q17.txt']
+
     random.shuffle(l)
+    random.shuffle(l_m)
+    
 
     def question_selecter():
-        
-        fname = l[0]
-        l.pop(0)
+        #select randomly out of 2 categories
+        chance = random.randint(1,2)
+        if chance == 1:
+            fname = l[0]
+            l.pop(0)
+        elif chance == 2:
+            fname = l_m[0]
+            l_m.pop(0)
         question_import(fname)
-
 
     #----------------------------gamu start----------------------------------
 
@@ -216,13 +229,21 @@ def main():
                 'music/theme/menu_drstone.mp3','music/theme/dn_ost7.mp3','music/theme/l_theme.mp3']
         music_name = music_list[question_no]
         
-        music_theme = pygame.mixer.Sound(music_name)
-        music_theme.play(-1)
+        #if music category
+        if music_ques.endswith('.mp3'):
+            music_theme = pygame.mixer.Sound(music_ques)
+            music_theme.play()
+        else:
+            music_theme = pygame.mixer.Sound(music_name)
+            music_theme.play(-1)
+
+        
 
         #counters
         global score,lives,game_over
 
         lives_img = pygame.image.load("images/heart.png").convert()
+        lives_grey_img = pygame.image.load("images/heart_grey.png").convert()
 
         #sfx lose life
         normal_hit= pygame.mixer.Sound('music\sfx\Hit Normal Damage.mp3')
@@ -282,12 +303,29 @@ def main():
             screen.blit(background,background_position)
 
             #counters
-            lives_counter = smallfont.render(str(lives) , True , color)
-            lives_counter = smallfont.render(str(lives) , True , color)
-            screen.blit(lives_img,(54,60))
+            #lives_counter = smallfont.render(str(lives) , True , color)
+
+            #render a greyed out heart instead
+            if lives == 3:
+                screen.blit(lives_img,(32,60))
+                screen.blit(lives_img,(68,60))
+                screen.blit(lives_img,(104,60))
+            elif lives == 2:
+                screen.blit(lives_img,(32,60))
+                screen.blit(lives_img,(68,60))
+                screen.blit(lives_grey_img,(104,60))
+            elif lives == 1:
+                screen.blit(lives_img,(32,60))
+                screen.blit(lives_grey_img,(68,60))
+                screen.blit(lives_grey_img,(104,60))
+            elif lives == 0:
+                screen.blit(lives_grey_img,(32,60))
+                screen.blit(lives_grey_img,(68,60))
+                screen.blit(lives_grey_img,(104,60))
+            
             score_counter = smallfont.render('Score:'+str(score) , True , color)
             screen.blit(score_counter , (32,18))
-            screen.blit(lives_counter , (32,56))
+            #screen.blit(lives_counter , (32,56))
 
             next_text = nextfont.render('NEXT' , True , next_c)
 
