@@ -10,7 +10,7 @@ mainclock = pygame.time.Clock()
 tts = pyttsx3.init()
 tts.setProperty('rate', 200)
 tts.setProperty('volume', 2)
-voice_id = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_EN-US_ZIRA_11.0" 
+voice_id = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_EN-US_ZIRA_11.0"
 
 # Use female voice
 tts.setProperty('voice', voice_id)
@@ -18,14 +18,15 @@ tts.setProperty('voice', voice_id)
 
 #window creation
 size = [1024, 768]
-screen = pygame.display.set_mode(size, pygame.NOFRAME)        
+screen = pygame.display.set_mode(size, pygame.NOFRAME)
 
 #for fullscreen
-#screen = pygame.display.set_mode(size, pygame.FULLSCREEN)  
-#pygame.display.toggle_fullscreen()  
+#screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
+#pygame.display.toggle_fullscreen()
 
 #window icon, change it later
-image_icon = pygame.image.load('images\icon.jpg')    # make sure icon res is smol
+# make sure icon res is smol
+image_icon = pygame.image.load('images\icon.jpg')
 pygame.display.set_icon(image_icon)
 
 
@@ -99,6 +100,7 @@ def main():
                     if name_rect.collidepoint(event.pos):
                         active = True
 
+                    #quit button
                     elif x1 <= mouse[0] <= x1+140 and y1 <= mouse[1] <= y1+40:
                         pygame.quit()
                         exit()
@@ -208,8 +210,8 @@ def main():
 
         open = True
         #we don't need to define these, but they'll come in use eventually
-        x1 = 216; x2 = 214; x3 = 595; x4 = 596
-        y1 = 509; y2 = 595; y3 = 505; y4 = 596
+        x1 = 216; x2 = 214; x3 = 595; x4 = 596; x5 = 870
+        y1 = 509; y2 = 595; y3 = 505; y4 = 596; y5 = 665
 
         #music, will be changed to one song per category when categories are added
         music_list=['music/theme/dn_ost7.mp3','music/theme/category3_10billion.mp3','music/theme/l_theme.mp3','music/theme/menu_drstone.mp3','music/theme/near_theme.mp3',
@@ -243,18 +245,18 @@ def main():
         
         #next
         next_c = (255,255,255)
-        next_text = smallfont.render('NEXT' , True , next_c)
-        next_dark = (100,100,100)
-        next_light = (170,170,170)
+        nextfont = pygame.font.SysFont('Raleway',35)
+        next_text = nextfont.render('NEXT' , True , next_c)
         
         pygame.display.update()
             
         #sound_once = True
 
         question_answered = False
+        answer = ''
 
         while open:
-            mouse = pygame.mouse.get_pos()
+            
             '''
             while sound_once:
                 #sort of a mess, gotta use gtts instead
@@ -285,6 +287,7 @@ def main():
 
                 sound_once = False'''
 
+            mouse = pygame.mouse.get_pos()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -298,8 +301,6 @@ def main():
                 
                 bulk_exec = False
 
-                
-
                 if question_answered == False:
                     if event.type == pygame.MOUSEBUTTONDOWN: 
 
@@ -307,67 +308,85 @@ def main():
                         if 172 <= mouse[0] <= 471 and 494 <= mouse[1] <= 543:
                             answer = option_1
                             bulk_exec = True
-                            music_theme.stop()
                             question_answered = True
                     #option2
-                        elif 170 <= mouse[0] <= 843 and 582 <= mouse[1] <= 630:
+                        if 170 <= mouse[0] <= 843 and 582 <= mouse[1] <= 630:
                             answer = option_2
                             bulk_exec = True
-                            music_theme.stop()
                             question_answered = True
                     #option3
-                        elif 545 <= mouse[0] <= x3+320 and 493 <= mouse[1] <= 540:
+                        if 545 <= mouse[0] <= x3+320 and 493 <= mouse[1] <= 540:
                             answer = option_3
                             bulk_exec = True
-                            music_theme.stop()
                             question_answered = True
                     #option4
-                        elif 544 <= mouse[0] <= 842 and 581 <= mouse[1] <= 632:
+                        if 544 <= mouse[0] <= 842 and 581 <= mouse[1] <= 632:
                             answer = option_4
                             bulk_exec = True
-                            music_theme.stop()
                             question_answered = True
                     #counters
                     #if it screams answer isnt defined, do answer = ''
                         if bulk_exec == True:
-                            if question_no < 15:
-                                
-                                if answer == right_answer:
-                                    score += 1 
-                                    score_up.play()
-                                    color = 'green'
-                                else:
-                                    lives -= 1
-                                    normal_hit.play()
-                                    color = 'red'
-                                if lives == 0:
-                                    heavy_hit.play()
-                                    game_over = True
-                                    open = False
-                            elif question_no == 15:
+
                                 if answer == right_answer:
                                     score += 1
                                     score_up.play()  
-                                    game_over = False    
-                                    color = 'green'
+                                    #last question
+                                    if question_no == 15:
+                                        game_over = False
+
                                 else:
                                     lives -= 1
-                                    normal_hit.play()  
-                                    game_over = False  
-                                    color = 'red' 
-                                if lives == 0:
-                                    heavy_hit.play()
+                                    if lives == 0:
+                                        heavy_hit.play()
+                                    else:
+                                        normal_hit.play()
+                                    #last question
+                                    if question_no == 15:
+                                        game_over = False
+
+                                bulk_exec = False
+                #next button
+                if question_answered == True:
+                    if event.type == pygame.MOUSEBUTTONDOWN: 
+                        if x5 <= mouse[0] <= x5+140 and y5 <= mouse[1] <= y5+40:
+                            if lives == 0:
                                     game_over = True
-                                    open = False
-                            bulk_exec = False
+                                    
+                            open = False
+                            music_theme.stop()
 
             #display
-            color1 = 'white'
-            question_display= smallfont.render(question , True, color1)
-            option_1_display= smallfont.render(option_1 , True, color)            
-            option_2_display= smallfont.render(option_2 , True, color)           
-            option_3_display= smallfont.render(option_3 , True, color)           
-            option_4_display= smallfont.render(option_4 , True, color) 
+            color_white = 'white'
+            color_green = 'green'
+            color_red = 'red'
+            
+            question_display= smallfont.render(question , True, color_white)
+            option_1_display= smallfont.render(option_1 , True, color_white)
+            option_2_display= smallfont.render(option_2 , True, color_white)
+            option_3_display= smallfont.render(option_3 , True, color_white)
+            option_4_display= smallfont.render(option_4 , True, color_white)
+
+            #optimize
+            if question_answered == True:
+                if answer == option_1:
+                    option_1_display= smallfont.render(option_1 , True, color_red) 
+                elif answer == option_2:
+                    option_2_display= smallfont.render(option_2 , True, color_red)
+                elif answer == option_3:
+                    option_3_display= smallfont.render(option_3 , True, color_red) 
+                elif answer == option_4:
+                    option_4_display= smallfont.render(option_4 , True, color_red) 
+
+                if option_1 == right_answer:
+                    option_1_display= smallfont.render(option_1 , True, color_green)   
+                elif option_2 == right_answer:         
+                    option_2_display= smallfont.render(option_2 , True, color_green)       
+                elif option_3 == right_answer:    
+                    option_3_display= smallfont.render(option_3 , True, color_green)
+                elif option_4 == right_answer:       
+                    option_4_display= smallfont.render(option_4 , True, color_green) 
+            
 
             screen.blit(question_display, (208,370))
             screen.blit(option_1_display, (x1,y1))
@@ -377,12 +396,12 @@ def main():
 
             #next button
             
-            if x1 <= mouse[0] <= x1+140 and y1 <= mouse[1] <= y1+40:
-                pygame.draw.rect(screen,next_light,[x1,y1,140,40])   
+            if x5 <= mouse[0] <= x5+140 and y5 <= mouse[1] <= y5+40:
+                pygame.draw.rect(screen,'purple',[x5,y5,140,40])   
             else:
-                pygame.draw.rect(screen,next_dark,[x1,y1,140,40])
+                pygame.draw.rect(screen,'pink',[x5,y5,140,40])
 
-            screen.blit(next_text , (x1+40,y1+10))
+            screen.blit(next_text , (x5+40,y5+10))
 
             #to test the boundaries of the option boxes when needed
             '''
