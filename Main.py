@@ -251,7 +251,11 @@ def main():
         #sfx score up
         score_up = pygame.mixer.Sound('music\sfx\sfx_score_up_Level Up!.mp3')
 
-                   
+        #timer
+        font_timer = pygame.font.SysFont('Raleway', 76)
+        frame_count = 0
+        frame_rate = 60
+        start_time = 8
         
         #next
         next_c = (255,255,255)
@@ -262,6 +266,9 @@ def main():
         #sound_once = True
 
         question_answered = False
+        bulk_exec = False
+        third = True
+        timed_out = False
         answer = ''
 
         while open:
@@ -330,8 +337,6 @@ def main():
             next_text = nextfont.render('NEXT' , True , next_c)
 
 
-
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -342,7 +347,6 @@ def main():
                         pygame.quit()
                         exit()
                 
-                bulk_exec = False
 
                 if question_answered == False:
                     if event.type == pygame.MOUSEBUTTONDOWN: 
@@ -367,28 +371,7 @@ def main():
                             answer = option_4
                             bulk_exec = True
                             question_answered = True
-                    #counters
-                    #if it screams answer isnt defined, do answer = ''
-                        if bulk_exec == True:
-
-                                if answer == right_answer:
-                                    score += 1
-                                    score_up.play()  
-                                    #last question
-                                    if question_no == 15:
-                                        game_over = False
-
-                                else:
-                                    lives -= 1
-                                    if lives == 0:
-                                        heavy_hit.play()
-                                    else:
-                                        normal_hit.play()
-                                    #last question
-                                    if question_no == 15:
-                                        game_over = False
-
-                                bulk_exec = False
+                    
                 #next button
                 if question_answered == True:
                     if event.type == pygame.MOUSEBUTTONDOWN: 
@@ -399,7 +382,54 @@ def main():
                             open = False
                             music_theme.stop()
 
+            #counters
+            if bulk_exec == True:
+
+                    if answer == right_answer:
+                        score += 1
+                        score_up.play()  
+                        #last question
+                        if question_no == 15:
+                            game_over = False
+
+                    else:
+                        lives -= 1
+                        question_answered = True
+                        if lives == 0:
+                            heavy_hit.play()
+                        else:
+                            normal_hit.play()
+                        #last question
+                        if question_no == 15:
+                            game_over = False
+
+                    bulk_exec = False
+        
+            #timer box
+            x6= 468; y6 = 12
+            timerbox = pygame.image.load("images/timerbox.jpg").convert()
+            screen.blit(timerbox, [x6, y6])
+
+            #timer
+            total_seconds = frame_count // frame_rate
+            total_seconds = start_time - (frame_count // frame_rate)
+            if question_answered == True:
+                third = False
+            if total_seconds <= 0:
+                total_seconds = 0
+                while third:
+                    bulk_exec = True
+                    third = False
+                    timed_out = True
             
+
+            output_string = str(total_seconds)
+            text_timer = font_timer.render(output_string, True, 'white')
+            screen.blit(text_timer, [x6+25, y6+15])
+
+            frame_count += 1
+            
+
             #display
             color_white = 'white'
             color_green = 'green'
@@ -422,6 +452,12 @@ def main():
                 elif answer == option_4:
                     option_4_display= smallfont.render(option_4 , True, color_red) 
 
+                if timed_out == True:
+                    option_1_display= smallfont.render(option_1 , True, color_red)
+                    option_2_display= smallfont.render(option_2 , True, color_red)
+                    option_3_display= smallfont.render(option_3 , True, color_red)
+                    option_4_display= smallfont.render(option_4 , True, color_red)
+
                 if option_1 == right_answer:
                     option_1_display= smallfont.render(option_1 , True, color_green)   
                 elif option_2 == right_answer:         
@@ -431,7 +467,7 @@ def main():
                 elif option_4 == right_answer:       
                     option_4_display= smallfont.render(option_4 , True, color_green) 
             
-
+            
             screen.blit(question_display, (208,370))
             screen.blit(option_1_display, (x1,y1))
             screen.blit(option_2_display, (x2,y2))

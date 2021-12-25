@@ -1,4 +1,4 @@
-The name of the genre is
+What genre does this belong to?
 Trap
 DnB
 Metal
