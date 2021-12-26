@@ -427,8 +427,8 @@ def main():
             text_timer = font_timer.render(output_string, True, 'white')
             screen.blit(text_timer, [x6+25, y6+15])
 
-            frame_count += 1
-            
+            if question_answered != True:
+                frame_count += 1
 
             #display
             color_white = 'white'
