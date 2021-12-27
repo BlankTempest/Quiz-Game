@@ -1,6 +1,6 @@
-import socket
+'''import socket
 from _thread import *
-import sys
+#import sys
 
 #default parameters, ipv4 and tcp prot
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -9,27 +9,39 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 #from other computers are well
 #passing 127.0.0.1 will isten only to the calls made within local comp
 server = 'localhost'
+#port should be open
 port = 5555
 
-#get host by name finds the ip
+#gethostbyname finds the ip
 server_ip = socket.gethostbyname(server)
+
 
 #connects to the server
 try:
-    s.bind((server,port))
+    #idk if server and server_ip makes a difference
+    # but i'll use server_ip just to be sure
+    s.bind((server_ip,port))
 
 except socket.error as e:
     print(str(e))
+
 
 #no of connections
 s.listen(2)
 print("Waiting for a connection")
 
-#id of player
+#id of player 1
 currentId = "0"
 
-#mouse pos
-pos = ["0,0", "0,0"]
+def read_pos(str):
+    str = str.split(",")
+    return int(str[0]), int(str[1])
+
+def make_pos(tup):
+    return str(tup[0]) + "," + str(tup[1])
+
+#mouse pos of both players
+pos = ["0:50,50", "1:100,100"]
 
 
 def threaded_client(conn):
@@ -37,7 +49,7 @@ def threaded_client(conn):
 
     #send pos to the client
     conn.send(str.encode(currentId))
-    #to player 2
+    #id of player 1 is now updated to player 2
     currentId = "1"
     reply = ''
     while True:
@@ -45,13 +57,15 @@ def threaded_client(conn):
         # then performs the except part
         try:
 
-            #recieve data
+            #recieve data, 2048 bits, less bits = faster transfer
             data = conn.recv(2048)
-            #parse it 
+            #decode the encoded str that we sent
             reply = data.decode('utf-8')
 
             if not data:
+                #not getting data,
                 conn.send(str.encode("Goodbye"))
+                #or just print("Disconnected")
                 break
             else:
                 print("Recieved: " + reply)
@@ -65,6 +79,7 @@ def threaded_client(conn):
                 reply = pos[nid][:]
                 print("Sending: " + reply)
 
+            #we encode b4 sending data to the server
             conn.sendall(str.encode(reply))
         except:
             break
@@ -74,8 +89,8 @@ def threaded_client(conn):
     conn.close()
 
 while True:
-    #establish connection
+    #establish connection, accepts any conn
     conn, addr = s.accept()
     print("Connected to: ", addr)
 
-    start_new_thread(threaded_client, (conn,))
+    start_new_thread(threaded_client, (conn,))'''

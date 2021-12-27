@@ -1,4 +1,6 @@
-import pygame,random,time,pyttsx3
+import pygame,random,time
+#pyautogui
+#importy pyttsx3
 
 pygame.init()              
 pygame.font.init()           
@@ -32,6 +34,16 @@ pygame.display.set_icon(image_icon)
 
 #we're using the main function to loop the game after the game over screen
 def main():
+
+        #something for the future
+        #screenshot button, cause why not
+        ##im1 = pyautogui.screenshot()
+        ##im1.save('my_screenshot.png')
+        ###im2 = pyautogui.screenshot('my_screenshot2.png')
+
+        #something else for later
+        # pygame.mouse.set_cursor(pygame.cursors.Cursor)
+    
 
     #---------------------------------menu--------------------------------------
 
