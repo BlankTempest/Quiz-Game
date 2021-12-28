@@ -1,7 +1,10 @@
 import pygame,random,time
+#to set window loc
+import os 
 #pyautogui
 #importy pyttsx3
 
+os.environ['SDL_VIDEO_WINDOW_POS'] = '850,100'
 pygame.init()              
 pygame.font.init()           
 mainclock = pygame.time.Clock()
@@ -20,7 +23,8 @@ tts.setProperty('voice', voice_id)
 
 #window creation
 size = [1024, 768]
-screen = pygame.display.set_mode(size, pygame.NOFRAME)
+screen = pygame.display.set_mode(size)
+#screen = pygame.display.set_mode(size, pygame.NOFRAME)
 
 #for fullscreen
 #screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
@@ -30,6 +34,56 @@ screen = pygame.display.set_mode(size, pygame.NOFRAME)
 # make sure icon res is smol
 image_icon = pygame.image.load('images\icon.jpg')
 pygame.display.set_icon(image_icon)
+
+
+######################################################################
+#---------------------------------------------------------------------
+
+import threading
+def create_thread(target):
+    thread = threading.Thread(target = target)
+    #daemons will be killed after prog exits
+    # so you dont need to track them
+    thread.daemon = True
+    thread.start()
+
+import socket
+
+host = '127.0.0.1'
+port = 5555 #or 65432 for tcp
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.connect((host,port))
+
+import win32api,win32con
+
+#sock.recv is a blocking command, so we thread it
+def receive_data():
+    while True:
+        data2 = sock.recv(1024).decode()
+        print(data2)
+
+        list_mouse = data2.split(',')
+        print(list_mouse[0],list_mouse[1])
+        x = list_mouse[0]
+        y= list_mouse[1]
+
+        #win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN,x,y,0,0)
+        #win32api.SetCursorPos((int(x),int(y)))
+        pygame.mouse.set_pos([int(x),int(y)])
+        
+        
+
+create_thread(receive_data)
+
+
+
+
+
+
+#---------------------------------------------------------------------
+######################################################################
+
 
 
 #we're using the main function to loop the game after the game over screen
@@ -85,6 +139,14 @@ def main():
         
         #menu loop
         while not done and  show_menu:
+            
+            #multiplayer stuff----------------
+            mouse_x1, mouse_y1 = pygame.mouse.get_pos()
+            send_data = '{},{}'.format(mouse_x1, mouse_y1).encode()
+            #on client side, we use sock.send
+            sock.send(send_data)
+            #---------------------------------
+
 
             mouse = pygame.mouse.get_pos()
             x1=870
