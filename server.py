@@ -48,8 +48,9 @@ def create_thread(target):
     thread.daemon = True
     thread.start()
 
+#host ip should be the ivp4 adress of the wifi
 host = '127.0.0.1'
-port = 5555
+port = 65432
 connection_established = False
 conn, addr = None, None
 
@@ -131,24 +132,17 @@ def main():
         #music
         menu_theme = pygame.mixer.Sound('music/theme/menu_dark_knight.mp3')
         menu_theme.play(-1)            #-1 loops music indefinitely
-        
+        global mouse_click_check
+        mouse_click_check = 0
         #menu loop
         while not done and  show_menu:
             
-            #multi stuff
-            if connection_established:
-                #def mouse pos, x and y
-                mouse_x, mouse_y = pygame.mouse.get_pos()
-                # we format it and encode the pos then send it
-                send_data = '{},{}'.format(mouse_x, mouse_y).encode()
-
-                #in server side, we use conn.send
-                conn.send(send_data)
                 
-                '''with this we only send the mouse pos
-                we dont sync both the clients, so they wont have the same
-                questions. we'll have to run a time, then match the score
-                or have same set of questions for multiplayer'''
+  
+            '''with this we only send the mouse pos
+            we dont sync both the clients, so they wont have the same
+            questions. we'll have to run a time, then match the score
+            or have same set of questions for multiplayer'''
 
             mouse = pygame.mouse.get_pos()
             x1=870
@@ -173,6 +167,7 @@ def main():
 
                 #text box
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_click_check = 1
                     if name_rect.collidepoint(event.pos):
                         active = True
 
@@ -189,6 +184,18 @@ def main():
                         player_name = player_name.upper()
                         player_text.write(player_name)
                         player_text.close()
+
+            if connection_established:
+                #def mouse pos, x and y
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                # we format it and encode the pos then send it
+                if mouse_click_check == 1:
+                    send_mouse_click = '{},{},{}'.format(mouse_x, mouse_y,mouse_click_check).encode()
+                else:
+                    send_mouse_click = '{},{},{}'.format(mouse_x, mouse_y,mouse_click_check).encode()
+                mouse_click_check = 0
+                #in server side, we use conn.send
+                conn.send(send_mouse_click )
 
             #changes the color of the button when mouse is hovered over it
             if x1 <= mouse[0] <= x1+140 and y1 <= mouse[1] <= y1+40:
@@ -281,6 +288,8 @@ def main():
         question_import(fname)
 
     #----------------------------gamu start----------------------------------
+    global mouse_click_check 
+    mouse_click_check = 0
 
     def question_screen():
 
@@ -316,7 +325,7 @@ def main():
         
 
         #counters
-        global score,lives,game_over
+        global score,lives,game_over, mouse_click_check
 
         lives_img = pygame.image.load("images/heart.png").convert()
         lives_grey_img = pygame.image.load("images/heart_grey.png").convert()
@@ -348,7 +357,7 @@ def main():
         answer = ''
 
         while open:
-            
+
             '''
             while sound_once:
                 #sort of a mess, gotta use gtts instead
@@ -426,6 +435,7 @@ def main():
 
                 if question_answered == False:
                     if event.type == pygame.MOUSEBUTTONDOWN: 
+                        mouse_click_check = 1
 
                     #option1
                         if 172 <= mouse[0] <= 471 and 494 <= mouse[1] <= 543:
@@ -480,7 +490,21 @@ def main():
                             game_over = False
 
                     bulk_exec = False
-        
+
+            #multi stuff
+            if connection_established:
+                #def mouse pos, x and y
+                mouse_x, mouse_y = pygame.mouse.get_pos()
+                # we format it and encode the pos then send it
+                if mouse_click_check == 1:
+                    send_mouse_click = '{},{},{}'.format(mouse_x, mouse_y,mouse_click_check).encode()
+                else:
+                    send_mouse_click = '{},{},{}'.format(mouse_x, mouse_y,mouse_click_check).encode()
+                mouse_click_check = 0
+                #in server side, we use conn.send
+                conn.send(send_mouse_click )
+
+
             #timer box
             x6= 468; y6 = 12
             timerbox = pygame.image.load("images/timerbox.jpg").convert()

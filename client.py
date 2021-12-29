@@ -1,4 +1,5 @@
 import pygame,random,time
+import pyautogui
 #to set window loc
 import os 
 #pyautogui
@@ -49,8 +50,10 @@ def create_thread(target):
 
 import socket
 
+#host ip should be the ivp4 adress of the wifi
+# should also be the same host as server
 host = '127.0.0.1'
-port = 5555 #or 65432 for tcp
+port = 65432 #or 65432 for tcp
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.connect((host,port))
@@ -61,16 +64,30 @@ import win32api,win32con
 def receive_data():
     while True:
         data2 = sock.recv(1024).decode()
-        print(data2)
+        #send_mouse_click = sock.recv(1024).decode()
+        #print(send_mouse_click)
+        #print(data2)
 
         list_mouse = data2.split(',')
-        print(list_mouse[0],list_mouse[1])
-        x = list_mouse[0]
-        y= list_mouse[1]
+        #print(list_mouse[0],list_mouse[1])
+        global mouse_click
+        x100 = list_mouse[0]
+        y100= list_mouse[1]
+        mouse_click = list_mouse[2]
 
-        #win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN,x,y,0,0)
-        #win32api.SetCursorPos((int(x),int(y)))
-        pygame.mouse.set_pos([int(x),int(y)])
+        
+        x100= int(x100)
+        y100= int(y100)
+        mouse_click = int(mouse_click)
+        pygame.mouse.set_pos([x100,y100])
+
+        
+        if mouse_click == 1:
+            #win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN,x,y,0,0)
+            #pygame.MOUSEBUTTONDOWN = True
+            pyautogui.click()
+        #win32api.SetCursorPos((x,y))
+
         
         
 
