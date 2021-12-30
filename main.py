@@ -1,26 +1,15 @@
 import pygame,random,time
-#to set window loc
-import os 
+import pygame_menu
+import os
+
+from pygame_menu.widgets.widget.textinput import TextInput #to set window loc
 #pyautogui
-#importy pyttsx3
 
 os.environ['SDL_VIDEO_WINDOW_POS'] = '50,100'
 pygame.init()              
 pygame.font.init()           
 pygame.display.init()
 mainclock = pygame.time.Clock()
-
-
-#tts 
-'''
-tts = pyttsx3.init()
-tts.setProperty('rate', 200)
-tts.setProperty('volume', 2)
-voice_id = "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_EN-US_ZIRA_11.0"
-
-# Use female voice
-tts.setProperty('voice', voice_id)
-'''
 
 #window creation
 size = [1024, 768]
@@ -52,7 +41,10 @@ def main():
         #something else for later
         # pygame.mouse.set_cursor(pygame.cursors.Cursor)
     
-
+    global score,lives,game_over
+    score = 0
+    lives = 3
+    game_over = False
     #---------------------------------menu--------------------------------------
 
     def menu_function():
@@ -93,12 +85,6 @@ def main():
         
         #menu loop
         while not done and  show_menu:
-            
-  
-            '''with this we only send the mouse pos
-            we dont sync both the clients, so they wont have the same
-            questions. we'll have to run a time, then match the score
-            or have same set of questions for multiplayer'''
 
             mouse = pygame.mouse.get_pos()
             x1=870
@@ -176,7 +162,7 @@ def main():
             pygame.display.update()
             mainclock.tick(60)
 
-    menu_function()
+    #menu_function()
     #----------------------------------------------------------------------------
 
 
@@ -288,8 +274,6 @@ def main():
         nextfont = pygame.font.SysFont('Raleway',35)
         
         pygame.display.update()
-            
-        #sound_once = True
 
         question_answered = False
         bulk_exec = False
@@ -298,36 +282,6 @@ def main():
         answer = ''
 
         while open:
-
-            '''
-            while sound_once:
-                #sort of a mess, gotta use gtts instead
-                screen.blit(question_display, (208,370))
-                pygame.display.update()
-                tts.say(question)
-                tts.runAndWait()
-
-                screen.blit(option_1_display, (x1,y1))
-                pygame.display.update()
-                tts.say(option_1)
-                tts.runAndWait()
-
-                screen.blit(option_2_display, (x2,y2))
-                pygame.display.update()
-                tts.say(option_2)
-                tts.runAndWait()
-
-                screen.blit(option_3_display, (x3,y3))
-                pygame.display.update()
-                tts.say(option_3)
-                tts.runAndWait()
-                
-                screen.blit(option_4_display, (x4,y4))
-                pygame.display.update()
-                tts.say(option_4)
-                tts.runAndWait()
-
-                sound_once = False'''
 
             mouse = pygame.mouse.get_pos()
 
@@ -833,8 +787,16 @@ def main():
 ###########################################################################
 
 while True:
-    score = 0
-    lives = 3
-    game_over = False
+    global player_name
 
-    main()
+    menu = pygame_menu.Menu('Quiz Game', 1024, 768,
+    theme = pygame_menu.themes.THEME_BLUE)
+    menu.add.text_input('Name :', default='USER' ,maxchar=5, maxwidth = 5, textinput_id='player_name')
+    data = menu.get_input_data()
+    player_name = data['player_name']
+    player_name = player_name.upper()
+    menu.add.button('Play', main)
+    menu.add.button('Quit', pygame_menu.events.EXIT)
+    menu.mainloop(screen)
+    
+    #main()
