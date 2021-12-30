@@ -1,13 +1,13 @@
 import pygame,random,time
-import pyautogui
 #to set window loc
 import os 
 #pyautogui
 #importy pyttsx3
 
-os.environ['SDL_VIDEO_WINDOW_POS'] = '850,100'
+os.environ['SDL_VIDEO_WINDOW_POS'] = '50,100'
 pygame.init()              
 pygame.font.init()           
+pygame.display.init()
 mainclock = pygame.time.Clock()
 
 
@@ -37,71 +37,8 @@ image_icon = pygame.image.load('images\icon.jpg')
 pygame.display.set_icon(image_icon)
 
 
-######################################################################
-#---------------------------------------------------------------------
 
-import threading
-def create_thread(target):
-    thread = threading.Thread(target = target)
-    #daemons will be killed after prog exits
-    # so you dont need to track them
-    thread.daemon = True
-    thread.start()
-
-import socket
-
-#host ip should be the ivp4 adress of the wifi
-# should also be the same host as server
-host = '127.0.0.1'
-port = 65432 #or 65432 for tcp
-
-sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.connect((host,port))
-
-import win32api,win32con
-
-#sock.recv is a blocking command, so we thread it
-def receive_data():
-    while True:
-        data2 = sock.recv(1024).decode()
-        #send_mouse_click = sock.recv(1024).decode()
-        #print(send_mouse_click)
-        #print(data2)
-
-        list_mouse = data2.split(',')
-        #print(list_mouse[0],list_mouse[1])
-        global mouse_click
-        x100 = list_mouse[0]
-        y100= list_mouse[1]
-        mouse_click = list_mouse[2]
-
-        
-        x100= int(x100)
-        y100= int(y100)
-        mouse_click = int(mouse_click)
-        pygame.mouse.set_pos([x100,y100])
-
-        
-        if mouse_click == 1:
-            #win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN,x,y,0,0)
-            #pygame.MOUSEBUTTONDOWN = True
-            pyautogui.click()
-        #win32api.SetCursorPos((x,y))
-
-        
-        
-
-create_thread(receive_data)
-
-
-
-
-
-
-#---------------------------------------------------------------------
-######################################################################
-
-
+#--------------------------------------------------------------------
 
 #we're using the main function to loop the game after the game over screen
 def main():
@@ -157,13 +94,11 @@ def main():
         #menu loop
         while not done and  show_menu:
             
-            #multiplayer stuff----------------
-            mouse_x1, mouse_y1 = pygame.mouse.get_pos()
-            send_data = '{},{}'.format(mouse_x1, mouse_y1).encode()
-            #on client side, we use sock.send
-            sock.send(send_data)
-            #---------------------------------
-
+  
+            '''with this we only send the mouse pos
+            we dont sync both the clients, so they wont have the same
+            questions. we'll have to run a time, then match the score
+            or have same set of questions for multiplayer'''
 
             mouse = pygame.mouse.get_pos()
             x1=870
@@ -176,8 +111,7 @@ def main():
                     exit()
                 #esc key to exit
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:         
-                        done = False
+                    if event.key == pygame.K_ESCAPE:
                         pygame.quit()
                         exit()
 
@@ -204,6 +138,7 @@ def main():
                         player_name = player_name.upper()
                         player_text.write(player_name)
                         player_text.close()
+
 
             #changes the color of the button when mouse is hovered over it
             if x1 <= mouse[0] <= x1+140 and y1 <= mouse[1] <= y1+40:
@@ -363,7 +298,7 @@ def main():
         answer = ''
 
         while open:
-            
+
             '''
             while sound_once:
                 #sort of a mess, gotta use gtts instead
@@ -432,12 +367,11 @@ def main():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     exit()
+                #esc key to exit
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:          #turn this into a pause menu later on
-                        open = False
+                    if event.key == pygame.K_ESCAPE:    #turn this into a pause menu later
                         pygame.quit()
                         exit()
-                
 
                 if question_answered == False:
                     if event.type == pygame.MOUSEBUTTONDOWN: 
@@ -495,7 +429,7 @@ def main():
                             game_over = False
 
                     bulk_exec = False
-        
+
             #timer box
             x6= 468; y6 = 12
             timerbox = pygame.image.load("images/timerbox.jpg").convert()
@@ -635,7 +569,7 @@ def main():
                     exit()
                 #esc key to exit
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:         
+                    if event.key == pygame.K_ESCAPE:
                         pygame.quit()
                         exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -643,7 +577,6 @@ def main():
                     end_theme.stop()
                     #return
                     done = True
-                    
 
             #vsync
             mainclock.tick(60)   
@@ -851,6 +784,7 @@ def main():
             else:
                 pygame.draw.rect(screen,swamp_green,[x3,y,140,40])
             
+
             screen.blit(sort_text , (40,700))
             screen.blit(quit_text , (x+40,y+10))
             screen.blit(menu_text , (x1+40,y+10))
@@ -869,7 +803,7 @@ def main():
                     exit()
                 #esc key to exit
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:         
+                    if event.key == pygame.K_ESCAPE:
                         pygame.quit()
                         exit()
                 #quit button
@@ -878,19 +812,16 @@ def main():
                             pygame.quit()
                             exit()
                 #menu button
-                if event.type == pygame.MOUSEBUTTONDOWN:
                         if x1 <= mouse[0] <= x1+140 and y <= mouse[1] <= y+40:
                             show_score_menu = False
                             show_highscore_menu = False
                             done = True
                             return
                 #recent score button
-                if event.type == pygame.MOUSEBUTTONDOWN:
                         if x2 <= mouse[0] <= x2+140 and y <= mouse[1] <= y+40:
                             show_highscore_menu = False
                             return
                 #highscore button
-                if event.type == pygame.MOUSEBUTTONDOWN:
                         if x3 <= mouse[0] <= x3+140 and y <= mouse[1] <= y+40:
                             show_highscore_menu = True
                             return
