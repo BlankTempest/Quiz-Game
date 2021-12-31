@@ -252,7 +252,7 @@ def main():
         
 
         #counters
-        global score,lives,game_over
+        global score,lives,game_over,mod_50_used
 
         lives_img = pygame.image.load("images/heart.png").convert()
         lives_grey_img = pygame.image.load("images/heart_grey.png").convert()
@@ -262,6 +262,8 @@ def main():
         heavy_hit = pygame.mixer.Sound('music\sfx\Hit Super Effective.mp3')
         #sfx score up
         score_up = pygame.mixer.Sound('music\sfx\sfx_score_up_Level Up!.mp3')
+        #sfx 50-50 used
+        mod_50_used_sfx = pygame.mixer.Sound('music/sfx/50-50-BodySlam.mp3')
 
         #timer
         font_timer = pygame.font.SysFont('Raleway', 76)
@@ -269,6 +271,11 @@ def main():
         frame_rate = 60
         start_time = 8
         
+        #mods
+        mod_50 = pygame.image.load("images/50-50.png").convert()
+        mod_50_grey = pygame.image.load("images/50-50-grey.png ").convert()
+        
+
         #next
         next_c = (255,255,255)
         nextfont = pygame.font.SysFont('Raleway',35)
@@ -280,7 +287,17 @@ def main():
         third = True
         timed_out = False
         answer = ''
-
+        #50-50 functionals
+        option_1_visible = True
+        option_2_visible = True
+        option_3_visible = True
+        option_4_visible = True
+        mod_temp = True
+        mod_50_being_used = False
+        
+        #50-50 effect
+        tv_screen = pygame.image.load("images/tv_screen.jpg").convert()
+        tv_screen_position = [0,0]
         while open:
 
             mouse = pygame.mouse.get_pos()
@@ -316,6 +333,12 @@ def main():
 
             next_text = nextfont.render('NEXT' , True , next_c)
 
+            #mods
+            if mod_50_used == False:
+                mod_50_blit = screen.blit(mod_50, [967, 27])
+            else:
+                mod_50_blit = screen.blit(mod_50_grey, [967, 27])
+            
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -329,27 +352,40 @@ def main():
 
                 if question_answered == False:
                     if event.type == pygame.MOUSEBUTTONDOWN: 
+                    #mod 50-50
+                    #& so that it doesnt repeat for the next question
+                        if mod_50_used != True:
+                            if mod_50_blit.collidepoint(event.pos):
+                                mod_50_used = True
+                                mod_50_being_used = True 
+                                mod_50_used_sfx.play()
+                                screen.blit(tv_screen,tv_screen_position)
+                                pygame.display.update()
 
                     #option1
-                        if 172 <= mouse[0] <= 471 and 494 <= mouse[1] <= 543:
-                            answer = option_1
-                            bulk_exec = True
-                            question_answered = True
+                        if option_1_visible == True:
+                            if 172 <= mouse[0] <= 471 and 494 <= mouse[1] <= 543:
+                                answer = option_1
+                                bulk_exec = True
+                                question_answered = True
                     #option2
-                        if 170 <= mouse[0] <= 843 and 582 <= mouse[1] <= 630:
-                            answer = option_2
-                            bulk_exec = True
-                            question_answered = True
+                        if option_2_visible == True:
+                            if 170 <= mouse[0] <= 468 and  579<= mouse[1] <= 630:
+                                answer = option_2
+                                bulk_exec = True
+                                question_answered = True
                     #option3
-                        if 545 <= mouse[0] <= x3+320 and 493 <= mouse[1] <= 540:
-                            answer = option_3
-                            bulk_exec = True
-                            question_answered = True
+                        if option_3_visible == True:
+                            if 545 <= mouse[0] <= 844 and 493 <= mouse[1] <= 540:
+                                answer = option_3
+                                bulk_exec = True
+                                question_answered = True
                     #option4
-                        if 544 <= mouse[0] <= 842 and 581 <= mouse[1] <= 632:
-                            answer = option_4
-                            bulk_exec = True
-                            question_answered = True
+                        if option_4_visible == True:
+                            if 544 <= mouse[0] <= 842 and 581 <= mouse[1] <= 632:
+                                answer = option_4
+                                bulk_exec = True
+                                question_answered = True
                     
                 #next button
                 if question_answered == True:
@@ -384,6 +420,7 @@ def main():
 
                     bulk_exec = False
 
+
             #timer box
             x6= 468; y6 = 12
             timerbox = pygame.image.load("images/timerbox.jpg").convert()
@@ -401,24 +438,50 @@ def main():
                     third = False
                     timed_out = True
             
-
             output_string = str(total_seconds)
             text_timer = font_timer.render(output_string, True, 'white')
             screen.blit(text_timer, [x6+25, y6+15])
 
-            if question_answered != True:
+            if question_answered != True and mod_50_used == False:
                 frame_count += 1
 
-            #display
+            
+            #mod 50-50 display check
+            if mod_50_used == True and mod_temp == True and mod_50_being_used == True:
+                option_list = [option_1,option_2,option_3,option_4]
+                random.shuffle(option_list)
+                temp_k=2
+                for temp_option in option_list:
+                    if temp_option != right_answer:
+                        option_list.remove(temp_option)
+                        temp_k -= 1
+                        if temp_k == 0:
+                            break
+                mod_temp = False
+                if option_1 not in option_list:
+                    option_1_visible = False
+                if option_2 not in option_list:
+                    option_2_visible = False
+                if option_3 not in option_list:
+                    option_3_visible = False
+                if option_4 not in option_list:
+                    option_4_visible = False
+
+                
+            #display red/green
             color_white = 'white'
             color_green = 'green'
             color_red = 'red'
             
             question_display= smallfont.render(question , True, color_white)
-            option_1_display= smallfont.render(option_1 , True, color_white)
-            option_2_display= smallfont.render(option_2 , True, color_white)
-            option_3_display= smallfont.render(option_3 , True, color_white)
-            option_4_display= smallfont.render(option_4 , True, color_white)
+            if option_1_visible == True:
+                option_1_display= smallfont.render(option_1 , True, color_white)
+            if option_2_visible == True:
+                option_2_display= smallfont.render(option_2 , True, color_white)
+            if option_3_visible == True:
+                option_3_display= smallfont.render(option_3 , True, color_white)
+            if option_4_visible == True:
+                option_4_display= smallfont.render(option_4 , True, color_white)
 
             #optimize
             if question_answered == True:
@@ -448,10 +511,14 @@ def main():
             
             
             screen.blit(question_display, (208,370))
-            screen.blit(option_1_display, (x1,y1))
-            screen.blit(option_2_display, (x2,y2))
-            screen.blit(option_3_display, (x3,y3))
-            screen.blit(option_4_display, (x4,y4))
+            if option_1_visible == True:
+                screen.blit(option_1_display, (x1,y1))
+            if option_2_visible == True:
+                screen.blit(option_2_display, (x2,y2))
+            if option_3_visible == True:
+                screen.blit(option_3_display, (x3,y3))
+            if option_4_visible == True:
+                screen.blit(option_4_display, (x4,y4))
 
             #next button
             
@@ -478,7 +545,9 @@ def main():
             #framerate limiter/vsync
             mainclock.tick(60)
 
-    
+    global mod_50_used
+    mod_50_used = False
+
     for question_no in range(1,16):
         if game_over != True:
             question_screen()
