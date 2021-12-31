@@ -41,10 +41,11 @@ def main():
         #something else for later
         # pygame.mouse.set_cursor(pygame.cursors.Cursor)
     
-    global score,lives,game_over
+    global score,lives,game_over,ques_ans
     score = 0
     lives = 3
     game_over = False
+    ques_ans = 0
     #---------------------------------menu--------------------------------------
 
     def menu_function():
@@ -203,16 +204,20 @@ def main():
 
     random.shuffle(l)
     random.shuffle(l_m)
-    
+    global question_list
+    question_list = []
 
     def question_selecter():
+        
         #select randomly out of 2 categories
         chance = random.randint(1,2)
         if chance == 1:
             fname = l[0]
+            question_list.append(fname)
             l.pop(0)
         elif chance == 2:
             fname = l_m[0]
+            question_list.append(fname)
             l_m.pop(0)
         question_import(fname)
 
@@ -252,7 +257,8 @@ def main():
         
 
         #counters
-        global score,lives,game_over,mod_50_used
+        global score,lives,game_over,mod_50_used,answer,ques_ans
+        
 
         lives_img = pygame.image.load("images/heart.png").convert()
         lives_grey_img = pygame.image.load("images/heart_grey.png").convert()
@@ -399,26 +405,25 @@ def main():
 
             #counters
             if bulk_exec == True:
+                if answer == right_answer:
+                    score += 1
+                    score_up.play()  
+                    #last question
+                    if question_no == 15:
+                        game_over = False
 
-                    if answer == right_answer:
-                        score += 1
-                        score_up.play()  
-                        #last question
-                        if question_no == 15:
-                            game_over = False
-
+                else:
+                    lives -= 1
+                    question_answered = True
+                    if lives == 0:
+                        heavy_hit.play()
                     else:
-                        lives -= 1
-                        question_answered = True
-                        if lives == 0:
-                            heavy_hit.play()
-                        else:
-                            normal_hit.play()
-                        #last question
-                        if question_no == 15:
-                            game_over = False
-
-                    bulk_exec = False
+                        normal_hit.play()
+                    #last question
+                    if question_no == 15:
+                        game_over = False
+                ques_ans += 1
+                bulk_exec = False
 
 
             #timer box
@@ -551,6 +556,11 @@ def main():
     for question_no in range(1,16):
         if game_over != True:
             question_screen()
+            if question_list != None:
+                    fname2 = question_list[-1]
+                    saved_text = open(fname2, 'a')
+                    saved_text.write('\n'+answer)
+                    saved_text.close()
     ##########################################################################
 
 
@@ -596,9 +606,7 @@ def main():
                         pygame.quit()
                         exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    #loop back to menu screen
                     end_theme.stop()
-                    #return
                     done = True
 
             #vsync
@@ -609,6 +617,232 @@ def main():
 
     if game_over == True:
         game_over_screen()
+
+    ###########################################################################
+
+    #--------------------------Choice Score----------------------------------
+
+    def choice_screen():
+        #title
+        pygame.display.set_caption("Score")
+
+        #music
+        end_theme = pygame.mixer.Sound('music/theme/matrix_theme.mp3')
+        end_theme.play(-1)
+
+        #background
+        pbackground = pygame.image.load("images\choices.jpg").convert()
+        pbackground_position = [0,0]
+        screen.blit(pbackground,pbackground_position)
+
+        global choice_percentage,ques_ans
+        page = 1
+
+        #file
+        def value_finder(fname3):
+            global question,answer
+            saved_text = open(fname3, 'r')
+            choices_list = []
+            for line in saved_text:
+                choices_list.append(line.strip())
+            saved_text.close()
+
+            #count
+            question = choices_list[0]
+            if len(question) > 35:
+                question = question[:35] + '...'
+            option_1 = choices_list[1]
+            option_2 = choices_list[2]
+            option_3 = choices_list[3]
+            option_4 = choices_list[4]
+
+            #lines 1-4 have answers, so we subtract 1
+            option_1_count = choices_list.count(option_1) - 1
+            option_2_count = choices_list.count(option_2) - 1
+            option_3_count = choices_list.count(option_3) - 1
+            option_4_count = choices_list.count(option_4) - 1
+            answer = choices_list[-1]
+
+            #line 5 also has right_answer, so - 1
+            if answer == option_1:
+                answer_count = option_1_count - 1
+            elif answer == option_2:
+                answer_count = option_2_count - 1
+            elif answer == option_3:
+                answer_count = option_3_count - 1
+            elif answer == option_4:
+                answer_count = option_4_count - 1
+            
+            #find perc
+            total_count = option_1_count+ option_2_count+ option_3_count+ option_4_count -1
+            global choice_percentage
+            choice_percentage = answer_count/total_count*100
+
+        #text blips
+        answer_font = pygame.font.SysFont('Raleway',34)
+        question_font = pygame.font.SysFont('Raleway',42)
+        perc_font = pygame.font.SysFont('Raleway',32)
+        def text_blip(choice_percentage):
+            global question_text,answer_text,perc_text,question,answer
+            question_text = question_font.render(question , True , 'azure3')
+            answer_text = answer_font.render(answer , True , 'black')
+            choice_percentage = round(choice_percentage)
+            perc_str = "Picked by "+str(choice_percentage)+"% of players "
+            perc_text = perc_font.render(perc_str , True , 'black')
+
+
+        #draw bars
+        #can optimize with functions
+        choice_green = (66,71,40)
+        choice_red = (90,15,13)
+        xl = 658
+        xr= 250; yr= 47
+        #first slot
+        def first_slot(fname4):
+                value_finder(fname4)
+                yl =199
+                xg= xr*choice_percentage/100 ; yg= yr
+                pygame.draw.rect(screen, choice_red, [xl,yl,xr,yr])
+                pygame.draw.rect(screen, choice_green ,[xl,yl,xg,yg])
+                pygame.draw.rect(screen, 'black', [xl,yl,xr,yr], width=2)
+                text_blip(choice_percentage)
+                screen.blit(question_text, [106, 201])
+                screen.blit(answer_text, [110, 171])
+                screen.blit(perc_text, [645, 162])
+                pygame.display.flip()
+
+        #second slot
+        def second_slot(fname4):
+                value_finder(fname4)
+                yl =292
+                xg= xr*choice_percentage/100 ; yg= yr
+                pygame.draw.rect(screen, choice_red, [xl,yl,xr,yr])
+                pygame.draw.rect(screen, choice_green ,[xl,yl,xg,yg])
+                pygame.draw.rect(screen, 'black', [xl,yl,xr,yr], width=2)
+                text_blip(choice_percentage)
+                screen.blit(question_text, [106, 293])
+                screen.blit(answer_text, [110, 259])
+                screen.blit(perc_text, [645, 255])
+                pygame.display.flip()
+
+        #third slot
+        def third_slot(fname4):
+                value_finder(fname4)
+                yl =384
+                xg= xr*choice_percentage/100 ; yg= yr
+                pygame.draw.rect(screen, choice_red, [xl,yl,xr,yr])
+                pygame.draw.rect(screen, choice_green ,[xl,yl,xg,yg])
+                pygame.draw.rect(screen, 'black', [xl,yl,xr,yr], width=2)
+                text_blip(choice_percentage)
+                screen.blit(question_text, [106, 385])
+                screen.blit(answer_text, [110, 351])
+                screen.blit(perc_text, [645, 350])
+                pygame.display.flip()
+
+        #in case you lose after 3 fail attempts
+        #fourth slot
+        def fourth_slot(fname4):
+                value_finder(fname4)
+                yl =478
+                xg= xr*choice_percentage/100 ; yg= yr
+                pygame.draw.rect(screen, choice_red, [xl,yl,xr,yr])
+                pygame.draw.rect(screen, choice_green ,[xl,yl,xg,yg])
+                pygame.draw.rect(screen, 'black', [xl,yl,xr,yr], width=2)
+                text_blip(choice_percentage)
+                screen.blit(question_text, [106, 474])
+                screen.blit(answer_text, [110, 442])
+                screen.blit(perc_text, [645, 439])
+                pygame.display.flip()
+
+        #fifth slot
+        def fifth_slot(fname4):
+                value_finder(fname4)
+                yl =567
+                xg= xr*choice_percentage/100 ; yg= yr
+                pygame.draw.rect(screen, choice_red, [xl,yl,xr,yr])
+                pygame.draw.rect(screen, choice_green ,[xl,yl,xg,yg])
+                pygame.draw.rect(screen, 'black', [xl,yl,xr,yr], width=2)
+                text_blip(choice_percentage)
+                screen.blit(question_text, [106, 569])
+                screen.blit(answer_text, [110, 534])
+                screen.blit(perc_text, [645, 530])
+                pygame.display.flip()
+        
+
+        continue_text = question_font.render('CLICK TO CONTINUE' , True , 'azure3')
+        
+
+        done = False
+        choice_screen = True
+
+        while not done and choice_screen:
+            #blit here so that screen refreshes
+            
+            screen.blit(continue_text, [368, 685])
+
+            if page == 1:
+                first_slot(question_list[0])
+                second_slot(question_list[1])
+                third_slot(question_list[2])
+                if ques_ans >3:
+                    fourth_slot(question_list[3])
+                if ques_ans >4:
+                    fifth_slot(question_list[4])
+            if page == 2:
+                if ques_ans >5:
+                    first_slot(question_list[5])
+                if ques_ans >6:
+                    second_slot(question_list[6])
+                if ques_ans >7:
+                    third_slot(question_list[7])
+                if ques_ans >8:
+                    fourth_slot(question_list[8])
+                if ques_ans >9:
+                    fifth_slot(question_list[9])
+            if page == 3:
+                if ques_ans >10:
+                    first_slot(question_list[10])
+                if ques_ans >11:
+                    second_slot(question_list[11])
+                if ques_ans >12:
+                    third_slot(question_list[12])
+                if ques_ans >13:
+                    fourth_slot(question_list[13])
+                if ques_ans >14:
+                    fifth_slot(question_list[14])
+            
+                
+
+            #exit loop
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                #esc key to exit
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                        exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    end_theme.stop()
+                    if ques_ans <6:
+                        done = True
+                    if page == 2 and ques_ans < 11:
+                        done = True
+                    if page == 3:
+                        done = True
+                    #so that screen refreshes
+                    screen.blit(pbackground,pbackground_position)
+                    page+=1
+                    
+
+            #vsync
+            mainclock.tick(60)   
+            pygame.display.flip()
+            pygame.display.update()
+
+    
+    choice_screen()
 
     ###########################################################################
 
