@@ -43,11 +43,13 @@ def main():
         #something else for later
         # pygame.mouse.set_cursor(pygame.cursors.Cursor)
     
-    global score,lives,game_over,ques_ans
+    global score,lives,game_over,ques_ans,total_questions,zen_mode
     score = 0
     lives = 3
     game_over = False
     ques_ans = 0
+    total_questions = 15
+    zen_mode = False
     #---------------------------------menu--------------------------------------
 
     def menu_function():
@@ -57,7 +59,7 @@ def main():
 
         #player name
         #####################move to profile screen##########################
-        global player_name
+        global player_name,total_questions,zen_mode
         
         player_text = open('text\scoreboard\player_name.txt', 'r')
         player_name = player_text.read(5)
@@ -71,19 +73,30 @@ def main():
         #####################################################################
         done = False
         show_menu = True
-        
 
-        #background, change this, it looks like crap
+        #background
         mbackground = pygame.image.load("images/naissancee4.png").convert()
         mbackground_position = [0,0]
-        screen.blit(mbackground,mbackground_position)
-        #pygame.display.update()
         
         #music
-        menu_theme = pygame.mixer.Sound('music/theme/menu_dark_knight.mp3')
+        menu_theme = pygame.mixer.Sound('music/theme/Pauline Oliveiros  A Woman Sees How the World Goes with No Eyes.mp3')
         menu_theme.play(-1)            #-1 loops music indefinitely
 
+        #sfx
+        menu_rollover = pygame.mixer.Sound('music/sfx/menu rollover.mp3')
+        menu_click = pygame.mixer.Sound('music/sfx/Menu-click.mp3')
+        #if when game is started and the mouse happens to be on any button,
+        # then it'll throw an error, so we define these here
+        sfx_play_1 = True
+        sfx_play_2 = True
+        sfx_play_3 = True
+        sfx_play_4 = True
+        sfx_play_5 = True
+        sfx_play_6 = True
+        sfx_play_7 = True
+
         #menu selectables
+        #when not hovered over
         m_play = pygame.image.load("images/menu_play.png").convert()
         m_zen = pygame.image.load("images/menu_zen.png").convert()
         m_options = pygame.image.load("images/menu_options.png").convert()
@@ -91,18 +104,118 @@ def main():
         m_profile = pygame.image.load("images/menu_profile.png").convert()
         m_category = pygame.image.load("images/menu_category.png").convert()
         m_exit = pygame.image.load("images/menu_exit.png").convert()
+
+        #when hovered over
+        m_play_w = pygame.image.load("images/menu_play_w.png").convert()
+        m_zen_w = pygame.image.load("images/menu_zen_w.png").convert()
+        m_options_w = pygame.image.load("images/menu_options_w.png").convert()
+        m_help_w = pygame.image.load("images/menu_help_w.png").convert()
+        m_profile_w = pygame.image.load("images/menu_profile_w.png").convert()
+        m_category_w = pygame.image.load("images/menu_category_w.png").convert()
+        m_exit_w = pygame.image.load("images/menu_exit_w.png").convert()
+
+        #top bar
+        top_text_font = pygame.font.SysFont('Arial', 18)
+        top_text_color = (35,35,35)
         
         #menu loop
         while not done and  show_menu:
+
+            mouse = pygame.mouse.get_pos()
+            x= 90
+            top_text_str = 'Welcome to aenigma'
             
-            #assign first since we collidepoint underneath
-            m_play_blit = screen.blit(m_play ,(90,214))
-            m_zen_blit = screen.blit(m_zen ,(89,273))
-            m_options_blit = screen.blit(m_options ,(89,332))
-            m_help_blit = screen.blit(m_help , (90,391))
-            m_profile_blit = screen.blit(m_profile , (89,451))
-            m_category_blit = screen.blit(m_category , (89,510))
-            m_exit_blit = screen.blit(m_exit , (89,605))
+            #assign these first since we collidepoint underneath
+            screen.blit(mbackground,mbackground_position)
+
+            #play
+            if x <= mouse[0] <= x+134 and 214 <= mouse[1] <= 214+34:
+                m_play_blit = screen.blit(m_play_w ,(x,214))
+                top_text_str = 'Start a new game.'
+                #play sfx
+                if sfx_play_1 == True:
+                    menu_rollover.play()
+                    sfx_play_1 = False 
+            else:
+                sfx_play_1 = True
+                m_play_blit = screen.blit(m_play ,(x,214))
+
+            #zen
+            if x <= mouse[0] <= x+134 and 273 <= mouse[1] <= 273+33:
+                m_zen_blit = screen.blit(m_zen_w ,(x,273))
+                top_text_str = 'Go up against the maximum number of questions.'
+                #play sfx
+                if sfx_play_2 == True:
+                    menu_rollover.play()
+                    sfx_play_2 = False 
+            else:
+                sfx_play_2 = True
+                m_zen_blit = screen.blit(m_zen ,(x,273))
+            
+            #options
+            if x <= mouse[0] <= x+135 and 333 <= mouse[1] <= 333+32:
+                m_options_blit = screen.blit(m_options_w ,(x,333))
+                top_text_str = 'Change graphic options.'
+                #play sfx
+                if sfx_play_3 == True:
+                    menu_rollover.play()
+                    sfx_play_3 = False 
+            else:
+                sfx_play_3 = True
+                m_options_blit = screen.blit(m_options ,(x,333))
+            
+            #help
+            if x <= mouse[0] <= x+136 and 391 <= mouse[1] <= 391+35:
+                m_help_blit = screen.blit(m_help_w , (x,391))
+                top_text_str = 'Look at how the game mechanics work.'
+                #play sfx
+                if sfx_play_4 == True:
+                    menu_rollover.play()
+                    sfx_play_4 = False 
+            else:
+                sfx_play_4 = True
+                m_help_blit = screen.blit(m_help , (x,391))
+            
+            #profile
+            if x <= mouse[0] <= x+134 and 451 <= mouse[1] <= 451+34:
+                m_profile_blit = screen.blit(m_profile_w , (x,451))
+                top_text_str = 'Change you allias.'
+                #play sfx
+                if sfx_play_5 == True:
+                    menu_rollover.play()
+                    sfx_play_5 = False 
+            else:
+                sfx_play_5 = True
+                m_profile_blit = screen.blit(m_profile , (x,451))
+
+            #category
+            if x <= mouse[0] <= x+135 and 511 <= mouse[1] <= 511+32:
+                m_category_blit = screen.blit(m_category_w , (x,511))
+                top_text_str = 'Choose what categories to answer from.'
+                #play sfx
+                if sfx_play_6 == True:
+                    menu_rollover.play()
+                    sfx_play_6 = False 
+            else:
+                sfx_play_6 = True
+                m_category_blit = screen.blit(m_category , (x,511))
+            
+            #exit
+            if x <= mouse[0] <= x+135 and 605 <= mouse[1] <= 605+34:
+                top_text_str = 'Exit the game and return to your reality'
+                m_exit_blit = screen.blit(m_exit_w , (x,605))
+                #play sfx
+                if sfx_play_7 == True:
+                    menu_rollover.play()
+                    sfx_play_7 = False 
+            else:
+                sfx_play_7 = True
+                m_exit_blit = screen.blit(m_exit , (x,605))
+
+            #top text
+            top_text = top_text_font.render(top_text_str , True , top_text_color)
+            screen.blit(top_text, [94, 66])
+
 
             #exit loop
             for event in pygame.event.get():
@@ -126,6 +239,7 @@ def main():
                 #play button
                     if m_play_blit.collidepoint(event.pos):
                         menu_theme.stop()
+                        menu_click.play()
                         show_menu = False
                         '''move to profile screen
                         active = False
@@ -135,21 +249,31 @@ def main():
                         player_text.close()'''
 
                     if m_zen_blit.collidepoint(event.pos):
-                        pass
+                        total_questions = 47
+                        zen_mode = True
+                        menu_theme.stop()
+                        menu_click.play()
+                        show_menu = False
 
                     if m_options_blit.collidepoint(event.pos):
+                        menu_click.play()
                         pass
 
                     if m_help_blit.collidepoint(event.pos):
+                        menu_click.play()
                         pass
 
                     if m_profile_blit.collidepoint(event.pos):
+                        menu_click.play()
                         pass
 
                     if m_category_blit.collidepoint(event.pos):
+                        menu_click.play()
                         pass
 
                     if m_exit_blit.collidepoint(event.pos):
+                        menu_theme.stop()
+                        menu_click.play()
                         pygame.quit()
                         exit()
                         
@@ -182,12 +306,6 @@ def main():
     #window name, change it later
     pygame.display.set_caption('aenigma')
 
-    #background, make sure not to mess with the boxes if you change it,
-    # or you'll have to redefine x1-y1 etc again
-    background = pygame.image.load("images/hollow_purple.png").convert()
-    background_position = [0,0]
-    screen.blit(background,background_position)
-
     #importing the questions
     def question_import(filename):  
         questions_file = open(filename, "r" , encoding='cp1252')
@@ -206,32 +324,90 @@ def main():
 
         questions_file.close()
 
-    l=["text\q&a1.txt","text\q&a2.txt","text\q&a3.txt","text\q&a4.txt","text\q&a5.txt","text\q&a6.txt","text\q&a6.txt","text\q&a7.txt","text\q&a8.txt","text\q&a9.txt","text\q&a10.txt"
-        ,"text\q&a11.txt","text\q&a12.txt","text\q&a13.txt","text\q&a14.txt","text\q&a15.txt"]
+    #47 questions in total
+    #l=["text\q&a1.txt","text\q&a2.txt","text\q&a3.txt","text\q&a4.txt","text\q&a5.txt","text\q&a6.txt","text\q&a7.txt","text\q&a8.txt","text\q&a9.txt","text\q&a10.txt"
+        #,"text\q&a11.txt","text\q&a12.txt","text\q&a13.txt","text\q&a14.txt","text\q&a15.txt"]
 
     #if music category selected:
     l_m = ['text\music_based\q1.txt','text\music_based\q2.txt','text\music_based\q3.txt','text\music_based\q4.txt','text\music_based\q5.txt','text\music_based\q6.txt',
         'text\music_based\q7.txt','text\music_based\q8.txt','text\music_based\q9.txt','text\music_based\q10.txt','text\music_based\q11.txt','text\music_based\q12.txt',
         'text\music_based\q13.txt','text\music_based\q14.txt','text\music_based\q15.txt','text\music_based\q16.txt','text\music_based\q17.txt']
 
-    random.shuffle(l)
+    #if history category is selected:
+    l_h = ["text\history\q1.txt","text\history\q2.txt","text\history\q3.txt","text\history\q4.txt","text\history\q5.txt","text\history\q6.txt","text\history\q7.txt"
+        ,"text\history\q8.txt","text\history\q9.txt","text\history\q10.txt","text\history\q11.txt","text\history\q12.txt","text\history\q13.txt","text\history\q14.txt","text\history\q15.txt"]
+
+    #specify that books' category also contains plays
+    l_b = ["text/books/q1.txt","text/books/q2.txt","text/books/q3.txt","text/books/q4.txt","text/books/q5.txt","text/books/q6.txt","text/books/q7.txt"
+        ,"text/books/q8.txt","text/books/q9.txt","text/books/q10.txt","text/books/q11.txt","text/books/q12.txt","text/books/q13.txt","text/books/q14.txt","text/books/q15.txt"]
+
+    random.shuffle(l_h)
     random.shuffle(l_m)
+    random.shuffle(l_b)
     global question_list
     question_list = []
 
     def question_selecter():
-        
-        #select randomly out of 2 categories
-        chance = random.randint(1,2)
-        if chance == 1:
-            fname = l[0]
-            question_list.append(fname)
-            l.pop(0)
-        elif chance == 2:
-            fname = l_m[0]
-            question_list.append(fname)
-            l_m.pop(0)
-        question_import(fname)
+        #remove random chance and edit it with category chosen
+        if zen_mode == True:
+            chance = random.randint(1,3)
+            if chance == 1:
+                if l_h != []:
+                    fname = l_h[0]
+                    question_list.append(fname)
+                    l_h.pop(0)
+                elif l_b != []:
+                    fname = l_b[0]
+                    question_list.append(fname)
+                    l_b.pop(0)
+                else: 
+                    fname = l_m[0]
+                    question_list.append(fname)
+                    l_m.pop(0)
+            elif chance == 2:
+                if l_m != []:
+                    fname = l_m[0]
+                    question_list.append(fname)
+                    l_m.pop(0)
+                elif l_h != 0: 
+                    fname = l_h[0]
+                    question_list.append(fname)
+                    l_h.pop(0)
+                else:
+                    fname = l_b[0]
+                    question_list.append(fname)
+                    l_b.pop(0)
+            elif chance == 3:
+                if l_b != []:
+                    fname = l_b[0]
+                    question_list.append(fname)
+                    l_b.pop(0)
+                elif l_m != []: 
+                    fname = l_m[0]
+                    question_list.append(fname)
+                    l_m.pop(0)
+                else: 
+                    fname = l_h[0]
+                    question_list.append(fname)
+                    l_h.pop(0)
+            question_import(fname)
+
+        else:
+            #select randomly out of 2 categories
+            chance = random.randint(1,3)
+            if chance == 1:
+                fname = l_h[0]
+                question_list.append(fname)
+                l_h.pop(0)
+            elif chance == 2:
+                fname = l_m[0]
+                question_list.append(fname)
+                l_m.pop(0)
+            elif chance == 3:
+                fname = l_b[0]
+                question_list.append(fname)
+                l_b.pop(0)
+            question_import(fname)
 
     #----------------------------gamu start----------------------------------
 
@@ -239,12 +415,24 @@ def main():
 
         question_selecter()
         #so now we have question,option_1,option_2,option_3,option_4 and right_answer
-        
+        global question
         color = (255,255,255)
         smallfont = pygame.font.SysFont('Corbel',35)
         '''color_dark = (100,100,100)
         color_light = (170,170,170)
         text = smallfont.render('quit' , True , color)''' #used for boundary check, will get rid of later
+
+        #background
+        if len(question) > 38:
+            background = pygame.image.load("images/hollow_purple_bigger.png").convert()
+        else:
+            background = pygame.image.load("images/hollow_purple.png").convert()
+        background_position = [0,0]
+        screen.blit(background,background_position)
+        #slicing
+        if len(question) > 38:
+            question1 = question[:37]
+            question2 = question[37:]
 
         open = True
         #we don't need to define these, but they'll come in use eventually
@@ -253,10 +441,9 @@ def main():
 
         #music, will be changed to one song per category when categories are added
         music_list=['music/theme/dn_ost7.mp3','music/theme/category3_10billion.mp3','music/theme/l_theme.mp3','music/theme/menu_drstone.mp3','music/theme/near_theme.mp3',
-                'music/theme/overlord_dungeon_alt.mp3','music/theme/dn_ost7.mp3','music/theme/category3_10billion.mp3','music/theme/l_theme.mp3',
-                'music/theme/menu_drstone.mp3','music/theme/near_theme.mp3','music/theme/overlord_dungeon_alt.mp3','music/theme/category3_10billion.mp3',
-                'music/theme/menu_drstone.mp3','music/theme/dn_ost7.mp3','music/theme/l_theme.mp3']
-        music_name = music_list[question_no]
+                'music/theme/overlord_dungeon_alt.mp3']
+        random.shuffle(music_list)
+        music_name = music_list[0]
         
         #if music category
         if music_ques.endswith('.mp3'):
@@ -269,7 +456,7 @@ def main():
         
 
         #counters
-        global score,lives,game_over,mod_50_used,answer,ques_ans
+        global score,lives,game_over,mod_50_used,answer,ques_ans,total_questions
         
 
         lives_img = pygame.image.load("images/heart.png").convert()
@@ -421,7 +608,7 @@ def main():
                     score += 1
                     score_up.play()  
                     #last question
-                    if question_no == 15:
+                    if question_no == total_questions:
                         game_over = False
 
                 else:
@@ -432,7 +619,7 @@ def main():
                     else:
                         normal_hit.play()
                     #last question
-                    if question_no == 15:
+                    if question_no == total_questions:
                         game_over = False
                 ques_ans += 1
                 bulk_exec = False
@@ -459,11 +646,11 @@ def main():
             text_timer = font_timer.render(output_string, True, 'white')
             screen.blit(text_timer, [x6+25, y6+15])
 
-            if question_answered != True and mod_50_used == False:
+            if question_answered != True and mod_50_being_used == False:
                 frame_count += 1
 
             
-            #mod 50-50 display check
+            #mod 50-50 display check, mod_temp to make it run once
             if mod_50_used == True and mod_temp == True and mod_50_being_used == True:
                 option_list = [option_1,option_2,option_3,option_4]
                 random.shuffle(option_list)
@@ -490,15 +677,16 @@ def main():
             color_green = 'green'
             color_red = 'red'
             
+
+            
+            if len(question) > 38:
+                question_display1= smallfont.render(question1 , True, color_white)
+                question_display2= smallfont.render(question2 , True, color_white)
             question_display= smallfont.render(question , True, color_white)
-            if option_1_visible == True:
-                option_1_display= smallfont.render(option_1 , True, color_white)
-            if option_2_visible == True:
-                option_2_display= smallfont.render(option_2 , True, color_white)
-            if option_3_visible == True:
-                option_3_display= smallfont.render(option_3 , True, color_white)
-            if option_4_visible == True:
-                option_4_display= smallfont.render(option_4 , True, color_white)
+            option_1_display= smallfont.render(option_1 , True, color_white)
+            option_2_display= smallfont.render(option_2 , True, color_white)
+            option_3_display= smallfont.render(option_3 , True, color_white)
+            option_4_display= smallfont.render(option_4 , True, color_white)
 
             #optimize
             if question_answered == True:
@@ -526,8 +714,11 @@ def main():
                 elif option_4 == right_answer:       
                     option_4_display= smallfont.render(option_4 , True, color_green) 
             
-            
-            screen.blit(question_display, (208,370))
+            if len(question) >38:
+                screen.blit(question_display1, (217,292))
+                screen.blit(question_display2, (208,337))
+            else:
+                screen.blit(question_display, (219,370))
             if option_1_visible == True:
                 screen.blit(option_1_display, (x1,y1))
             if option_2_visible == True:
@@ -556,16 +747,12 @@ def main():
 
             pygame.display.update()
             pygame.display.flip()
-
-            
-
             #framerate limiter/vsync
             mainclock.tick(60)
 
     global mod_50_used
     mod_50_used = False
-
-    for question_no in range(1,16):
+    for question_no in range(1,total_questions+1):
         if game_over != True:
             question_screen()
             if question_list != None:
@@ -661,6 +848,7 @@ def main():
 
             #count
             question = choices_list[0]
+            #slicing
             if len(question) > 35:
                 question = question[:35] + '...'
             option_1 = choices_list[1]
@@ -783,47 +971,39 @@ def main():
 
         continue_text = question_font.render('CLICK TO CONTINUE' , True , 'azure3')
         
-
-        done = False
+        global doing
+        doing = False
         choice_screen = True
 
-        while not done and choice_screen:
+        while not doing and choice_screen:
             #blit here so that screen refreshes
             
             screen.blit(continue_text, [368, 685])
 
-            if page == 1:
-                first_slot(question_list[0])
-                second_slot(question_list[1])
-                third_slot(question_list[2])
-                if ques_ans >3:
-                    fourth_slot(question_list[3])
-                if ques_ans >4:
-                    fifth_slot(question_list[4])
-            if page == 2:
-                if ques_ans >5:
-                    first_slot(question_list[5])
-                if ques_ans >6:
-                    second_slot(question_list[6])
-                if ques_ans >7:
-                    third_slot(question_list[7])
-                if ques_ans >8:
-                    fourth_slot(question_list[8])
-                if ques_ans >9:
-                    fifth_slot(question_list[9])
-            if page == 3:
-                if ques_ans >10:
-                    first_slot(question_list[10])
-                if ques_ans >11:
-                    second_slot(question_list[11])
-                if ques_ans >12:
-                    third_slot(question_list[12])
-                if ques_ans >13:
-                    fourth_slot(question_list[13])
-                if ques_ans >14:
-                    fifth_slot(question_list[14])
-            
-                
+            #get values from the chosen question for the slot
+            def pager(n,x):
+                if page == n:
+                    if ques_ans >x:
+                        first_slot(question_list[x])
+                    if ques_ans >x+1:
+                        second_slot(question_list[x+1])
+                    if ques_ans >x+2:
+                        third_slot(question_list[x+2])
+                    if ques_ans >x+3:
+                        fourth_slot(question_list[x+3])
+                    if ques_ans >x+4:
+                        fifth_slot(question_list[x+4])
+            pager(1,0)
+            pager(2,5)
+            pager(3,10)
+            pager(4,15)
+            pager(5,20)
+            pager(6,25)
+            pager(7,30)
+            pager(8,35)
+            pager(9,40)
+            pager(10,45)
+
 
             #exit loop
             for event in pygame.event.get():
@@ -836,13 +1016,23 @@ def main():
                         pygame.quit()
                         exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    end_theme.stop()
-                    if ques_ans <6:
-                        done = True
-                    if page == 2 and ques_ans < 11:
-                        done = True
-                    if page == 3:
-                        done = True
+                    #click to continue essentially, then scoreboard if last page
+                    def stopper(y,z):
+                        global doing
+                        if page == y and ques_ans < z:
+                            end_theme.stop()
+                            doing = True
+                    stopper(1,6)
+                    stopper(2,11)
+                    stopper(3,16)
+                    stopper(4,21)
+                    stopper(5,26)
+                    stopper(6,31)
+                    stopper(7,36)
+                    stopper(8,41)
+                    stopper(9,46)
+                    stopper(10,51)
+
                     #so that screen refreshes
                     screen.blit(pbackground,pbackground_position)
                     page+=1

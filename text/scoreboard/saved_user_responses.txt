@@ -1,3 +1,17 @@
+       13                                    00:13:43                         BLANK
+       00                                    00:10:14                         BLANK
+       10                                    21:38:03                         BLANK
+       01                                    21:37:14                         BLANK
+       06                                    21:36:24                         BLANK
+       10                                    21:32:33                         BLANK
+       00                                    20:46:51                         BLANK
+       30                                    20:20:17                         BLANK
+       02                                    20:16:20                         BLANK
+       13                                    19:37:47                         BLANK
+       31                                    18:16:33                         BLANK
+       15                                    18:06:06                         BLANK
+       00                                    17:59:36                         BLANK
+       15                                    17:59:06                         BLANK
        00                                    16:53:38                         BLANK
        01                                    16:47:40                         BLANK
        00                                    13:24:40                         BLANK
