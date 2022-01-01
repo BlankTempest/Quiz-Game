@@ -1,11 +1,9 @@
-import pygame,random,time
-import pygame_menu
-import os
+import pygame
+import random
+import time
+import os #to set window loc
 
-from pygame_menu.widgets.widget.textinput import TextInput #to set window loc
-#pyautogui
-
-os.environ['SDL_VIDEO_WINDOW_POS'] = '50,100'
+os.environ['SDL_VIDEO_WINDOW_POS'] = '480,125'
 pygame.init()              
 pygame.font.init()           
 pygame.display.init()
@@ -13,12 +11,16 @@ mainclock = pygame.time.Clock()
 
 #window creation
 size = [1024, 768]
-screen = pygame.display.set_mode(size)
-#screen = pygame.display.set_mode(size, pygame.NOFRAME)
+#for borderless option
+screen = pygame.display.set_mode(size, pygame.NOFRAME)
 
-#for fullscreen
-#screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
+#for fullscreen option
 #pygame.display.toggle_fullscreen()
+#screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
+#for windowed option,
+# needs restart
+#screen = pygame.display.set_mode(size)
+
 
 #window icon, change it later
 # make sure icon res is smol
@@ -49,33 +51,30 @@ def main():
     #---------------------------------menu--------------------------------------
 
     def menu_function():
-        #quit button
-        quit = (255,255,255)
-        quit_dark = (100,100,100)
-        quit_light = (170,170,170)
-        smallfont = pygame.font.SysFont('Raleway',35)
-        quit_text = smallfont.render('QUIT' , True , quit)
         
         #title
-        pygame.display.set_caption("Menu Screen")
+        pygame.display.set_caption("aenigma: Menu Screen")
 
         #player name
+        #####################move to profile screen##########################
         global player_name
-        player_name_font = pygame.font.Font(None, 40)
+        
         player_text = open('text\scoreboard\player_name.txt', 'r')
         player_name = player_text.read(5)
         player_text.close()
+        '''player_name_font = pygame.font.Font(None, 40)
         name_rect = pygame.Rect(320, 387, 175, 32)
         color_active = pygame.Color('azure2')
         color_inactive = pygame.Color('azure3')
         color = color_inactive
-
+        active = False'''
+        #####################################################################
         done = False
         show_menu = True
-        active = False
+        
 
         #background, change this, it looks like crap
-        mbackground = pygame.image.load("images\instructions_background.png").convert()
+        mbackground = pygame.image.load("images/naissancee4.png").convert()
         mbackground_position = [0,0]
         screen.blit(mbackground,mbackground_position)
         #pygame.display.update()
@@ -83,13 +82,27 @@ def main():
         #music
         menu_theme = pygame.mixer.Sound('music/theme/menu_dark_knight.mp3')
         menu_theme.play(-1)            #-1 loops music indefinitely
+
+        #menu selectables
+        m_play = pygame.image.load("images/menu_play.png").convert()
+        m_zen = pygame.image.load("images/menu_zen.png").convert()
+        m_options = pygame.image.load("images/menu_options.png").convert()
+        m_help = pygame.image.load("images/menu_help.png").convert()
+        m_profile = pygame.image.load("images/menu_profile.png").convert()
+        m_category = pygame.image.load("images/menu_category.png").convert()
+        m_exit = pygame.image.load("images/menu_exit.png").convert()
         
         #menu loop
         while not done and  show_menu:
-
-            mouse = pygame.mouse.get_pos()
-            x1=870
-            y1=665
+            
+            #assign first since we collidepoint underneath
+            m_play_blit = screen.blit(m_play ,(90,214))
+            m_zen_blit = screen.blit(m_zen ,(89,273))
+            m_options_blit = screen.blit(m_options ,(89,332))
+            m_help_blit = screen.blit(m_help , (90,391))
+            m_profile_blit = screen.blit(m_profile , (89,451))
+            m_category_blit = screen.blit(m_category , (89,510))
+            m_exit_blit = screen.blit(m_exit , (89,605))
 
             #exit loop
             for event in pygame.event.get():
@@ -102,53 +115,53 @@ def main():
                         pygame.quit()
                         exit()
 
+                    '''move to profile screen
                     if event.key == pygame.K_BACKSPACE:
                         player_name = player_name[:-1]
                     elif len(player_name) < 5:
-                        player_name += event.unicode #forms string
+                        player_name += event.unicode #forms string'''
 
-                #text box
+                
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if name_rect.collidepoint(event.pos):
-                        active = True
-
-                    #quit button
-                    elif x1 <= mouse[0] <= x1+140 and y1 <= mouse[1] <= y1+40:
-                        pygame.quit()
-                        exit()
-                    else:
-                        #'click anywhere'
+                #play button
+                    if m_play_blit.collidepoint(event.pos):
                         menu_theme.stop()
                         show_menu = False
+                        '''move to profile screen
                         active = False
                         player_text = open('text\scoreboard\player_name.txt', 'w')
                         player_name = player_name.upper()
                         player_text.write(player_name)
-                        player_text.close()
+                        player_text.close()'''
+
+                    if m_zen_blit.collidepoint(event.pos):
+                        pass
+
+                    if m_options_blit.collidepoint(event.pos):
+                        pass
+
+                    if m_help_blit.collidepoint(event.pos):
+                        pass
+
+                    if m_profile_blit.collidepoint(event.pos):
+                        pass
+
+                    if m_category_blit.collidepoint(event.pos):
+                        pass
+
+                    if m_exit_blit.collidepoint(event.pos):
+                        pygame.quit()
+                        exit()
+                        
 
 
-            #changes the color of the button when mouse is hovered over it
-            if x1 <= mouse[0] <= x1+140 and y1 <= mouse[1] <= y1+40:
-                pygame.draw.rect(screen,quit_light,[x1,y1,140,40])   
-            else:
-                pygame.draw.rect(screen,quit_dark,[x1,y1,140,40])
-        
-            screen.blit(quit_text , (x1+40,y1+10))
-
-            black = [0,0,0]
-            font = pygame.font.Font(None, 80)
-
-            #you could get rid of these text blits 
-            # and edit the background directly and write on it through paint
-            text = font.render("Quiz Game", True, black)
-            screen.blit(text, [300, 280])
-
-            font = pygame.font.Font(None, 30)
-
-            text = font.render("Click anywhere to start", True, black)
-            screen.blit(text, [300, 350])
+                    '''move to profile screen
+                    if name_rect.collidepoint(event.pos):
+                        active = True'''
+                        
 
             #player name text box
+            '''move to profile screen
             if active:
                 color = color_active
             else:
@@ -156,19 +169,18 @@ def main():
 
             pygame.draw.rect(screen, color, name_rect)
             name_surface = player_name_font.render(player_name, True, (0, 0, 0))
-            screen.blit(name_surface, (name_rect.x+5, name_rect.y+5))
+            screen.blit(name_surface, (name_rect.x+5, name_rect.y+5))'''
 
             #vsync
             pygame.display.flip()
             pygame.display.update()
             mainclock.tick(60)
 
-    #menu_function()
+    menu_function()
     #----------------------------------------------------------------------------
 
-
     #window name, change it later
-    pygame.display.set_caption('Quiz Game')   
+    pygame.display.set_caption('aenigma')
 
     #background, make sure not to mess with the boxes if you change it,
     # or you'll have to redefine x1-y1 etc again
@@ -571,7 +583,7 @@ def main():
 
     def game_over_screen():
         #title
-        pygame.display.set_caption("Game Over")
+        pygame.display.set_caption("aenigma: Game Over")
 
         #music
         end_theme = pygame.mixer.Sound('music/theme/gameover_kata.mp3')
@@ -624,7 +636,7 @@ def main():
 
     def choice_screen():
         #title
-        pygame.display.set_caption("Score")
+        pygame.display.set_caption("aenigma: Choices")
 
         #music
         end_theme = pygame.mixer.Sound('music/theme/matrix_theme.mp3')
@@ -882,7 +894,7 @@ def main():
         score_font2 = pygame.font.SysFont('Arial Rounded MT Bold',60)
 
         #title
-        pygame.display.set_caption("Score Board")
+        pygame.display.set_caption("aenigma: Score Board")
 
         #time
         t = time.localtime()
@@ -1090,16 +1102,4 @@ def main():
 ###########################################################################
 
 while True:
-    global player_name
-
-    menu = pygame_menu.Menu('Quiz Game', 1024, 768,
-    theme = pygame_menu.themes.THEME_BLUE)
-    menu.add.text_input('Name :', default='USER' ,maxchar=5, maxwidth = 5, textinput_id='player_name')
-    data = menu.get_input_data()
-    player_name = data['player_name']
-    player_name = player_name.upper()
-    menu.add.button('Play', main)
-    menu.add.button('Quit', pygame_menu.events.EXIT)
-    menu.mainloop(screen)
-    
-    #main()
+    main()
