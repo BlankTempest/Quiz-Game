@@ -725,7 +725,7 @@ def main():
                 random.shuffle(option_list)
                 temp_k=2
                 for temp_option in option_list:
-                    if temp_option != right_answer and temp_option != answer:
+                    if temp_option != right_answer:
                         option_list.remove(temp_option)
                         temp_k -= 1
                         if temp_k == 0:
