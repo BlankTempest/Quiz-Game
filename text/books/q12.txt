@@ -9,3 +9,4 @@ Hamlet
 Twelfth Night
 The Tempest
 Hamlet
+King Lear

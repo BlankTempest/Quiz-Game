@@ -7,6 +7,7 @@ os.environ['SDL_VIDEO_WINDOW_POS'] = '480,125'
 pygame.init()              
 pygame.font.init()           
 pygame.display.init()
+#for timer and vsync
 mainclock = pygame.time.Clock()
 
 #window creation
@@ -236,7 +237,7 @@ def main():
 
                 
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                #play button
+                #play button click
                     if m_play_blit.collidepoint(event.pos):
                         menu_theme.stop()
                         menu_click.play()
@@ -247,30 +248,30 @@ def main():
                         player_name = player_name.upper()
                         player_text.write(player_name)
                         player_text.close()'''
-
+                #zen button click
                     if m_zen_blit.collidepoint(event.pos):
                         total_questions = 47
                         zen_mode = True
                         menu_theme.stop()
                         menu_click.play()
                         show_menu = False
-
+                #options button click
                     if m_options_blit.collidepoint(event.pos):
                         menu_click.play()
                         pass
-
+                #help button click
                     if m_help_blit.collidepoint(event.pos):
                         menu_click.play()
                         pass
-
+                #profile button click
                     if m_profile_blit.collidepoint(event.pos):
                         menu_click.play()
                         pass
-
+                #category button click
                     if m_category_blit.collidepoint(event.pos):
                         menu_click.play()
                         pass
-
+                #exit button click
                     if m_exit_blit.collidepoint(event.pos):
                         menu_theme.stop()
                         menu_click.play()
@@ -303,7 +304,7 @@ def main():
     menu_function()
     #----------------------------------------------------------------------------
 
-    #window name, change it later
+    #window name
     pygame.display.set_caption('aenigma')
 
     #importing the questions
@@ -313,6 +314,7 @@ def main():
         global question,option_1,option_2,option_3,option_4,right_answer,music_ques
 
         # .strip() gets rid of blank space at the end
+        # add working dir to music questions
         question = questions_file.readline().strip()  
         option_1 = questions_file.readline().strip() 
         option_2 = questions_file.readline().strip() 
@@ -341,6 +343,7 @@ def main():
     l_b = ["text/books/q1.txt","text/books/q2.txt","text/books/q3.txt","text/books/q4.txt","text/books/q5.txt","text/books/q6.txt","text/books/q7.txt"
         ,"text/books/q8.txt","text/books/q9.txt","text/books/q10.txt","text/books/q11.txt","text/books/q12.txt","text/books/q13.txt","text/books/q14.txt","text/books/q15.txt"]
 
+    #shuffle ques
     random.shuffle(l_h)
     random.shuffle(l_m)
     random.shuffle(l_b)
@@ -429,13 +432,14 @@ def main():
             background = pygame.image.load("images/hollow_purple.png").convert()
         background_position = [0,0]
         screen.blit(background,background_position)
-        #slicing
+        #slicing, so it fits the box
         if len(question) > 38:
             question1 = question[:37]
             question2 = question[37:]
 
         open = True
         #we don't need to define these, but they'll come in use eventually
+        # they'll have their day to shine copium
         x1 = 216; x2 = 214; x3 = 595; x4 = 596; x5 = 870
         y1 = 509; y2 = 595; y3 = 505; y4 = 596; y5 = 665
 
@@ -445,7 +449,7 @@ def main():
         random.shuffle(music_list)
         music_name = music_list[0]
         
-        #if music category
+        #if music category ques
         if music_ques.endswith('.mp3'):
             music_theme = pygame.mixer.Sound(music_ques)
             music_theme.play()
@@ -456,8 +460,7 @@ def main():
         
 
         #counters
-        global score,lives,game_over,mod_50_used,answer,ques_ans,total_questions
-        
+        global score,lives,game_over,mod_50_used,answer,ques_ans,total_questions,mod_x2_used
 
         lives_img = pygame.image.load("images/heart.png").convert()
         lives_grey_img = pygame.image.load("images/heart_grey.png").convert()
@@ -467,8 +470,12 @@ def main():
         heavy_hit = pygame.mixer.Sound('music\sfx\Hit Super Effective.mp3')
         #sfx score up
         score_up = pygame.mixer.Sound('music\sfx\sfx_score_up_Level Up!.mp3')
+        #sfx first x2 used
+        medium_hit= pygame.mixer.Sound('music\sfx\HighJumpKick.wav')
         #sfx 50-50 used
         mod_50_used_sfx = pygame.mixer.Sound('music/sfx/50-50-BodySlam.mp3')
+        #change it to something else later
+        mod_x2_used_sfx = pygame.mixer.Sound('music/sfx/50-50-BodySlam.mp3')
 
         #timer
         font_timer = pygame.font.SysFont('Raleway', 76)
@@ -476,10 +483,11 @@ def main():
         frame_rate = 60
         start_time = 8
         
-        #mods
+        #mod images
         mod_50 = pygame.image.load("images/50-50.png").convert()
         mod_50_grey = pygame.image.load("images/50-50-grey.png ").convert()
-        
+        mod_x2 = pygame.image.load("images/x2.png").convert()
+        mod_x2_grey = pygame.image.load("images/x2-grey.png").convert()
 
         #next
         next_c = (255,255,255)
@@ -492,6 +500,7 @@ def main():
         third = True
         timed_out = False
         answer = ''
+        answer2 = ''
         #50-50 functionals
         option_1_visible = True
         option_2_visible = True
@@ -499,10 +508,18 @@ def main():
         option_4_visible = True
         mod_temp = True
         mod_50_being_used = False
+        mod_x2_being_used = False
+        mod_x2_attempts_left = 0
+        question_count = 0
+        answered_option_1 = False
+        answered_option_2 = False
+        answered_option_3 = False
+        answered_option_4 = False
         
-        #50-50 effect
+        #mod 50-50 effect
         tv_screen = pygame.image.load("images/tv_screen.jpg").convert()
         tv_screen_position = [0,0]
+
         while open:
 
             mouse = pygame.mouse.get_pos()
@@ -534,15 +551,20 @@ def main():
             
             score_counter = smallfont.render('Score:'+str(score) , True , color)
             screen.blit(score_counter , (32,18))
-            #screen.blit(lives_counter , (32,56))
 
             next_text = nextfont.render('NEXT' , True , next_c)
 
-            #mods
+            #mods display
+            #50-50
             if mod_50_used == False:
                 mod_50_blit = screen.blit(mod_50, [967, 27])
             else:
                 mod_50_blit = screen.blit(mod_50_grey, [967, 27])
+            #x2
+            if mod_x2_used == False:
+                mod_x2_blit = screen.blit(mod_x2, [967, 77])
+            else:
+                mod_x2_blit = screen.blit(mod_x2_grey, [967, 77])
             
 
             for event in pygame.event.get():
@@ -555,7 +577,7 @@ def main():
                         pygame.quit()
                         exit()
 
-                if question_answered == False:
+                if question_answered == False and question_count <2 :
                     if event.type == pygame.MOUSEBUTTONDOWN: 
                     #mod 50-50
                     #& so that it doesnt repeat for the next question
@@ -566,31 +588,65 @@ def main():
                                 mod_50_used_sfx.play()
                                 screen.blit(tv_screen,tv_screen_position)
                                 pygame.display.update()
+                    #mod x2
+                        if mod_x2_used != True:
+                            if mod_x2_blit.collidepoint(event.pos):
+                                mod_x2_used = True
+                                mod_x2_being_used = True 
+                                mod_x2_attempts_left = 1
+                                mod_x2_used_sfx.play()
+                                #change this to something else later
+                                screen.blit(tv_screen,tv_screen_position)
+                                pygame.display.update()
 
                     #option1
                         if option_1_visible == True:
-                            if 172 <= mouse[0] <= 471 and 494 <= mouse[1] <= 543:
-                                answer = option_1
-                                bulk_exec = True
-                                question_answered = True
+                            if answered_option_1 == False:
+                                if 172 <= mouse[0] <= 471 and 494 <= mouse[1] <= 543:
+                                    answer = option_1
+                                    bulk_exec = True
+                                    answered_option_1 = True
+                                    #so that you can answer again when mod x2 is used
+                                    if mod_x2_attempts_left != 0:
+                                        question_count = 0
+                                    else:
+                                        question_answered = True
                     #option2
                         if option_2_visible == True:
-                            if 170 <= mouse[0] <= 468 and  579<= mouse[1] <= 630:
-                                answer = option_2
-                                bulk_exec = True
-                                question_answered = True
+                            if answered_option_2 == False:
+                                if 170 <= mouse[0] <= 468 and  579<= mouse[1] <= 630:
+                                    answer = option_2
+                                    bulk_exec = True
+                                    answered_option_2 = True
+                                    #so that you can answer again when mod x2 is used
+                                    if mod_x2_attempts_left != 0:
+                                        question_count = 0
+                                    else:
+                                        question_answered = True
                     #option3
                         if option_3_visible == True:
-                            if 545 <= mouse[0] <= 844 and 493 <= mouse[1] <= 540:
-                                answer = option_3
-                                bulk_exec = True
-                                question_answered = True
+                            if answered_option_3 == False:
+                                if 545 <= mouse[0] <= 844 and 493 <= mouse[1] <= 540:
+                                    answer = option_3
+                                    bulk_exec = True
+                                    answered_option_3 = True
+                                    #so that you can answer again when mod x2 is used
+                                    if mod_x2_attempts_left != 0:
+                                        question_count = 0
+                                    else:
+                                        question_answered = True
                     #option4
                         if option_4_visible == True:
-                            if 544 <= mouse[0] <= 842 and 581 <= mouse[1] <= 632:
-                                answer = option_4
-                                bulk_exec = True
-                                question_answered = True
+                            if answered_option_4 == False:
+                                if 544 <= mouse[0] <= 842 and 581 <= mouse[1] <= 632:
+                                    answer = option_4
+                                    bulk_exec = True
+                                    answered_option_4 = True
+                                    #so that you can answer again when mod x2 is used
+                                    if mod_x2_attempts_left != 0:
+                                        question_count = 0
+                                    else:
+                                        question_answered = True
                     
                 #next button
                 if question_answered == True:
@@ -605,23 +661,36 @@ def main():
             #counters
             if bulk_exec == True:
                 if answer == right_answer:
+                    question_answered = True
+                    question_count += 2
+                    mod_x2_attempts_left = 0 # cant use x2 mod to answer again
                     score += 1
                     score_up.play()  
                     #last question
                     if question_no == total_questions:
                         game_over = False
-
                 else:
-                    lives -= 1
-                    question_answered = True
-                    if lives == 0:
-                        heavy_hit.play()
+                    #first time using x2 mod
+                    if mod_x2_attempts_left != 1:
+                        lives -= 1
+                        question_count += 1
+                        question_answered = True
+                        if lives == 0:
+                            heavy_hit.play()
+                        else:
+                            normal_hit.play()
+                        #last question, so that it doesnt show game over screen
+                        if question_no == total_questions:
+                            game_over = False
                     else:
-                        normal_hit.play()
-                    #last question
-                    if question_no == total_questions:
-                        game_over = False
-                ques_ans += 1
+                        medium_hit.play()
+                        answer2 = answer #temp answer so we can blip it red for x2 mod
+
+                if mod_x2_attempts_left != 1:
+                    ques_ans += 1
+
+                #cant attempt to answer with x2 anymore
+                mod_x2_attempts_left = 0
                 bulk_exec = False
 
 
@@ -646,10 +715,10 @@ def main():
             text_timer = font_timer.render(output_string, True, 'white')
             screen.blit(text_timer, [x6+25, y6+15])
 
-            if question_answered != True and mod_50_being_used == False:
+            #freeze timer when mods are used
+            if question_answered != True and mod_50_being_used == False and mod_x2_being_used == False:
                 frame_count += 1
 
-            
             #mod 50-50 display check, mod_temp to make it run once
             if mod_50_used == True and mod_temp == True and mod_50_being_used == True:
                 option_list = [option_1,option_2,option_3,option_4]
@@ -672,16 +741,17 @@ def main():
                     option_4_visible = False
 
                 
-            #display red/green
+            #display red/green when question is answered
             color_white = 'white'
             color_green = 'green'
             color_red = 'red'
             
-
-            
+            #split the question is length is too big
             if len(question) > 38:
                 question_display1= smallfont.render(question1 , True, color_white)
                 question_display2= smallfont.render(question2 , True, color_white)
+            
+            #we first render the options in white
             question_display= smallfont.render(question , True, color_white)
             option_1_display= smallfont.render(option_1 , True, color_white)
             option_2_display= smallfont.render(option_2 , True, color_white)
@@ -689,22 +759,26 @@ def main():
             option_4_display= smallfont.render(option_4 , True, color_white)
 
             #optimize
-            if question_answered == True:
-                if answer == option_1:
-                    option_1_display= smallfont.render(option_1 , True, color_red) 
-                elif answer == option_2:
+            if question_answered == True :
+                #when you answer, the answer is turned red
+                if answer == option_1 :
+                    option_1_display= smallfont.render(option_1 , True, color_red)
+                elif answer == option_2 :
                     option_2_display= smallfont.render(option_2 , True, color_red)
-                elif answer == option_3:
-                    option_3_display= smallfont.render(option_3 , True, color_red) 
-                elif answer == option_4:
-                    option_4_display= smallfont.render(option_4 , True, color_red) 
-
+                elif answer == option_3 :
+                    option_3_display= smallfont.render(option_3 , True, color_red)
+                elif answer == option_4 :
+                    option_4_display= smallfont.render(option_4 , True, color_red)
+                
+                #if you time out, all options turn red
                 if timed_out == True:
                     option_1_display= smallfont.render(option_1 , True, color_red)
                     option_2_display= smallfont.render(option_2 , True, color_red)
                     option_3_display= smallfont.render(option_3 , True, color_red)
                     option_4_display= smallfont.render(option_4 , True, color_red)
-
+                
+                #then right answer is turned green
+                # so if answer is also right answer, it'll turn green from red
                 if option_1 == right_answer:
                     option_1_display= smallfont.render(option_1 , True, color_green)   
                 elif option_2 == right_answer:         
@@ -714,11 +788,25 @@ def main():
                 elif option_4 == right_answer:       
                     option_4_display= smallfont.render(option_4 , True, color_green) 
             
+            #we blit the question into the bigger box
             if len(question) >38:
                 screen.blit(question_display1, (217,292))
                 screen.blit(question_display2, (208,337))
             else:
-                screen.blit(question_display, (219,370))
+                screen.blit(question_display, (219,370))            
+            
+            #answer 2(first selected wrong answer in this case) 
+            # will be blipped red if its used with x2 mod
+            if answer2 == option_1 and answer2 != right_answer :
+                option_1_display= smallfont.render(option_1 , True, color_red)
+            elif answer2 == option_2 and answer2 != right_answer :
+                option_2_display= smallfont.render(option_2 , True, color_red)
+            elif answer2 == option_3 and answer2 != right_answer :
+                option_3_display= smallfont.render(option_3 , True, color_red)
+            elif answer2 == option_4 and answer2 != right_answer :
+                option_4_display= smallfont.render(option_4 , True, color_red)
+
+            #this is to hide 2 options when mod 50-50 is used
             if option_1_visible == True:
                 screen.blit(option_1_display, (x1,y1))
             if option_2_visible == True:
@@ -728,7 +816,8 @@ def main():
             if option_4_visible == True:
                 screen.blit(option_4_display, (x4,y4))
 
-            #next button
+            #NEXT button
+            #change the color, it looks off
             
             if x5 <= mouse[0] <= x5+140 and y5 <= mouse[1] <= y5+40:
                 pygame.draw.rect(screen,'purple',[x5,y5,140,40])   
@@ -749,9 +838,10 @@ def main():
             pygame.display.flip()
             #framerate limiter/vsync
             mainclock.tick(60)
-
-    global mod_50_used
+    
+    global mod_50_used, mod_x2_used
     mod_50_used = False
+    mod_x2_used = False
     for question_no in range(1,total_questions+1):
         if game_over != True:
             question_screen()
@@ -765,7 +855,7 @@ def main():
 
     #--------------------------GAME OVER-----------------------------------
 
-    '''Add a score board after this screen
+    '''Turn this into a "You lost all your lives, or seems like that's the farthest you'll get screen"
     You only see this screen if you lost all lives'''
 
     def game_over_screen():
@@ -791,7 +881,6 @@ def main():
         done = False
         end_screen = True
         
-
         while not done and end_screen:
 
             #exit loop
@@ -812,7 +901,6 @@ def main():
             mainclock.tick(60)   
             pygame.display.flip()
             pygame.display.update()
-
 
     if game_over == True:
         game_over_screen()
@@ -837,7 +925,8 @@ def main():
         global choice_percentage,ques_ans
         page = 1
 
-        #file
+        #we get the answers and options from the file which has been added into a separate list
+        # then count the occurance of the option selected, not the right answer picked by everyone
         def value_finder(fname3):
             global question,answer
             saved_text = open(fname3, 'r')
@@ -1033,7 +1122,7 @@ def main():
                     stopper(9,46)
                     stopper(10,51)
 
-                    #so that screen refreshes
+                    #use bg so that screen refreshes
                     screen.blit(pbackground,pbackground_position)
                     page+=1
                     
@@ -1243,7 +1332,7 @@ def main():
             else:
                 pygame.draw.rect(screen,swamp_green,[x3,y,140,40])
             
-
+            #blit text over the buttons
             screen.blit(sort_text , (40,700))
             screen.blit(quit_text , (x+40,y+10))
             screen.blit(menu_text , (x1+40,y+10))
