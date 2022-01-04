@@ -7,27 +7,37 @@ os.environ['SDL_VIDEO_WINDOW_POS'] = '480,125'
 pygame.init()              
 pygame.font.init()           
 pygame.display.init()
+pygame.mixer.pre_init(44100, -16, 2, 10)
 #for timer and vsync
 mainclock = pygame.time.Clock()
 
 #window creation
 size = [1024, 768]
+
 #for borderless option
-screen = pygame.display.set_mode(size, pygame.NOFRAME)
+resize_file = open('text\options/resizable.txt', 'r')
+m_resize = int(resize_file.readline().strip())
 
-#for fullscreen option
-#pygame.display.toggle_fullscreen()
-#screen = pygame.display.set_mode(size, pygame.FULLSCREEN)
-#for windowed option,
-# needs restart
-#screen = pygame.display.set_mode(size)
-
+if m_resize == 0:
+    screen = pygame.display.set_mode(size, pygame.NOFRAME)
+elif m_resize == 1:
+    screen = pygame.display.set_mode(size)
 
 #window icon, change it later
 # make sure icon res is smol
 image_icon = pygame.image.load('images\icon.jpg')
 pygame.display.set_icon(image_icon)
 
+#options menu saves
+global m_fullscreen, m_sound, m_showfps
+options_file = open('text\options\options.txt', 'r')
+m_fullscreen = int(options_file.readline().strip())
+m_sound = int(options_file.readline().strip())
+m_showfps = int(options_file.readline().strip())
+options_file.close()
+
+if m_fullscreen == 1:
+    pygame.display.toggle_fullscreen()
 
 
 #--------------------------------------------------------------------
@@ -51,6 +61,11 @@ def main():
     ques_ans = 0
     total_questions = 15
     zen_mode = False
+
+    #settings prot
+    pygame.mixer.music.set_volume(1)
+    #pygame.mixer.music.get_volume()
+
     #---------------------------------menu--------------------------------------
 
     def menu_function():
@@ -58,20 +73,21 @@ def main():
         #title
         pygame.display.set_caption("aenigma: Menu Screen")
 
-        #player name
-        #####################move to profile screen##########################
+        #player name + profile submenu
         global player_name,total_questions,zen_mode
+        #options menu vars
+        global m_fullscreen, m_sound, m_showfps
         
         player_text = open('text\scoreboard\player_name.txt', 'r')
         player_name = player_text.read(5)
         player_text.close()
-        '''player_name_font = pygame.font.Font(None, 40)
-        name_rect = pygame.Rect(320, 387, 175, 32)
-        color_active = pygame.Color('azure2')
-        color_inactive = pygame.Color('azure3')
+        player_name_font = pygame.font.Font(None, 32)
+        name_rect = pygame.Rect(384, 452, 105, 32)
+        color_active = pygame.Color(170,170,170)
+        color_inactive = pygame.Color(190,190,190)
         color = color_inactive
-        active = False'''
-        #####################################################################
+        active = False
+
         done = False
         show_menu = True
 
@@ -113,11 +129,24 @@ def main():
         m_help_w = pygame.image.load("images/menu_help_w.png").convert()
         m_profile_w = pygame.image.load("images/menu_profile_w.png").convert()
         m_category_w = pygame.image.load("images/menu_category_w.png").convert()
-        m_exit_w = pygame.image.load("images/menu_exit_w.png").convert()
+        m_exit_w = pygame.image.load("images/menu_exit_w.png").convert()        
+
+        #menu checks/ticks
+        check_ticked = pygame.image.load("images/check_tick.png").convert()
+        check_unticked = pygame.image.load("images/check_untick.png").convert()
+
+        #show menus
+        show_profile = False
+        show_category = False
+        show_help = False
+        show_options = False
+        show_options2 = False
+        fullscreen_changed = False
 
         #top bar
         top_text_font = pygame.font.SysFont('Arial', 18)
         top_text_color = (35,35,35)
+
         
         #menu loop
         while not done and  show_menu:
@@ -128,6 +157,14 @@ def main():
             
             #assign these first since we collidepoint underneath
             screen.blit(mbackground,mbackground_position)
+            
+            #fps init
+            if m_showfps == 1:
+                fps = mainclock.get_fps()
+                fps = round(fps, 2)
+                fps_font = pygame.font.Font(None, 18)
+                fps_text = fps_font.render(str(fps) , True , (0,255,0))
+                screen.blit(fps_text,(0,0))
 
             #play
             if x <= mouse[0] <= x+134 and 214 <= mouse[1] <= 214+34:
@@ -217,6 +254,25 @@ def main():
             top_text = top_text_font.render(top_text_str , True , top_text_color)
             screen.blit(top_text, [94, 66])
 
+            #checkbox render
+            if show_options2:
+                    if m_fullscreen == 1:
+                        fullscreen_check = screen.blit(check_ticked,(427,305))
+                    else: 
+                        fullscreen_check = screen.blit(check_unticked,(427,305))
+                    if m_sound == 1:
+                        sound_check = screen.blit(check_ticked,(427,340))
+                    else: 
+                        sound_check = screen.blit(check_unticked,(427,340))
+                    if m_showfps == 1:
+                        fps_check = screen.blit(check_ticked,(427,375))
+                    else:
+                        fps_check = screen.blit(check_unticked,(427,375))
+
+            if fullscreen_changed == True: 
+                    pygame.display.toggle_fullscreen()
+                    fullscreen_changed = False
+                
 
             #exit loop
             for event in pygame.event.get():
@@ -229,25 +285,77 @@ def main():
                         pygame.quit()
                         exit()
 
-                    '''move to profile screen
-                    if event.key == pygame.K_BACKSPACE:
-                        player_name = player_name[:-1]
-                    elif len(player_name) < 5:
-                        player_name += event.unicode #forms string'''
-
+                    #text box for player name
+                    if active == True:
+                        if event.key == pygame.K_BACKSPACE:
+                            player_name = player_name[:-1]
+                        elif len(player_name) < 5:
+                            player_name += event.unicode
+    
                 
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    #player name savefile
+                    active = False
+                    player_text = open('text\scoreboard\player_name.txt', 'w')
+                    player_name = player_name.upper()
+                    player_text.write(player_name)
+                    player_text.close()
+                    #activate textbox
+                    if name_rect.collidepoint(event.pos):
+                        active = True
+
+                    if show_options2:
+                        if fullscreen_check.collidepoint(event.pos):
+                            if m_fullscreen == 0:
+                                m_fullscreen = 1
+                            elif m_fullscreen == 1:
+                                m_fullscreen = 0
+
+                            options_file = open('text\options\options.txt', 'w')
+                            options_file.write (str(m_fullscreen) + '\n')
+                            options_file.write (str(m_sound) + '\n')
+                            options_file.write (str(m_showfps) + '\n')
+                            options_file.close()
+                            fullscreen_changed = True
+                    if show_options2:
+                        if fps_check.collidepoint(event.pos):
+                            if m_showfps == 0:
+                                m_showfps = 1
+                            elif m_showfps == 1:
+                                m_showfps = 0
+
+                            options_file = open('text\options\options.txt', 'w')
+                            options_file.write (str(m_fullscreen) + '\n')
+                            options_file.write (str(m_sound) + '\n')
+                            options_file.write (str(m_showfps) + '\n')
+                            options_file.close()
+                        
+
+                #close the pop up window
+                    if show_profile == True:
+                        if (280 <= mouse[0] <= 662 and 390 <= mouse[1] <= 530) == False:
+                            mbackground = pygame.image.load("images/naissancee4.png").convert()
+                            show_profile = False
+                    if show_help == True:
+                        if (278 <= mouse[0] <= 885 and 123 <= mouse[1] <= 642) == False:
+                            mbackground = pygame.image.load("images/naissancee4.png").convert()
+                            show_help = False
+                    if show_options == True:
+                        if (286 <= mouse[0] <= 737 and 246 <= mouse[1] <= 414) == False:
+                            mbackground = pygame.image.load("images/naissancee4.png").convert()
+                            show_options = False
+                            show_options2 = False
+                    if show_category == True:
+                        if (278 <= mouse[0] <= 885 and 123 <= mouse[1] <= 642) == False:
+                            mbackground = pygame.image.load("images/naissancee4.png").convert()
+                            show_category = False
+
                 #play button click
                     if m_play_blit.collidepoint(event.pos):
                         menu_theme.stop()
                         menu_click.play()
                         show_menu = False
-                        '''move to profile screen
-                        active = False
-                        player_text = open('text\scoreboard\player_name.txt', 'w')
-                        player_name = player_name.upper()
-                        player_text.write(player_name)
-                        player_text.close()'''
+
                 #zen button click
                     if m_zen_blit.collidepoint(event.pos):
                         total_questions = 47
@@ -255,22 +363,32 @@ def main():
                         menu_theme.stop()
                         menu_click.play()
                         show_menu = False
+
                 #options button click
                     if m_options_blit.collidepoint(event.pos):
                         menu_click.play()
-                        pass
+                        mbackground = pygame.image.load("images/naissancee4_options.png").convert()
+                        show_options = True
+                        show_options2 = True
+
                 #help button click
                     if m_help_blit.collidepoint(event.pos):
                         menu_click.play()
-                        pass
+                        mbackground = pygame.image.load("images/naissancee4_help.png").convert()
+                        show_help = True
+
                 #profile button click
                     if m_profile_blit.collidepoint(event.pos):
                         menu_click.play()
-                        pass
+                        mbackground = pygame.image.load("images/naissancee4_profile.png").convert()
+                        show_profile = True
+
                 #category button click
                     if m_category_blit.collidepoint(event.pos):
                         menu_click.play()
-                        pass
+                        mbackground = pygame.image.load("images/naissancee4_category.png").convert()
+                        show_category = True
+
                 #exit button click
                     if m_exit_blit.collidepoint(event.pos):
                         menu_theme.stop()
@@ -278,23 +396,16 @@ def main():
                         pygame.quit()
                         exit()
                         
+                    
+            if show_profile:
+                if active:
+                    color = color_active
+                else:
+                    color = color_inactive
 
-
-                    '''move to profile screen
-                    if name_rect.collidepoint(event.pos):
-                        active = True'''
-                        
-
-            #player name text box
-            '''move to profile screen
-            if active:
-                color = color_active
-            else:
-                color = color_inactive
-
-            pygame.draw.rect(screen, color, name_rect)
-            name_surface = player_name_font.render(player_name, True, (0, 0, 0))
-            screen.blit(name_surface, (name_rect.x+5, name_rect.y+5))'''
+                pygame.draw.rect(screen, color, name_rect)
+                name_surface = player_name_font.render(player_name, True, (35,35,35))
+                screen.blit(name_surface, (name_rect.x+5, name_rect.y+5))
 
             #vsync
             pygame.display.flip()
@@ -528,6 +639,14 @@ def main():
             # gets rid of previous text, hence the background again
             screen.blit(background,background_position)
 
+            #fps init
+            if m_showfps == 1:
+                fps = mainclock.get_fps()
+                fps = round(fps, 2)
+                fps_font = pygame.font.Font(None, 18)
+                fps_text = fps_font.render(str(fps) , True , (0,255,0))
+                screen.blit(fps_text,(0,0))
+
             #counters
             #lives_counter = smallfont.render(str(lives) , True , color)
 
@@ -657,6 +776,9 @@ def main():
                                     
                             open = False
                             music_theme.stop()
+                            score_up.stop()
+                            heavy_hit.stop()
+                            normal_hit.stop()
 
             #counters
             if bulk_exec == True:
@@ -877,6 +999,14 @@ def main():
         ebackground_position = [0,0]
         screen.blit(ebackground,ebackground_position)
 
+        #fps init
+        if m_showfps == 1:
+            fps = mainclock.get_fps()
+            fps = round(fps, 2)
+            fps_font = pygame.font.Font(None, 18)
+            fps_text = fps_font.render(str(fps) , True , (0,255,0))
+            screen.blit(fps_text,(0,0))
+
         #game over loop
         done = False
         end_screen = True
@@ -920,7 +1050,7 @@ def main():
         #background
         pbackground = pygame.image.load("images\choices.jpg").convert()
         pbackground_position = [0,0]
-        screen.blit(pbackground,pbackground_position)
+        screen.blit(pbackground,pbackground_position) #stop here
 
         global choice_percentage,ques_ans
         page = 1
@@ -998,7 +1128,6 @@ def main():
                 screen.blit(question_text, [106, 201])
                 screen.blit(answer_text, [110, 171])
                 screen.blit(perc_text, [645, 162])
-                pygame.display.flip()
 
         #second slot
         def second_slot(fname4):
@@ -1012,7 +1141,6 @@ def main():
                 screen.blit(question_text, [106, 293])
                 screen.blit(answer_text, [110, 259])
                 screen.blit(perc_text, [645, 255])
-                pygame.display.flip()
 
         #third slot
         def third_slot(fname4):
@@ -1026,7 +1154,6 @@ def main():
                 screen.blit(question_text, [106, 385])
                 screen.blit(answer_text, [110, 351])
                 screen.blit(perc_text, [645, 350])
-                pygame.display.flip()
 
         #in case you lose after 3 fail attempts
         #fourth slot
@@ -1041,7 +1168,6 @@ def main():
                 screen.blit(question_text, [106, 474])
                 screen.blit(answer_text, [110, 442])
                 screen.blit(perc_text, [645, 439])
-                pygame.display.flip()
 
         #fifth slot
         def fifth_slot(fname4):
@@ -1055,7 +1181,6 @@ def main():
                 screen.blit(question_text, [106, 569])
                 screen.blit(answer_text, [110, 534])
                 screen.blit(perc_text, [645, 530])
-                pygame.display.flip()
         
 
         continue_text = question_font.render('CLICK TO CONTINUE' , True , 'azure3')
@@ -1067,7 +1192,17 @@ def main():
         while not doing and choice_screen:
             #blit here so that screen refreshes
             
+            screen.blit(pbackground,pbackground_position)
+
             screen.blit(continue_text, [368, 685])
+
+            #fps init
+            if m_showfps == 1:
+                fps = mainclock.get_fps()
+                fps = round(fps, 2)
+                fps_font = pygame.font.Font(None, 18)
+                fps_text = fps_font.render(str(fps) , True , (0,255,0))
+                screen.blit(fps_text,(0,0))
 
             #get values from the chosen question for the slot
             def pager(n,x):
@@ -1280,20 +1415,6 @@ def main():
         #background
         sbackground = pygame.image.load("images\hotline_miami3.jpg").convert()
         sbackground_position = [0,0]
-        screen.blit(sbackground,sbackground_position)
-
-        #display scores
-        screen.blit(score_display_top , (40,58))
-        screen.blit(score_display_1 , (40,145))
-        screen.blit(score_display_2 , (40,221))
-        screen.blit(score_display_3 , (40,294))
-        screen.blit(score_display_4 , (40,370))
-        screen.blit(score_display_5 , (40,446))
-        screen.blit(score_display_6 , (40,519))
-        screen.blit(score_display_7 , (40,596))
-
-        pygame.display.flip()
-        pygame.display.update()
 
         x=870
         y=710
@@ -1306,7 +1427,27 @@ def main():
         
 
         while not done and  show_score:
+            
+            screen.blit(sbackground,sbackground_position)
 
+            #display scores
+            screen.blit(score_display_top , (40,58))
+            screen.blit(score_display_1 , (40,145))
+            screen.blit(score_display_2 , (40,221))
+            screen.blit(score_display_3 , (40,294))
+            screen.blit(score_display_4 , (40,370))
+            screen.blit(score_display_5 , (40,446))
+            screen.blit(score_display_6 , (40,519))
+            screen.blit(score_display_7 , (40,596))
+            #fps init
+            if m_showfps == 1:
+                fps = mainclock.get_fps()
+                fps = round(fps, 2)
+                fps_font = pygame.font.Font(None, 18)
+                fps_text = fps_font.render(str(fps) , True , (0,255,0))
+                screen.blit(fps_text,(0,0))
+
+            
             mouse = pygame.mouse.get_pos()
             #quit button
             if x <= mouse[0] <= x+140 and y <= mouse[1] <= y+40:

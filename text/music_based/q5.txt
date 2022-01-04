@@ -24,3 +24,6 @@ Gospel
 Gospel
 Country
 Folk
+Gospel
+Gospel
+Jazz

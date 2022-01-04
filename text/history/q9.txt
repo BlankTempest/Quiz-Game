@@ -8,3 +8,6 @@ Diogenes
 Diogenes
 Socrates
 Diogenes
+Diogenes
+Socrates
+Plato
