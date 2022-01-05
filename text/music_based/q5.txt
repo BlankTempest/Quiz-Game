@@ -27,3 +27,5 @@ Folk
 Gospel
 Gospel
 Jazz
+Gospel
+Folk

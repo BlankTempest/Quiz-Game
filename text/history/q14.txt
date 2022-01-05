@@ -12,3 +12,5 @@ Neil Armstrong
 Buzz Aldrin
 Neil Armstrong
 Buzz Aldrin
+Yuri Gagarin
+Buzz Aldrin

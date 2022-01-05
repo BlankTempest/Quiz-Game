@@ -62,10 +62,6 @@ def main():
     total_questions = 15
     zen_mode = False
 
-    #settings prot
-    pygame.mixer.music.set_volume(1)
-    #pygame.mixer.music.get_volume()
-
     #---------------------------------menu--------------------------------------
 
     def menu_function():
@@ -98,7 +94,9 @@ def main():
         #music
         menu_theme = pygame.mixer.Sound('music/theme/Pauline Oliveiros  A Woman Sees How the World Goes with No Eyes.mp3')
         menu_theme.play(-1)            #-1 loops music indefinitely
-
+        if m_sound == 1:
+            menu_theme.set_volume(1)
+            
         #sfx
         menu_rollover = pygame.mixer.Sound('music/sfx/menu rollover.mp3')
         menu_click = pygame.mixer.Sound('music/sfx/Menu-click.mp3')
@@ -165,14 +163,15 @@ def main():
                 fps_font = pygame.font.Font(None, 18)
                 fps_text = fps_font.render(str(fps) , True , (0,255,0))
                 screen.blit(fps_text,(0,0))
-
+            
             #play
             if x <= mouse[0] <= x+134 and 214 <= mouse[1] <= 214+34:
                 m_play_blit = screen.blit(m_play_w ,(x,214))
                 top_text_str = 'Start a new game.'
                 #play sfx
                 if sfx_play_1 == True:
-                    menu_rollover.play()
+                    if m_sound == 1:
+                        menu_rollover.play()
                     sfx_play_1 = False 
             else:
                 sfx_play_1 = True
@@ -184,7 +183,8 @@ def main():
                 top_text_str = 'Go up against the maximum number of questions.'
                 #play sfx
                 if sfx_play_2 == True:
-                    menu_rollover.play()
+                    if m_sound == 1:
+                        menu_rollover.play()
                     sfx_play_2 = False 
             else:
                 sfx_play_2 = True
@@ -196,7 +196,8 @@ def main():
                 top_text_str = 'Change graphic options.'
                 #play sfx
                 if sfx_play_3 == True:
-                    menu_rollover.play()
+                    if m_sound == 1:
+                        menu_rollover.play()
                     sfx_play_3 = False 
             else:
                 sfx_play_3 = True
@@ -208,7 +209,8 @@ def main():
                 top_text_str = 'Look at how the game mechanics work.'
                 #play sfx
                 if sfx_play_4 == True:
-                    menu_rollover.play()
+                    if m_sound == 1:
+                        menu_rollover.play()
                     sfx_play_4 = False 
             else:
                 sfx_play_4 = True
@@ -220,7 +222,8 @@ def main():
                 top_text_str = 'Change you allias.'
                 #play sfx
                 if sfx_play_5 == True:
-                    menu_rollover.play()
+                    if m_sound == 1:
+                        menu_rollover.play()
                     sfx_play_5 = False 
             else:
                 sfx_play_5 = True
@@ -232,7 +235,8 @@ def main():
                 top_text_str = 'Choose what categories to answer from.'
                 #play sfx
                 if sfx_play_6 == True:
-                    menu_rollover.play()
+                    if m_sound == 1:
+                        menu_rollover.play()
                     sfx_play_6 = False 
             else:
                 sfx_play_6 = True
@@ -244,7 +248,8 @@ def main():
                 m_exit_blit = screen.blit(m_exit_w , (x,605))
                 #play sfx
                 if sfx_play_7 == True:
-                    menu_rollover.play()
+                    if m_sound == 1:
+                        menu_rollover.play()
                     sfx_play_7 = False 
             else:
                 sfx_play_7 = True
@@ -304,8 +309,12 @@ def main():
                     if name_rect.collidepoint(event.pos):
                         active = True
 
+                    #within options
+                    #fullscreen check
                     if show_options2:
                         if fullscreen_check.collidepoint(event.pos):
+                            if m_sound == 1:
+                                menu_click.play()
                             if m_fullscreen == 0:
                                 m_fullscreen = 1
                             elif m_fullscreen == 1:
@@ -317,12 +326,25 @@ def main():
                             options_file.write (str(m_showfps) + '\n')
                             options_file.close()
                             fullscreen_changed = True
+                    #fps check
                     if show_options2:
                         if fps_check.collidepoint(event.pos):
+                            if m_sound == 1:
+                                menu_click.play()
                             if m_showfps == 0:
                                 m_showfps = 1
                             elif m_showfps == 1:
                                 m_showfps = 0
+                    #sound check
+                    if show_options2:
+                        if sound_check.collidepoint(event.pos):
+                            menu_click.play()
+                            if m_sound == 0:
+                                m_sound = 1
+                                menu_theme.set_volume(1)
+                            elif m_sound == 1:
+                                m_sound = 0
+                                menu_theme.set_volume(0)
 
                             options_file = open('text\options\options.txt', 'w')
                             options_file.write (str(m_fullscreen) + '\n')
@@ -353,7 +375,8 @@ def main():
                 #play button click
                     if m_play_blit.collidepoint(event.pos):
                         menu_theme.stop()
-                        menu_click.play()
+                        if m_sound == 1:
+                            menu_click.play()
                         show_menu = False
 
                 #zen button click
@@ -361,38 +384,44 @@ def main():
                         total_questions = 47
                         zen_mode = True
                         menu_theme.stop()
-                        menu_click.play()
+                        if m_sound == 1:
+                            menu_click.play()
                         show_menu = False
 
                 #options button click
                     if m_options_blit.collidepoint(event.pos):
-                        menu_click.play()
+                        if m_sound == 1:
+                            menu_click.play()
                         mbackground = pygame.image.load("images/naissancee4_options.png").convert()
                         show_options = True
                         show_options2 = True
 
                 #help button click
                     if m_help_blit.collidepoint(event.pos):
-                        menu_click.play()
+                        if m_sound == 1:
+                            menu_click.play()
                         mbackground = pygame.image.load("images/naissancee4_help.png").convert()
                         show_help = True
 
                 #profile button click
                     if m_profile_blit.collidepoint(event.pos):
-                        menu_click.play()
+                        if m_sound == 1:
+                            menu_click.play()
                         mbackground = pygame.image.load("images/naissancee4_profile.png").convert()
                         show_profile = True
 
                 #category button click
                     if m_category_blit.collidepoint(event.pos):
-                        menu_click.play()
+                        if m_sound == 1:
+                            menu_click.play()
                         mbackground = pygame.image.load("images/naissancee4_category.png").convert()
                         show_category = True
 
                 #exit button click
                     if m_exit_blit.collidepoint(event.pos):
                         menu_theme.stop()
-                        menu_click.play()
+                        if m_sound == 1:
+                            menu_click.play()
                         pygame.quit()
                         exit()
                         
@@ -563,10 +592,12 @@ def main():
         #if music category ques
         if music_ques.endswith('.mp3'):
             music_theme = pygame.mixer.Sound(music_ques)
-            music_theme.play()
+            if m_sound == 1:
+                music_theme.play()
         else:
             music_theme = pygame.mixer.Sound(music_name)
-            music_theme.play(-1)
+            if m_sound == 1:
+                music_theme.play(-1)
 
         
 
@@ -704,7 +735,8 @@ def main():
                             if mod_50_blit.collidepoint(event.pos):
                                 mod_50_used = True
                                 mod_50_being_used = True 
-                                mod_50_used_sfx.play()
+                                if m_sound == 1:
+                                    mod_50_used_sfx.play()
                                 screen.blit(tv_screen,tv_screen_position)
                                 pygame.display.update()
                     #mod x2
@@ -713,7 +745,8 @@ def main():
                                 mod_x2_used = True
                                 mod_x2_being_used = True 
                                 mod_x2_attempts_left = 1
-                                mod_x2_used_sfx.play()
+                                if m_sound == 1:
+                                    mod_x2_used_sfx.play()
                                 #change this to something else later
                                 screen.blit(tv_screen,tv_screen_position)
                                 pygame.display.update()
@@ -787,7 +820,8 @@ def main():
                     question_count += 2
                     mod_x2_attempts_left = 0 # cant use x2 mod to answer again
                     score += 1
-                    score_up.play()  
+                    if m_sound == 1:
+                        score_up.play()  
                     #last question
                     if question_no == total_questions:
                         game_over = False
@@ -798,14 +832,17 @@ def main():
                         question_count += 1
                         question_answered = True
                         if lives == 0:
-                            heavy_hit.play()
+                            if m_sound == 1:
+                                heavy_hit.play()
                         else:
-                            normal_hit.play()
+                            if m_sound == 1:
+                                normal_hit.play()
                         #last question, so that it doesnt show game over screen
                         if question_no == total_questions:
                             game_over = False
                     else:
-                        medium_hit.play()
+                        if m_sound == 1:
+                            medium_hit.play()
                         answer2 = answer #temp answer so we can blip it red for x2 mod
 
                 if mod_x2_attempts_left != 1:
@@ -986,7 +1023,8 @@ def main():
 
         #music
         end_theme = pygame.mixer.Sound('music/theme/gameover_kata.mp3')
-        end_theme.play(-1)
+        if m_sound == 1:
+            end_theme.play(-1)
 
         #background
         background_select = random.randint(1,2)
@@ -997,15 +1035,9 @@ def main():
             ebackground = pygame.image.load("images\game_over2.png").convert()
 
         ebackground_position = [0,0]
-        screen.blit(ebackground,ebackground_position)
+        
 
-        #fps init
-        if m_showfps == 1:
-            fps = mainclock.get_fps()
-            fps = round(fps, 2)
-            fps_font = pygame.font.Font(None, 18)
-            fps_text = fps_font.render(str(fps) , True , (0,255,0))
-            screen.blit(fps_text,(0,0))
+        
 
         #game over loop
         done = False
@@ -1013,6 +1045,15 @@ def main():
         
         while not done and end_screen:
 
+            screen.blit(ebackground,ebackground_position)
+
+            #fps init
+            if m_showfps == 1:
+                fps = mainclock.get_fps()
+                fps = round(fps, 2)
+                fps_font = pygame.font.Font(None, 18)
+                fps_text = fps_font.render(str(fps) , True , (0,255,0))
+                screen.blit(fps_text,(0,0))
             #exit loop
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -1045,7 +1086,8 @@ def main():
 
         #music
         end_theme = pygame.mixer.Sound('music/theme/matrix_theme.mp3')
-        end_theme.play(-1)
+        if m_sound == 1:
+            end_theme.play(-1)
 
         #background
         pbackground = pygame.image.load("images\choices.jpg").convert()
@@ -1257,9 +1299,12 @@ def main():
                     stopper(9,46)
                     stopper(10,51)
 
-                    #use bg so that screen refreshes
-                    screen.blit(pbackground,pbackground_position)
-                    page+=1
+                    #so that it doesnt show bg for the small
+                    #split second before it swaps to the score board
+                    if doing == False:
+                        #use bg so that screen refreshes
+                        screen.blit(pbackground,pbackground_position)
+                        page+=1
                     
 
             #vsync
@@ -1301,8 +1346,6 @@ def main():
 
         #highest button
         score_text = smallfont.render('SCORE' , True , yellow)
-
-
 
         #replace font with the one from hotline miami
         score_font2 = pygame.font.SysFont('Arial Rounded MT Bold',60)
@@ -1505,6 +1548,7 @@ def main():
                             show_score_menu = False
                             show_highscore_menu = False
                             done = True
+                            score_theme.stop()
                             return
                 #recent score button
                         if x2 <= mouse[0] <= x2+140 and y <= mouse[1] <= y+40:
@@ -1515,7 +1559,12 @@ def main():
                             show_highscore_menu = True
                             return
 
-
+    #music
+    global score_theme
+    score_theme = pygame.mixer.Sound('music/theme/yt1s.com - MOON  Crystals Hotline Miami Soundtrack.mp3')
+    if m_sound == 1:
+        score_theme.play(-1)
+    
     while show_score_menu == True or show_highscore_menu == True:
         score_board()
 
