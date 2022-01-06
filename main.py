@@ -435,66 +435,105 @@ def main():
                         if c_music_display.collidepoint(event.pos):
                             if c_music == '1':
                                 c_music = '0'
+                                if m_sound == 1:
+                                    menu_click.play()
                             elif c_music == '0':
                                 # so that only 3 max cats selected
                                 if c_sum < 3:
                                     c_music = '1'
+                                    if m_sound == 1:
+                                        menu_click.play()
+                                #could add
+                                #else: 
+                                    #menu_click_error.play()
                         #history
                         if c_history_display.collidepoint(event.pos):
                             if c_history == '1':
                                 c_history = '0'
+                                if m_sound == 1:
+                                    menu_click.play()
                             elif c_history == '0':
                                 if c_sum < 3:
                                     c_history = '1'
+                                    if m_sound == 1:
+                                        menu_click.play()
                         #books
                         if c_books_display.collidepoint(event.pos):
                             if c_books == '1':
                                 c_books = '0'
+                                if m_sound == 1:
+                                    menu_click.play()
                             elif c_books == '0':
                                 if c_sum < 3:
                                     c_books = '1'
+                                    if m_sound == 1:
+                                        menu_click.play()
                         #image
                         if c_image_display.collidepoint(event.pos):
                             if c_image == '1':
                                 c_image = '0'
+                                if m_sound == 1:
+                                    menu_click.play()
                             elif c_image == '0':
                                 if c_sum < 3:
                                     c_image = '1'
+                                    if m_sound == 1:
+                                        menu_click.play()
                         #anime
                         if c_anime_display.collidepoint(event.pos):
                             if c_anime == '1':
                                 c_anime = '0'
+                                if m_sound == 1:
+                                    menu_click.play()
                             elif c_anime == '0':
                                 if c_sum < 3:
                                     c_anime = '1'
+                                    if m_sound == 1:
+                                        menu_click.play()
                         #tv
                         if c_tv_display.collidepoint(event.pos):
                             if c_tv == '1':
                                 c_tv = '0'
+                                if m_sound == 1:
+                                    menu_click.play()
                             elif c_tv == '0':
                                 if c_sum < 3:
                                     c_tv = '1'
+                                    if m_sound == 1:
+                                        menu_click.play()
                         #manga
                         if c_manga_display.collidepoint(event.pos):
                             if c_manga == '1':
                                 c_manga = '0'
+                                if m_sound == 1:
+                                    menu_click.play()
                             elif c_manga == '0':
                                 if c_sum < 3:
                                     c_manga = '1'
+                                    if m_sound == 1:
+                                        menu_click.play()
                         #vidya
                         if c_vidya_display.collidepoint(event.pos):
                             if c_vidya == '1':
                                 c_vidya = '0'
+                                if m_sound == 1:
+                                    menu_click.play()
                             elif c_vidya == '0':
                                 if c_sum < 3:
                                     c_vidya = '1'
+                                    if m_sound == 1:
+                                        menu_click.play()
                         #art
                         if c_art_display.collidepoint(event.pos):
                             if c_art == '1':
                                 c_art = '0'
+                                if m_sound == 1:
+                                    menu_click.play()
                             elif c_art == '0':
                                 if c_sum < 3:
                                     c_art = '1'
+                                    if m_sound == 1:
+                                        menu_click.play()
                     
                     #within options
                     #fullscreen check
