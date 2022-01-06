@@ -731,8 +731,6 @@ def main():
         questions_file.close()
 
     #47 questions in total
-    #l=["text\q&a1.txt","text\q&a2.txt","text\q&a3.txt","text\q&a4.txt","text\q&a5.txt","text\q&a6.txt","text\q&a7.txt","text\q&a8.txt","text\q&a9.txt","text\q&a10.txt"
-        #,"text\q&a11.txt","text\q&a12.txt","text\q&a13.txt","text\q&a14.txt","text\q&a15.txt"]
 
     #if music category selected:
     l_m = ['text\music_based\q1.txt','text\music_based\q2.txt','text\music_based\q3.txt','text\music_based\q4.txt','text\music_based\q5.txt','text\music_based\q6.txt',
@@ -746,11 +744,42 @@ def main():
     #specify that books' category also contains plays
     l_b = ["text/books/q1.txt","text/books/q2.txt","text/books/q3.txt","text/books/q4.txt","text/books/q5.txt","text/books/q6.txt","text/books/q7.txt"
         ,"text/books/q8.txt","text/books/q9.txt","text/books/q10.txt","text/books/q11.txt","text/books/q12.txt","text/books/q13.txt","text/books/q14.txt","text/books/q15.txt"]
+    
+    #image
+    l_i = ["text/image_based/q1.txt","text/image_based/q2.txt","text/image_based/q3.txt","text/image_based/q4.txt","text/image_based/q5.txt","text/image_based/q6.txt","text/image_based/q7.txt"
+        ,"text/image_based/q8.txt","text/image_based/q9.txt","text/image_based/q10.txt","text/image_based/q11.txt","text/image_based/q12.txt","text/image_based/q13.txt","text/image_based/q14.txt"
+        ,"text/image_based/q15.txt"]
+
+    #anime
+    l_a = ["text/anime/q1.txt","text/anime/q2.txt","text/anime/q3.txt","text/anime/q4.txt","text/anime/q5.txt","text/anime/q6.txt","text/anime/q7.txt"
+        ,"text/anime/q8.txt","text/anime/q9.txt","text/anime/q10.txt","text/anime/q11.txt","text/anime/q12.txt","text/anime/q13.txt","text/anime/q14.txt","text/anime/q15.txt"]
+
+    #tv
+    l_t = ["text/tv/q1.txt","text/tv/q2.txt","text/tv/q3.txt","text/tv/q4.txt","text/tv/q5.txt","text/tv/q6.txt","text/tv/q7.txt"
+        ,"text/tv/q8.txt","text/tv/q9.txt","text/tv/q10.txt","text/tv/q11.txt","text/tv/q12.txt","text/tv/q13.txt","text/tv/q14.txt","text/tv/q15.txt"]
+
+    #manga
+    l_man =["text/manga/q1.txt","text/manga/q2.txt","text/manga/q3.txt","text/manga/q4.txt","text/manga/q5.txt","text/manga/q6.txt","text/manga/q7.txt"
+        ,"text/manga/q8.txt","text/manga/q9.txt","text/manga/q10.txt","text/manga/q11.txt","text/manga/q12.txt","text/manga/q13.txt","text/manga/q14.txt","text/manga/q15.txt"]
+
+    #vidya
+    l_v = ["text/vidya/q1.txt","text/vidya/q2.txt","text/vidya/q3.txt","text/vidya/q4.txt","text/vidya/q5.txt","text/vidya/q6.txt","text/vidya/q7.txt"
+        ,"text/vidya/q8.txt","text/vidya/q9.txt","text/vidya/q10.txt","text/vidya/q11.txt","text/vidya/q12.txt","text/vidya/q13.txt","text/vidya/q14.txt","text/vidya/q15.txt"]
+
+    #art
+    l_a =["text/art/q1.txt","text/art/q2.txt","text/art/q3.txt","text/art/q4.txt","text/art/q5.txt","text/art/q6.txt","text/art/q7.txt"
+        ,"text/art/q8.txt","text/art/q9.txt","text/art/q10.txt","text/art/q11.txt","text/art/q12.txt","text/art/q13.txt","text/art/q14.txt","text/art/q15.txt"]
 
     #shuffle ques
     random.shuffle(l_h)
     random.shuffle(l_m)
     random.shuffle(l_b)
+    random.shuffle(l_i)
+    random.shuffle(l_a)
+    random.shuffle(l_t)
+    random.shuffle(l_man)
+    random.shuffle(l_v)
+    random.shuffle(l_a)
     global question_list
     question_list = []
 
