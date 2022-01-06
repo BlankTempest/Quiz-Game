@@ -88,6 +88,7 @@ def main():
         show_menu = True
 
         #background
+        #.convert() is used to draw the img faster
         mbackground = pygame.image.load("images/naissancee4.png").convert()
         mbackground_position = [0,0]
         
@@ -110,6 +111,7 @@ def main():
         sfx_play_6 = True
         sfx_play_7 = True
 
+        #if i use functions to load images, it'll only make the the loading slower
         #menu selectables
         #when not hovered over
         m_play = pygame.image.load("images/menu_play.png").convert()
@@ -127,8 +129,28 @@ def main():
         m_help_w = pygame.image.load("images/menu_help_w.png").convert()
         m_profile_w = pygame.image.load("images/menu_profile_w.png").convert()
         m_category_w = pygame.image.load("images/menu_category_w.png").convert()
-        m_exit_w = pygame.image.load("images/menu_exit_w.png").convert()        
+        m_exit_w = pygame.image.load("images/menu_exit_w.png").convert()     
 
+        #category buttons
+        music_select = pygame.image.load("images/category_buttons/music_selected.png").convert()
+        music_unselect = pygame.image.load("images/category_buttons/music_unselected.png").convert()
+        history_select = pygame.image.load("images/category_buttons/history_selected.png").convert()
+        history_unselect = pygame.image.load("images/category_buttons/history_unselected.png").convert()
+        books_select = pygame.image.load("images/category_buttons/books_selected.png").convert()
+        books_unselect = pygame.image.load("images/category_buttons/books_unselected.png").convert()
+        image_select = pygame.image.load("images/category_buttons/image_selected.png").convert()
+        image_unselect = pygame.image.load("images/category_buttons/image_unselected.png").convert()
+        anime_select = pygame.image.load("images/category_buttons/anime_selected.png").convert()
+        anime_unselect = pygame.image.load("images/category_buttons/anime_unselected.png").convert()
+        tv_select = pygame.image.load("images/category_buttons/tv_selected.png").convert()
+        tv_unselect = pygame.image.load("images/category_buttons/tv_unselected.png").convert()
+        manga_select = pygame.image.load("images/category_buttons/manga_selected.png").convert()
+        manga_unselect = pygame.image.load("images/category_buttons/manga_unselected.png").convert()
+        vidya_select = pygame.image.load("images/category_buttons/vidya_selected.png").convert()
+        vidya_unselect = pygame.image.load("images/category_buttons/vidya_unselected.png").convert()
+        art_select = pygame.image.load("images/category_buttons/art_selected.png").convert()
+        art_unselect = pygame.image.load("images/category_buttons/art_unselected.png").convert()
+        
         #menu checks/ticks
         check_ticked = pygame.image.load("images/check_tick.png").convert()
         check_unticked = pygame.image.load("images/check_untick.png").convert()
@@ -145,7 +167,51 @@ def main():
         top_text_font = pygame.font.SysFont('Arial', 18)
         top_text_color = (35,35,35)
 
+        global c_music, c_history, c_books, c_image, c_anime, c_tv, c_manga, c_vidya, c_art
+
+        #load category options
+        cat_file = open('text/m_category/category_save.txt', 'r')
+        c_music = cat_file.readline().strip()
+        c_history = cat_file.readline().strip()
+        c_books = cat_file.readline().strip()
+        c_image = cat_file.readline().strip()
+        c_anime = cat_file.readline().strip()
+        c_tv = cat_file.readline().strip()
+        c_manga = cat_file.readline().strip()
+        c_vidya = cat_file.readline().strip()
+        c_art = cat_file.readline().strip()
+        cat_file.close()
         
+        #.readline(1) doesn't work so we use this instead
+        #   it reads again after the first char
+        #.readlines(1)[1] doesnt work, where [] is line no
+        #   list index is out of range
+        c_history = c_history[0]
+        c_books = c_books[0]
+        c_image = c_image[0]
+        c_anime = c_anime[0]
+        c_tv = c_tv[0]
+        c_manga = c_manga[0]
+        c_vidya = c_vidya[0]
+        c_music = c_music[0]
+        c_art = c_art[0]
+
+        #category save file
+        #function so that it can be called when we exit
+        #we add the +cat_name so its easier to debug
+        def category_save_file():
+            cat_file2 = open('text/m_category/category_save.txt', 'w')
+            cat_file2.write(c_music + ' music' + '\n')
+            cat_file2.write(c_history + ' history' + '\n')
+            cat_file2.write(c_books + ' books' + '\n')
+            cat_file2.write(c_image + ' image' + '\n')
+            cat_file2.write(c_anime + ' anime' + '\n')
+            cat_file2.write(c_tv + ' tv'+ '\n')
+            cat_file2.write(c_manga + ' manga' + '\n')
+            cat_file2.write(c_vidya + ' vidya' + '\n')
+            cat_file2.write(c_art + ' art' + '\n')
+            cat_file2.close()
+
         #menu loop
         while not done and  show_menu:
 
@@ -277,16 +343,67 @@ def main():
             if fullscreen_changed == True: 
                     pygame.display.toggle_fullscreen()
                     fullscreen_changed = False
+            
+            #category sub items
+            if show_category:
+                if c_music == '1':
+                    c_music_display = screen.blit(music_select,(310,218))
+                else:
+                    c_music_display = screen.blit(music_unselect,(310,218))
+
+                if c_history == '1':
+                    c_history_display = screen.blit(history_select,(480,218))
+                else:
+                    c_history_display = screen.blit(history_unselect,(480,218))
+
+                if c_books == '1':
+                    c_books_display = screen.blit(books_select,(652,218))
+                else:
+                    c_books_display = screen.blit(books_unselect,(652,218))
+
+                if c_image == '1':
+                    c_image_display = screen.blit(image_select,(310,330))
+                else:
+                    c_image_display = screen.blit(image_unselect,(310,330))
                 
+                if c_anime == '1':
+                    c_anime_display = screen.blit(anime_select,(480,330))
+                else:
+                    c_anime_display = screen.blit(anime_unselect,(480,330))
+                
+                if c_tv == '1':
+                    c_tv_display = screen.blit(tv_select,(652,330))
+                else:
+                    c_tv_display = screen.blit(tv_unselect,(652,330))
+                
+                if c_manga == '1':
+                    c_manga_display = screen.blit(manga_select,(310,434))
+                else:
+                    c_manga_display = screen.blit(manga_unselect,(310,434))
+                
+                if c_vidya == '1':
+                    c_vidya_display = screen.blit(vidya_select,(480,434))
+                else:
+                    c_vidya_display = screen.blit(vidya_unselect,(480,434))
+                
+                if c_art == '1':
+                    c_art_display = screen.blit(art_select,(652,434))
+                else:
+                    c_art_display = screen.blit(art_unselect,(652,434))
+
+            #category sum count
+            c_sum = int(c_music) + int(c_history) + int(c_books) + int(c_image) + int(c_anime) + int(c_tv) + int(c_manga) + int(c_vidya) + int(c_art) 
 
             #exit loop
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    category_save_file()
                     pygame.quit()
                     exit()
                 #esc key to exit
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
+                        category_save_file()
                         pygame.quit()
                         exit()
 
@@ -309,6 +426,76 @@ def main():
                     if name_rect.collidepoint(event.pos):
                         active = True
 
+                    #category item clicks
+                    if show_category:
+                        #------------------------NOTE:-------------------
+                        #this whole thing underneath can be optimized into one function
+                        # with 9 calls
+                        #music
+                        if c_music_display.collidepoint(event.pos):
+                            if c_music == '1':
+                                c_music = '0'
+                            elif c_music == '0':
+                                # so that only 3 max cats selected
+                                if c_sum < 3:
+                                    c_music = '1'
+                        #history
+                        if c_history_display.collidepoint(event.pos):
+                            if c_history == '1':
+                                c_history = '0'
+                            elif c_history == '0':
+                                if c_sum < 3:
+                                    c_history = '1'
+                        #books
+                        if c_books_display.collidepoint(event.pos):
+                            if c_books == '1':
+                                c_books = '0'
+                            elif c_books == '0':
+                                if c_sum < 3:
+                                    c_books = '1'
+                        #image
+                        if c_image_display.collidepoint(event.pos):
+                            if c_image == '1':
+                                c_image = '0'
+                            elif c_image == '0':
+                                if c_sum < 3:
+                                    c_image = '1'
+                        #anime
+                        if c_anime_display.collidepoint(event.pos):
+                            if c_anime == '1':
+                                c_anime = '0'
+                            elif c_anime == '0':
+                                if c_sum < 3:
+                                    c_anime = '1'
+                        #tv
+                        if c_tv_display.collidepoint(event.pos):
+                            if c_tv == '1':
+                                c_tv = '0'
+                            elif c_tv == '0':
+                                if c_sum < 3:
+                                    c_tv = '1'
+                        #manga
+                        if c_manga_display.collidepoint(event.pos):
+                            if c_manga == '1':
+                                c_manga = '0'
+                            elif c_manga == '0':
+                                if c_sum < 3:
+                                    c_manga = '1'
+                        #vidya
+                        if c_vidya_display.collidepoint(event.pos):
+                            if c_vidya == '1':
+                                c_vidya = '0'
+                            elif c_vidya == '0':
+                                if c_sum < 3:
+                                    c_vidya = '1'
+                        #art
+                        if c_art_display.collidepoint(event.pos):
+                            if c_art == '1':
+                                c_art = '0'
+                            elif c_art == '0':
+                                if c_sum < 3:
+                                    c_art = '1'
+                    
                     #within options
                     #fullscreen check
                     if show_options2:
@@ -422,9 +609,9 @@ def main():
                         menu_theme.stop()
                         if m_sound == 1:
                             menu_click.play()
+                        category_save_file()
                         pygame.quit()
-                        exit()
-                        
+                        exit() 
                     
             if show_profile:
                 if active:
@@ -440,6 +627,44 @@ def main():
             pygame.display.flip()
             pygame.display.update()
             mainclock.tick(60)
+        
+        #cateogry save file
+        
+        #this method is neither efficient nor random
+            # this only picks the default first options
+            # we need it to be random
+            #putting everything into a list and changing value wont be efficient cause list values will get updates
+            #so we'll have to update list values every single time and then check again, so no go
+        #just randomizing the list and assigning values back wont work either cause then 
+            #say you chose 2 options, but not the third one, the two get wiped and 2 random options will take its place
+        if c_sum < 3:
+            if c_music != '1':
+                c_music = '1'
+            elif c_history != '1':
+                c_history = '1'
+            elif c_books != '1':
+                c_books = '1'
+            c_sum = int(c_music) + int(c_history) + int(c_books) + int(c_image) + int(c_anime) + int(c_tv) + int(c_manga) + int(c_vidya) + int(c_art)
+        
+        if c_sum < 3:
+            if c_image != '1':
+                c_image = '1'
+            elif c_anime != '1':
+                c_anime = '1'
+            elif c_tv != '1':
+                c_tv = '1'
+            c_sum = int(c_music) + int(c_history) + int(c_books) + int(c_image) + int(c_anime) + int(c_tv) + int(c_manga) + int(c_vidya) + int(c_art) 
+        
+        if c_sum < 3:
+            if c_manga != '1':
+                c_manga = '1'
+            elif c_vidya != '1':
+                c_vidya = '1'
+            elif c_art != '1':
+                c_art = '1'
+            c_sum = int(c_music) + int(c_history) + int(c_books) + int(c_image) + int(c_anime) + int(c_tv) + int(c_manga) + int(c_vidya) + int(c_art) 
+        
+        category_save_file()
 
     menu_function()
     #----------------------------------------------------------------------------

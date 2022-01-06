@@ -27,3 +27,4 @@ C Major
 C Major
 C Major
 G Major
+G Major
