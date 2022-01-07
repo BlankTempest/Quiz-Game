@@ -94,7 +94,7 @@ def main():
         
         #music
         menu_theme = pygame.mixer.Sound('music/theme/Pauline Oliveiros  A Woman Sees How the World Goes with No Eyes.mp3')
-        menu_theme.play(-1)            #-1 loops music indefinitely
+        menu_theme.play(-1)            #-1 loops music indefinitely but also lags when you press next
         if m_sound == 1:
             menu_theme.set_volume(1)
             
@@ -431,109 +431,59 @@ def main():
                         #------------------------NOTE:-------------------
                         #this whole thing underneath can be optimized into one function
                         # with 9 calls
-                        #music
-                        if c_music_display.collidepoint(event.pos):
-                            if c_music == '1':
-                                c_music = '0'
+                        
+                        def toggle_category_values(category_name):
+                            if category_name == '1':
+                                category_name = 0
                                 if m_sound == 1:
                                     menu_click.play()
-                            elif c_music == '0':
+                            elif category_name == '0':
                                 # so that only 3 max cats selected
                                 if c_sum < 3:
-                                    c_music = '1'
+                                    category_name = '1'
                                     if m_sound == 1:
                                         menu_click.play()
-                                #could add
-                                #else: 
+                                else: 
                                     #menu_click_error.play()
+                                    menu_rollover.play()
+                            return category_name
+
+                        #music
+                        if c_music_display.collidepoint(event.pos):
+                            c_music = toggle_category_values(c_music)
+                            c_music = str(c_music)
                         #history
                         if c_history_display.collidepoint(event.pos):
-                            if c_history == '1':
-                                c_history = '0'
-                                if m_sound == 1:
-                                    menu_click.play()
-                            elif c_history == '0':
-                                if c_sum < 3:
-                                    c_history = '1'
-                                    if m_sound == 1:
-                                        menu_click.play()
+                            c_history = toggle_category_values(c_history)
+                            c_history = str(c_history)
                         #books
                         if c_books_display.collidepoint(event.pos):
-                            if c_books == '1':
-                                c_books = '0'
-                                if m_sound == 1:
-                                    menu_click.play()
-                            elif c_books == '0':
-                                if c_sum < 3:
-                                    c_books = '1'
-                                    if m_sound == 1:
-                                        menu_click.play()
+                            c_books = toggle_category_values(c_books)
+                            c_books = str(c_books)
                         #image
                         if c_image_display.collidepoint(event.pos):
-                            if c_image == '1':
-                                c_image = '0'
-                                if m_sound == 1:
-                                    menu_click.play()
-                            elif c_image == '0':
-                                if c_sum < 3:
-                                    c_image = '1'
-                                    if m_sound == 1:
-                                        menu_click.play()
+                            c_image = toggle_category_values(c_image)
+                            c_image = str(c_image)
                         #anime
                         if c_anime_display.collidepoint(event.pos):
-                            if c_anime == '1':
-                                c_anime = '0'
-                                if m_sound == 1:
-                                    menu_click.play()
-                            elif c_anime == '0':
-                                if c_sum < 3:
-                                    c_anime = '1'
-                                    if m_sound == 1:
-                                        menu_click.play()
+                            c_anime = toggle_category_values(c_anime)
+                            c_anime = str(c_anime)
                         #tv
                         if c_tv_display.collidepoint(event.pos):
-                            if c_tv == '1':
-                                c_tv = '0'
-                                if m_sound == 1:
-                                    menu_click.play()
-                            elif c_tv == '0':
-                                if c_sum < 3:
-                                    c_tv = '1'
-                                    if m_sound == 1:
-                                        menu_click.play()
+                            c_tv = toggle_category_values(c_tv)
+                            c_tv = str(c_tv)
                         #manga
                         if c_manga_display.collidepoint(event.pos):
-                            if c_manga == '1':
-                                c_manga = '0'
-                                if m_sound == 1:
-                                    menu_click.play()
-                            elif c_manga == '0':
-                                if c_sum < 3:
-                                    c_manga = '1'
-                                    if m_sound == 1:
-                                        menu_click.play()
+                            c_manga = toggle_category_values(c_manga)
+                            c_manga = str(c_manga)
                         #vidya
                         if c_vidya_display.collidepoint(event.pos):
-                            if c_vidya == '1':
-                                c_vidya = '0'
-                                if m_sound == 1:
-                                    menu_click.play()
-                            elif c_vidya == '0':
-                                if c_sum < 3:
-                                    c_vidya = '1'
-                                    if m_sound == 1:
-                                        menu_click.play()
+                            c_vidya = toggle_category_values(c_vidya)
+                            c_vidya = str(c_vidya)
                         #art
                         if c_art_display.collidepoint(event.pos):
-                            if c_art == '1':
-                                c_art = '0'
-                                if m_sound == 1:
-                                    menu_click.play()
-                            elif c_art == '0':
-                                if c_sum < 3:
-                                    c_art = '1'
-                                    if m_sound == 1:
-                                        menu_click.play()
+                            c_art = toggle_category_values(c_art)
+                            c_art = str(c_art)
                     
                     #within options
                     #fullscreen check
@@ -767,7 +717,7 @@ def main():
         ,"text/vidya/q8.txt","text/vidya/q9.txt","text/vidya/q10.txt","text/vidya/q11.txt","text/vidya/q12.txt","text/vidya/q13.txt","text/vidya/q14.txt","text/vidya/q15.txt"]
 
     #art
-    l_a =["text/art/q1.txt","text/art/q2.txt","text/art/q3.txt","text/art/q4.txt","text/art/q5.txt","text/art/q6.txt","text/art/q7.txt"
+    l_art =["text/art/q1.txt","text/art/q2.txt","text/art/q3.txt","text/art/q4.txt","text/art/q5.txt","text/art/q6.txt","text/art/q7.txt"
         ,"text/art/q8.txt","text/art/q9.txt","text/art/q10.txt","text/art/q11.txt","text/art/q12.txt","text/art/q13.txt","text/art/q14.txt","text/art/q15.txt"]
 
     #shuffle ques
@@ -779,70 +729,90 @@ def main():
     random.shuffle(l_t)
     random.shuffle(l_man)
     random.shuffle(l_v)
-    random.shuffle(l_a)
+    random.shuffle(l_art)
     global question_list
     question_list = []
 
+    #for zen mode, take all questions as a single list 
+            #we dont simpley add it all so that category order is shuffled
+    l_added = []
+    temp_lister = [l_h, l_m ,l_b ,l_i, l_a, l_t, l_man, l_v, l_art]
+    random.shuffle(temp_lister)
+    for lis_que in temp_lister:
+        l_added += lis_que
+    
+    #to debug
+    #l_added = l_h+ l_m +l_b +l_i+ l_a+ l_t+ l_man+ l_v+ l_art
+
+    global c_history_count, c_music_count, c_books_count, c_image_count, c_anime_count, c_tv_count, c_manga_count, c_vidya_count, c_art_count
+    c_history_count = 1
+    c_music_count = 1
+    c_books_count = 1
+    c_image_count = 1
+    c_anime_count = 1
+    c_tv_count = 1
+    c_manga_count = 1
+    c_vidya_count = 1
+    c_art_count = 1
+
     def question_selecter():
-        #remove random chance and edit it with category chosen
-        if zen_mode == True:
-            chance = random.randint(1,3)
-            if chance == 1:
-                if l_h != []:
-                    fname = l_h[0]
-                    question_list.append(fname)
-                    l_h.pop(0)
-                elif l_b != []:
-                    fname = l_b[0]
-                    question_list.append(fname)
-                    l_b.pop(0)
-                else: 
-                    fname = l_m[0]
-                    question_list.append(fname)
-                    l_m.pop(0)
-            elif chance == 2:
-                if l_m != []:
-                    fname = l_m[0]
-                    question_list.append(fname)
-                    l_m.pop(0)
-                elif l_h != 0: 
-                    fname = l_h[0]
-                    question_list.append(fname)
-                    l_h.pop(0)
-                else:
-                    fname = l_b[0]
-                    question_list.append(fname)
-                    l_b.pop(0)
-            elif chance == 3:
-                if l_b != []:
-                    fname = l_b[0]
-                    question_list.append(fname)
-                    l_b.pop(0)
-                elif l_m != []: 
-                    fname = l_m[0]
-                    question_list.append(fname)
-                    l_m.pop(0)
-                else: 
-                    fname = l_h[0]
-                    question_list.append(fname)
-                    l_h.pop(0)
+
+        global c_history_count, c_music_count, c_books_count, c_image_count, c_anime_count, c_tv_count, c_manga_count, c_vidya_count, c_art_count
+
+        if zen_mode:
+            fname = l_added[0]
+            question_list.append(fname)
+            l_added.pop(0)
             question_import(fname)
 
         else:
-            #select randomly out of 2 categories
-            chance = random.randint(1,3)
-            if chance == 1:
+            if c_history == '1' and c_history_count < 6:
+                #when h is selected, we'll display 5 questions from it, then 5 from the next cat
+                #then append the fname to a list that will be used later to display choices
                 fname = l_h[0]
                 question_list.append(fname)
                 l_h.pop(0)
-            elif chance == 2:
-                fname = l_m[0]
-                question_list.append(fname)
-                l_m.pop(0)
-            elif chance == 3:
-                fname = l_b[0]
-                question_list.append(fname)
-                l_b.pop(0)
+                c_history_count += 1
+            elif c_music == '1' and c_music_count < 6:
+                    fname = l_m[0]
+                    question_list.append(fname)
+                    l_m.pop(0)
+                    c_music_count += 1
+            elif c_books == '1' and c_books_count < 6:
+                    fname = l_b[0]
+                    question_list.append(fname)
+                    l_b.pop(0)
+                    c_books_count += 1
+            elif c_image == '1' and c_image_count < 6:
+                    fname = l_i[0]
+                    question_list.append(fname)
+                    l_i.pop(0)
+                    c_image_count += 1
+            elif c_anime == '1' and c_anime_count < 6:
+                    fname = l_a[0]
+                    question_list.append(fname)
+                    l_a.pop(0)
+                    c_anime_count += 1
+            elif c_tv == '1' and c_tv_count < 6:
+                    fname = l_t[0]
+                    question_list.append(fname)
+                    l_t.pop(0)
+                    c_tv_count += 1
+            elif c_manga == '1' and c_manga_count < 6:
+                    fname = l_man[0]
+                    question_list.append(fname)
+                    l_man.pop(0)
+                    c_manga_count += 1
+            elif c_vidya == '1' and c_vidya_count < 6:
+                    fname = l_v[0]
+                    question_list.append(fname)
+                    l_v.pop(0)
+                    c_vidya_count += 1
+            elif c_art == '1' and c_art_count < 6:
+                    fname = l_art[0]
+                    question_list.append(fname)
+                    l_art.pop(0)
+                    c_art_count += 1
             question_import(fname)
 
     #----------------------------gamu start----------------------------------
@@ -891,8 +861,6 @@ def main():
             music_theme = pygame.mixer.Sound(music_name)
             if m_sound == 1:
                 music_theme.play(-1)
-
-        
 
         #counters
         global score,lives,game_over,mod_50_used,answer,ques_ans,total_questions,mod_x2_used
@@ -954,6 +922,8 @@ def main():
         #mod 50-50 effect
         tv_screen = pygame.image.load("images/tv_screen.jpg").convert()
         tv_screen_position = [0,0]
+        mod_effect_p1 = pygame.image.load("images/mod_effect_p1.png").convert() #mb use later
+        mod_effect_p2 = pygame.image.load("images/mod_effect_p2.png").convert()
 
         while open:
 
@@ -1030,6 +1000,7 @@ def main():
                                 mod_50_being_used = True 
                                 if m_sound == 1:
                                     mod_50_used_sfx.play()
+                                #mod effect
                                 screen.blit(tv_screen,tv_screen_position)
                                 pygame.display.update()
                     #mod x2
@@ -1040,9 +1011,17 @@ def main():
                                 mod_x2_attempts_left = 1
                                 if m_sound == 1:
                                     mod_x2_used_sfx.play()
-                                #change this to something else later
-                                screen.blit(tv_screen,tv_screen_position)
+                                #mod effect
+                                screen.blit(mod_effect_p2,tv_screen_position)
                                 pygame.display.update()
+                                pygame.time.delay(60)
+                                screen.blit(mod_effect_p1,tv_screen_position)
+                                pygame.display.update()
+                                pygame.time.delay(60)
+                                screen.blit(mod_effect_p2,tv_screen_position)
+                                pygame.display.update()
+                                pygame.time.delay(60)
+
 
                     #option1
                         if option_1_visible == True:
@@ -1145,7 +1124,6 @@ def main():
                 mod_x2_attempts_left = 0
                 bulk_exec = False
 
-
             #timer box
             x6= 468; y6 = 12
             timerbox = pygame.image.load("images/timerbox.jpg").convert()
@@ -1192,7 +1170,6 @@ def main():
                 if option_4 not in option_list:
                     option_4_visible = False
 
-                
             #display red/green when question is answered
             color_white = 'white'
             color_green = 'green'
@@ -1329,9 +1306,6 @@ def main():
 
         ebackground_position = [0,0]
         
-
-        
-
         #game over loop
         done = False
         end_screen = True
@@ -1444,7 +1418,6 @@ def main():
             perc_str = "Picked by "+str(choice_percentage)+"% of players "
             perc_text = perc_font.render(perc_str , True , 'black')
 
-
         #draw bars
         #can optimize with functions
         choice_green = (66,71,40)
@@ -1517,7 +1490,6 @@ def main():
                 screen.blit(answer_text, [110, 534])
                 screen.blit(perc_text, [645, 530])
         
-
         continue_text = question_font.render('CLICK TO CONTINUE' , True , 'azure3')
         
         global doing
@@ -1562,7 +1534,6 @@ def main():
             pager(8,35)
             pager(9,40)
             pager(10,45)
-
 
             #exit loop
             for event in pygame.event.get():
@@ -1649,7 +1620,6 @@ def main():
         #time
         t = time.localtime()
         current_time = time.strftime("%H:%M:%S", t)
-
         
         global first
         while first:
@@ -1782,7 +1752,6 @@ def main():
                 fps_font = pygame.font.Font(None, 18)
                 fps_text = fps_font.render(str(fps) , True , (0,255,0))
                 screen.blit(fps_text,(0,0))
-
             
             mouse = pygame.mouse.get_pos()
             #quit button

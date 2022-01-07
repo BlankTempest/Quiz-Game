@@ -12,3 +12,6 @@ Diogenes
 Socrates
 Plato
 Diogenes
+Diogenes
+Plato
+Diogenes
