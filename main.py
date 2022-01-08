@@ -557,7 +557,7 @@ def main():
 
                 #zen button click
                     if m_zen_blit.collidepoint(event.pos):
-                        total_questions = 47
+                        total_questions = 137
                         zen_mode = True
                         menu_theme.stop()
                         if m_sound == 1:
@@ -680,7 +680,7 @@ def main():
 
         questions_file.close()
 
-    #47 questions in total
+    #137 questions in total
 
     #if music category selected:
     l_m = ['text\music_based\q1.txt','text\music_based\q2.txt','text\music_based\q3.txt','text\music_based\q4.txt','text\music_based\q5.txt','text\music_based\q6.txt',
