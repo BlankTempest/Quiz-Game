@@ -30,3 +30,4 @@ G Major
 G Major
 C Major
 C Major
+C Major

@@ -11,3 +11,6 @@ Inferno
 The Wall
 Nausea
 No exit
+No exit
+No exit
+No exit

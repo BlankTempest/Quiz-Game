@@ -816,7 +816,18 @@ def main():
             question_import(fname)
 
     #----------------------------gamu start----------------------------------
+    #music, will be changed to one song per category when categories are added
+    music_list=['music/theme/overlord_dungeon_alt2.mp3', 'music/theme/religious_deathnote.mp3', 'music/theme/lacrimosa.mp3', 'music/theme/Elegy for Rem.mp3', 'music/theme/Takt of Heroes.mp3',  
+            'music/theme/ruler of death.mp3', 'music/theme/Heavens Feel.mp3', 'music/theme/tlou No Escape.mp3']
+    random.shuffle(music_list)
+    music_name = music_list[0]
 
+    pygame.mixer.music.load(music_name)
+    pygame.mixer.music.set_endevent(pygame.constants.USEREVENT)
+
+    if m_sound == 1:
+        pygame.mixer.music.play()
+    
     def question_screen():
 
         question_selecter()
@@ -846,21 +857,17 @@ def main():
         x1 = 216; x2 = 214; x3 = 595; x4 = 596; x5 = 870
         y1 = 509; y2 = 595; y3 = 505; y4 = 596; y5 = 665
 
-        #music, will be changed to one song per category when categories are added
-        music_list=['music/theme/dn_ost7.mp3','music/theme/category3_10billion.mp3','music/theme/l_theme.mp3','music/theme/menu_drstone.mp3','music/theme/near_theme.mp3',
-                'music/theme/overlord_dungeon_alt.mp3']
         random.shuffle(music_list)
-        music_name = music_list[0]
         
         #if music category ques
         if music_ques.endswith('.mp3'):
-            music_theme = pygame.mixer.Sound(music_ques)
+            pygame.mixer.music.pause()
+            music_ques_theme = pygame.mixer.Sound(music_ques)
             if m_sound == 1:
-                music_theme.play()
+                music_ques_theme.play()
         else:
-            music_theme = pygame.mixer.Sound(music_name)
-            if m_sound == 1:
-                music_theme.play(-1)
+            pygame.mixer.music.unpause()
+            
 
         #counters
         global score,lives,game_over,mod_50_used,answer,ques_ans,total_questions,mod_x2_used
@@ -926,7 +933,7 @@ def main():
         mod_effect_p2 = pygame.image.load("images/mod_effect_p2.png").convert()
 
         while open:
-
+            
             mouse = pygame.mouse.get_pos()
 
             #we need to blit something over the screen so that it 
@@ -989,6 +996,12 @@ def main():
                     if event.key == pygame.K_ESCAPE:    #turn this into a pause menu later
                         pygame.quit()
                         exit()
+
+                #music, next track
+                if event.type == pygame.constants.USEREVENT:
+                    #triggered when song ends
+                    if m_sound == 1:
+                        pygame.mixer.music.play()
 
                 if question_answered == False and question_count <2 :
                     if event.type == pygame.MOUSEBUTTONDOWN: 
@@ -1080,10 +1093,11 @@ def main():
                                     game_over = True
                                     
                             open = False
-                            music_theme.stop()
+                            if music_ques.endswith('.mp3'):
+                                music_ques_theme.stop()
                             score_up.stop()
                             heavy_hit.stop()
-                            normal_hit.stop()
+                            normal_hit.stop()                          
 
             #counters
             if bulk_exec == True:
@@ -1097,6 +1111,7 @@ def main():
                     #last question
                     if question_no == total_questions:
                         game_over = False
+
                 else:
                     #first time using x2 mod
                     if mod_x2_attempts_left != 1:
@@ -1281,6 +1296,8 @@ def main():
                     saved_text.close()
     ##########################################################################
 
+    #stop music
+    pygame.mixer.music.stop()
 
     #--------------------------GAME OVER-----------------------------------
 
