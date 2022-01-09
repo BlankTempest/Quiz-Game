@@ -13,3 +13,7 @@ Hera
 Hera
 Zeus
 Jupiter
+Hera
+Zeus
+Jupiter
+Jupiter

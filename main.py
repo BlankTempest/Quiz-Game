@@ -815,24 +815,25 @@ def main():
                     c_art_count += 1
             question_import(fname)
 
-    #----------------------------gamu start----------------------------------
-    #music, will be changed to one song per category when categories are added
+    global music_list
     music_list=['music/theme/overlord_dungeon_alt2.mp3', 'music/theme/religious_deathnote.mp3', 'music/theme/lacrimosa.mp3', 'music/theme/Elegy for Rem.mp3', 'music/theme/Takt of Heroes.mp3',  
             'music/theme/ruler of death.mp3', 'music/theme/Heavens Feel.mp3', 'music/theme/tlou No Escape.mp3']
     random.shuffle(music_list)
     music_name = music_list[0]
+    music_list.pop(0)
 
     pygame.mixer.music.load(music_name)
     pygame.mixer.music.set_endevent(pygame.constants.USEREVENT)
 
     if m_sound == 1:
         pygame.mixer.music.play()
-    
+
+    #----------------------------gamu start----------------------------------    
     def question_screen():
 
         question_selecter()
         #so now we have question,option_1,option_2,option_3,option_4 and right_answer
-        global question
+        global question, music_list
         color = (255,255,255)
         smallfont = pygame.font.SysFont('Corbel',35)
         '''color_dark = (100,100,100)
@@ -856,8 +857,6 @@ def main():
         # they'll have their day to shine copium
         x1 = 216; x2 = 214; x3 = 595; x4 = 596; x5 = 870
         y1 = 509; y2 = 595; y3 = 505; y4 = 596; y5 = 665
-
-        random.shuffle(music_list)
         
         #if music category ques
         if music_ques.endswith('.mp3'):
@@ -867,7 +866,6 @@ def main():
                 music_ques_theme.play()
         else:
             pygame.mixer.music.unpause()
-            
 
         #counters
         global score,lives,game_over,mod_50_used,answer,ques_ans,total_questions,mod_x2_used
@@ -1001,6 +999,13 @@ def main():
                 if event.type == pygame.constants.USEREVENT:
                     #triggered when song ends
                     if m_sound == 1:
+                        if music_list == []:
+                            music_list=['music/theme/overlord_dungeon_alt2.mp3', 'music/theme/religious_deathnote.mp3', 'music/theme/lacrimosa.mp3', 'music/theme/Elegy for Rem.mp3', 'music/theme/Takt of Heroes.mp3',  
+                                    'music/theme/ruler of death.mp3', 'music/theme/Heavens Feel.mp3', 'music/theme/tlou No Escape.mp3']
+                        random.shuffle(music_list)
+                        music_name = music_list[0]
+                        music_list.pop(0)
+                        pygame.mixer.music.load(music_name)
                         pygame.mixer.music.play()
 
                 if question_answered == False and question_count <2 :
