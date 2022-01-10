@@ -23,3 +23,7 @@ Hercules
 Athena
 Athena
 Achilles
+Achilles
+Perseus
+Hercules
+Hercules

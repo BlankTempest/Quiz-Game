@@ -1,4 +1,4 @@
-Which play does  this comes from?  Hell is other people.
+Which play does  this comes from?     Hell is other people.
 Nausea
 No exit
 The Wall
@@ -10,6 +10,10 @@ Nausea
 Inferno
 The Wall
 Nausea
+No exit
+No exit
+No exit
+No exit
 No exit
 No exit
 No exit

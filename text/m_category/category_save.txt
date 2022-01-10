@@ -1,9 +1,9 @@
-1 music
-1 history
+0 music
+0 history
 1 books
 0 image
 0 anime
 0 tv
 0 manga
-0 vidya
-0 art
+1 vidya
+1 art

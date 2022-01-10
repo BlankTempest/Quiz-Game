@@ -557,7 +557,7 @@ def main():
 
                 #zen button click
                     if m_zen_blit.collidepoint(event.pos):
-                        total_questions = 137
+                        total_questions = 135
                         zen_mode = True
                         menu_theme.stop()
                         if m_sound == 1:
@@ -680,7 +680,7 @@ def main():
 
         questions_file.close()
 
-    #137 questions in total
+    #135 questions in total
 
     #if music category selected:
     l_m = ['text\music_based\q1.txt','text\music_based\q2.txt','text\music_based\q3.txt','text\music_based\q4.txt','text\music_based\q5.txt','text\music_based\q6.txt',
@@ -714,7 +714,7 @@ def main():
 
     #vidya
     l_v = ["text/vidya/q1.txt","text/vidya/q2.txt","text/vidya/q3.txt","text/vidya/q4.txt","text/vidya/q5.txt","text/vidya/q6.txt","text/vidya/q7.txt"
-        ,"text/vidya/q8.txt","text/vidya/q9.txt","text/vidya/q10.txt","text/vidya/q11.txt","text/vidya/q12.txt","text/vidya/q13.txt","text/vidya/q14.txt","text/vidya/q15.txt"]
+        ,"text/vidya/q8.txt","text/vidya/q9.txt","text/vidya/q10.txt","text/vidya/q11.txt","text/vidya/q12.txt","text/vidya/q13.txt"]
 
     #art
     l_art =["text/art/q1.txt","text/art/q2.txt","text/art/q3.txt","text/art/q4.txt","text/art/q5.txt","text/art/q6.txt","text/art/q7.txt"
