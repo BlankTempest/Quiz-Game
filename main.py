@@ -70,7 +70,7 @@ def main():
         pygame.display.set_caption("aenigma: Menu Screen")
 
         #player name + profile submenu
-        global player_name,total_questions,zen_mode
+        global player_name,total_questions,zen_mode, lives
         #options menu vars
         global m_fullscreen, m_sound, m_showfps
         
@@ -428,9 +428,6 @@ def main():
 
                     #category item clicks
                     if show_category:
-                        #------------------------NOTE:-------------------
-                        #this whole thing underneath can be optimized into one function
-                        # with 9 calls
                         
                         def toggle_category_values(category_name):
                             if category_name == '1':
@@ -559,6 +556,7 @@ def main():
                     if m_zen_blit.collidepoint(event.pos):
                         total_questions = 135
                         zen_mode = True
+                        lives = 300
                         menu_theme.stop()
                         if m_sound == 1:
                             menu_click.play()
@@ -816,7 +814,7 @@ def main():
             question_import(fname)
 
     global music_list
-    music_list=['music/theme/overlord_dungeon_alt2.mp3', 'music/theme/religious_deathnote.mp3', 'music/theme/lacrimosa.mp3', 'music/theme/Elegy for Rem.mp3', 'music/theme/Takt of Heroes.mp3',  
+    music_list=['music/theme/religious_deathnote.mp3', 'music/theme/lacrimosa.mp3', 'music/theme/Elegy for Rem.mp3', 'music/theme/Takt of Heroes.mp3',  
             'music/theme/ruler of death.mp3', 'music/theme/Heavens Feel.mp3', 'music/theme/tlou No Escape.mp3']
     random.shuffle(music_list)
     music_name = music_list[0]
@@ -889,8 +887,19 @@ def main():
         font_timer = pygame.font.SysFont('Raleway', 76)
         frame_count = 0
         frame_rate = 60
+
+        #zen mode infinite time
         start_time = 8
-        
+
+        #progressive difficulty, timer reduces by one second
+        if zen_mode == False:
+            if question_no < 6:
+                start_time = 9
+            elif question_no < 11:
+                start_time = 8
+            elif question_no < 16:
+                start_time = 7
+            
         #mod images
         mod_50 = pygame.image.load("images/50-50.png").convert()
         mod_50_grey = pygame.image.load("images/50-50-grey.png ").convert()
@@ -950,7 +959,7 @@ def main():
             #lives_counter = smallfont.render(str(lives) , True , color)
 
             #render a greyed out heart instead
-            if lives == 3:
+            if lives > 2:
                 screen.blit(lives_img,(32,60))
                 screen.blit(lives_img,(68,60))
                 screen.blit(lives_img,(104,60))
@@ -1147,7 +1156,8 @@ def main():
             #timer box
             x6= 468; y6 = 12
             timerbox = pygame.image.load("images/timerbox.jpg").convert()
-            screen.blit(timerbox, [x6, y6])
+            if zen_mode == False:
+                screen.blit(timerbox, [x6, y6])
 
             #timer
             total_seconds = frame_count // frame_rate
@@ -1161,12 +1171,15 @@ def main():
                     third = False
                     timed_out = True
             
-            output_string = str(total_seconds)
+            if zen_mode == False:
+                output_string = str(total_seconds)
+            else:
+                output_string = ''
             text_timer = font_timer.render(output_string, True, 'white')
             screen.blit(text_timer, [x6+25, y6+15])
 
             #freeze timer when mods are used
-            if question_answered != True and mod_50_being_used == False and mod_x2_being_used == False:
+            if question_answered != True and mod_50_being_used == False and mod_x2_being_used == False and zen_mode == False:
                 frame_count += 1
 
             #mod 50-50 display check, mod_temp to make it run once
@@ -1291,8 +1304,12 @@ def main():
     global mod_50_used, mod_x2_used
     mod_50_used = False
     mod_x2_used = False
+
     for question_no in range(1,total_questions+1):
         if game_over != True:
+            if zen_mode:
+                mod_50_used = False
+                mod_x2_used = False
             question_screen()
             if question_list != None:
                     fname2 = question_list[-1]
@@ -1617,7 +1634,6 @@ def main():
         yellow = (255,255,0)
 
         #quit button
-        quit_light = (170,170,170)
         swamp_green = (2,75,64)
         swamp_ltgreen = (0,66,60)
 
@@ -1652,12 +1668,12 @@ def main():
             global player_name
         
             #score_saver
-            #limit name to b/w 5 to 8 for better aligning, replace blank with player name
-            if score > 9:
-                score_file_temp.write('       '+ str(score)+ '                                    ' + current_time + '                         ' +player_name + '\n')
-            else: 
-                score_file_temp.write('       '+ '0' + str(score)+ '                                    ' + current_time + '                         ' +player_name + '\n')
-            #^ to fix alignment
+            if not zen_mode:
+                if score > 9:
+                    score_file_temp.write('       '+ str(score)+ '                                    ' + current_time + '                         ' +player_name + '\n')
+                else: 
+                    score_file_temp.write('       '+ '0' + str(score)+ '                                    ' + current_time + '                         ' +player_name + '\n')
+                #^ to fix alignment
 
             score_file2 = score_file.read()
             for line in score_file2:
@@ -1679,12 +1695,13 @@ def main():
         global second
         while second:
             #score_saver
-            score_file = open('text\scoreboard/not_sorted_scores.txt','a')
-            if score > 9:
-                score_file.write('       '+ str(score)+ '                                    ' + current_time + '                         ' +player_name + '\n')
-            else:
-                score_file.write('       '+ '0' + str(score)+ '                                    ' + current_time + '                         ' +player_name + '\n')
-            score_file.close()
+            if not zen_mode:
+                score_file = open('text\scoreboard/not_sorted_scores.txt','a')
+                if score > 9:
+                    score_file.write('       '+ str(score)+ '                                    ' + current_time + '                         ' +player_name + '\n')
+                else:
+                    score_file.write('       '+ '0' + str(score)+ '                                    ' + current_time + '                         ' +player_name + '\n')
+                score_file.close()
 
             #sort scores
             score_file = open('text\scoreboard/not_sorted_scores.txt','r')
