@@ -17,6 +17,7 @@ size = [1024, 768]
 #for borderless option
 resize_file = open('text\options/resizable.txt', 'r')
 m_resize = int(resize_file.readline().strip())
+resize_file.close()
 
 if m_resize == 0:
     screen = pygame.display.set_mode(size, pygame.NOFRAME)
