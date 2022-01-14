@@ -12,3 +12,5 @@ Eating
 Cleaning
 Eating
 Cooking
+Cooking
+Cleaning

@@ -7,3 +7,6 @@ Horror
 Horror
 Romance
 Romance
+Romance
+Comedy
+Horror

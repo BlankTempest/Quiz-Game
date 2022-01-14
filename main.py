@@ -1,15 +1,15 @@
-import pygame
-import random
-import time
-import os #to set window loc
+import pygame as pg
+from random import shuffle,randint 
+from time import localtime,strftime #scoreboard
+from os import environ #to set window loc
 
-os.environ['SDL_VIDEO_WINDOW_POS'] = '480,125'
-pygame.init()              
-pygame.font.init()           
-pygame.display.init()
-pygame.mixer.pre_init(44100, -16, 2, 10)
+environ['SDL_VIDEO_WINDOW_POS'] = '480,125'
+pg.init()              
+pg.font.init()           
+pg.display.init()
+pg.mixer.pre_init(44100, -16, 2, 10)
 #for timer and vsync
-mainclock = pygame.time.Clock()
+mainclock = pg.time.Clock()
 
 #window creation
 size = [1024, 768]
@@ -20,14 +20,14 @@ m_resize = int(resize_file.readline().strip())
 resize_file.close()
 
 if m_resize == 0:
-    screen = pygame.display.set_mode(size, pygame.NOFRAME)
+    screen = pg.display.set_mode(size, pg.NOFRAME)
 elif m_resize == 1:
-    screen = pygame.display.set_mode(size)
+    screen = pg.display.set_mode(size)
 
 #window icon, change it later
 # make sure icon res is smol
-image_icon = pygame.image.load('images\icon.jpg')
-pygame.display.set_icon(image_icon)
+image_icon = pg.image.load('images\icon.jpg')
+pg.display.set_icon(image_icon)
 
 #options menu saves
 global m_fullscreen, m_sound, m_showfps
@@ -38,7 +38,7 @@ m_showfps = int(options_file.readline().strip())
 options_file.close()
 
 if m_fullscreen == 1:
-    pygame.display.toggle_fullscreen()
+    pg.display.toggle_fullscreen()
 
 
 #--------------------------------------------------------------------
@@ -53,7 +53,7 @@ def main():
         ###im2 = pyautogui.screenshot('my_screenshot2.png')
 
         #something else for later
-        # pygame.mouse.set_cursor(pygame.cursors.Cursor)
+        # pg.mouse.set_cursor(pg.cursors.Cursor)
     
     global score,lives,game_over,ques_ans,total_questions,zen_mode
     score = 0
@@ -68,7 +68,7 @@ def main():
     def menu_function():
         
         #title
-        pygame.display.set_caption("aenigma: Menu Screen")
+        pg.display.set_caption("aenigma: Menu Screen")
 
         #player name + profile submenu
         global player_name,total_questions,zen_mode, lives
@@ -78,10 +78,10 @@ def main():
         player_text = open('text\scoreboard\player_name.txt', 'r')
         player_name = player_text.read(5)
         player_text.close()
-        player_name_font = pygame.font.Font(None, 32)
-        name_rect = pygame.Rect(384, 452, 105, 32)
-        color_active = pygame.Color(170,170,170)
-        color_inactive = pygame.Color(190,190,190)
+        player_name_font = pg.font.Font(None, 32)
+        name_rect = pg.Rect(384, 452, 105, 32)
+        color_active = pg.Color(170,170,170)
+        color_inactive = pg.Color(190,190,190)
         color = color_inactive
         active = False
 
@@ -90,18 +90,18 @@ def main():
 
         #background
         #.convert() is used to draw the img faster
-        mbackground = pygame.image.load("images/naissancee4.png").convert()
+        mbackground = pg.image.load("images/naissancee4.png").convert()
         mbackground_position = [0,0]
         
         #music
-        menu_theme = pygame.mixer.Sound('music/theme/Pauline Oliveiros  A Woman Sees How the World Goes with No Eyes.mp3')
+        menu_theme = pg.mixer.Sound('music/theme/Pauline Oliveiros  A Woman Sees How the World Goes with No Eyes.mp3')
         menu_theme.play(-1)            #-1 loops music indefinitely but also lags when you press next
         if m_sound == 1:
             menu_theme.set_volume(1)
             
         #sfx
-        menu_rollover = pygame.mixer.Sound('music/sfx/menu rollover.mp3')
-        menu_click = pygame.mixer.Sound('music/sfx/Menu-click.mp3')
+        menu_rollover = pg.mixer.Sound('music/sfx/menu rollover.mp3')
+        menu_click = pg.mixer.Sound('music/sfx/Menu-click.mp3')
         #if when game is started and the mouse happens to be on any button,
         # then it'll throw an error, so we define these here
         sfx_play_1 = True
@@ -115,46 +115,46 @@ def main():
         #if i use functions to load images, it'll only make the the loading slower
         #menu selectables
         #when not hovered over
-        m_play = pygame.image.load("images/menu_play.png").convert()
-        m_zen = pygame.image.load("images/menu_zen.png").convert()
-        m_options = pygame.image.load("images/menu_options.png").convert()
-        m_help = pygame.image.load("images/menu_help.png").convert()
-        m_profile = pygame.image.load("images/menu_profile.png").convert()
-        m_category = pygame.image.load("images/menu_category.png").convert()
-        m_exit = pygame.image.load("images/menu_exit.png").convert()
+        m_play = pg.image.load("images/menu_play.png").convert()
+        m_zen = pg.image.load("images/menu_zen.png").convert()
+        m_options = pg.image.load("images/menu_options.png").convert()
+        m_help = pg.image.load("images/menu_help.png").convert()
+        m_profile = pg.image.load("images/menu_profile.png").convert()
+        m_category = pg.image.load("images/menu_category.png").convert()
+        m_exit = pg.image.load("images/menu_exit.png").convert()
 
         #when hovered over
-        m_play_w = pygame.image.load("images/menu_play_w.png").convert()
-        m_zen_w = pygame.image.load("images/menu_zen_w.png").convert()
-        m_options_w = pygame.image.load("images/menu_options_w.png").convert()
-        m_help_w = pygame.image.load("images/menu_help_w.png").convert()
-        m_profile_w = pygame.image.load("images/menu_profile_w.png").convert()
-        m_category_w = pygame.image.load("images/menu_category_w.png").convert()
-        m_exit_w = pygame.image.load("images/menu_exit_w.png").convert()     
+        m_play_w = pg.image.load("images/menu_play_w.png").convert()
+        m_zen_w = pg.image.load("images/menu_zen_w.png").convert()
+        m_options_w = pg.image.load("images/menu_options_w.png").convert()
+        m_help_w = pg.image.load("images/menu_help_w.png").convert()
+        m_profile_w = pg.image.load("images/menu_profile_w.png").convert()
+        m_category_w = pg.image.load("images/menu_category_w.png").convert()
+        m_exit_w = pg.image.load("images/menu_exit_w.png").convert()     
 
         #category buttons
-        music_select = pygame.image.load("images/category_buttons/music_selected.png").convert()
-        music_unselect = pygame.image.load("images/category_buttons/music_unselected.png").convert()
-        history_select = pygame.image.load("images/category_buttons/history_selected.png").convert()
-        history_unselect = pygame.image.load("images/category_buttons/history_unselected.png").convert()
-        books_select = pygame.image.load("images/category_buttons/books_selected.png").convert()
-        books_unselect = pygame.image.load("images/category_buttons/books_unselected.png").convert()
-        image_select = pygame.image.load("images/category_buttons/image_selected.png").convert()
-        image_unselect = pygame.image.load("images/category_buttons/image_unselected.png").convert()
-        anime_select = pygame.image.load("images/category_buttons/anime_selected.png").convert()
-        anime_unselect = pygame.image.load("images/category_buttons/anime_unselected.png").convert()
-        tv_select = pygame.image.load("images/category_buttons/tv_selected.png").convert()
-        tv_unselect = pygame.image.load("images/category_buttons/tv_unselected.png").convert()
-        manga_select = pygame.image.load("images/category_buttons/manga_selected.png").convert()
-        manga_unselect = pygame.image.load("images/category_buttons/manga_unselected.png").convert()
-        vidya_select = pygame.image.load("images/category_buttons/vidya_selected.png").convert()
-        vidya_unselect = pygame.image.load("images/category_buttons/vidya_unselected.png").convert()
-        art_select = pygame.image.load("images/category_buttons/art_selected.png").convert()
-        art_unselect = pygame.image.load("images/category_buttons/art_unselected.png").convert()
+        music_select = pg.image.load("images/category_buttons/music_selected.png").convert()
+        music_unselect = pg.image.load("images/category_buttons/music_unselected.png").convert()
+        history_select = pg.image.load("images/category_buttons/history_selected.png").convert()
+        history_unselect = pg.image.load("images/category_buttons/history_unselected.png").convert()
+        books_select = pg.image.load("images/category_buttons/books_selected.png").convert()
+        books_unselect = pg.image.load("images/category_buttons/books_unselected.png").convert()
+        image_select = pg.image.load("images/category_buttons/image_selected.png").convert()
+        image_unselect = pg.image.load("images/category_buttons/image_unselected.png").convert()
+        anime_select = pg.image.load("images/category_buttons/anime_selected.png").convert()
+        anime_unselect = pg.image.load("images/category_buttons/anime_unselected.png").convert()
+        tv_select = pg.image.load("images/category_buttons/tv_selected.png").convert()
+        tv_unselect = pg.image.load("images/category_buttons/tv_unselected.png").convert()
+        manga_select = pg.image.load("images/category_buttons/manga_selected.png").convert()
+        manga_unselect = pg.image.load("images/category_buttons/manga_unselected.png").convert()
+        vidya_select = pg.image.load("images/category_buttons/vidya_selected.png").convert()
+        vidya_unselect = pg.image.load("images/category_buttons/vidya_unselected.png").convert()
+        art_select = pg.image.load("images/category_buttons/art_selected.png").convert()
+        art_unselect = pg.image.load("images/category_buttons/art_unselected.png").convert()
         
         #menu checks/ticks
-        check_ticked = pygame.image.load("images/check_tick.png").convert()
-        check_unticked = pygame.image.load("images/check_untick.png").convert()
+        check_ticked = pg.image.load("images/check_tick.png").convert()
+        check_unticked = pg.image.load("images/check_untick.png").convert()
 
         #show menus
         show_profile = False
@@ -165,7 +165,7 @@ def main():
         fullscreen_changed = False
 
         #top bar
-        top_text_font = pygame.font.SysFont('Arial', 18)
+        top_text_font = pg.font.SysFont('Arial', 18)
         top_text_color = (35,35,35)
 
         global c_music, c_history, c_books, c_image, c_anime, c_tv, c_manga, c_vidya, c_art
@@ -216,7 +216,7 @@ def main():
         #menu loop
         while not done and  show_menu:
 
-            mouse = pygame.mouse.get_pos()
+            mouse = pg.mouse.get_pos()
             x= 90
             top_text_str = 'Welcome to aenigma'
             
@@ -227,7 +227,7 @@ def main():
             if m_showfps == 1:
                 fps = mainclock.get_fps()
                 fps = round(fps, 2)
-                fps_font = pygame.font.Font(None, 18)
+                fps_font = pg.font.Font(None, 18)
                 fps_text = fps_font.render(str(fps) , True , (0,255,0))
                 screen.blit(fps_text,(0,0))
             
@@ -342,7 +342,7 @@ def main():
                         fps_check = screen.blit(check_unticked,(427,375))
 
             if fullscreen_changed == True: 
-                    pygame.display.toggle_fullscreen()
+                    pg.display.toggle_fullscreen()
                     fullscreen_changed = False
             
             #category sub items
@@ -396,27 +396,27 @@ def main():
             c_sum = int(c_music) + int(c_history) + int(c_books) + int(c_image) + int(c_anime) + int(c_tv) + int(c_manga) + int(c_vidya) + int(c_art) 
 
             #exit loop
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
                     category_save_file()
-                    pygame.quit()
+                    pg.quit()
                     exit()
                 #esc key to exit
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_ESCAPE:
                         category_save_file()
-                        pygame.quit()
+                        pg.quit()
                         exit()
 
                     #text box for player name
                     if active == True:
-                        if event.key == pygame.K_BACKSPACE:
+                        if event.key == pg.K_BACKSPACE:
                             player_name = player_name[:-1]
                         elif len(player_name) < 5:
                             player_name += event.unicode
     
                 
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pg.MOUSEBUTTONDOWN:
                     #player name savefile
                     active = False
                     player_text = open('text\scoreboard\player_name.txt', 'w')
@@ -530,20 +530,20 @@ def main():
                 #close the pop up window
                     if show_profile == True:
                         if (280 <= mouse[0] <= 662 and 390 <= mouse[1] <= 530) == False:
-                            mbackground = pygame.image.load("images/naissancee4.png").convert()
+                            mbackground = pg.image.load("images/naissancee4.png").convert()
                             show_profile = False
                     if show_help == True:
                         if (278 <= mouse[0] <= 885 and 123 <= mouse[1] <= 642) == False:
-                            mbackground = pygame.image.load("images/naissancee4.png").convert()
+                            mbackground = pg.image.load("images/naissancee4.png").convert()
                             show_help = False
                     if show_options == True:
                         if (286 <= mouse[0] <= 737 and 246 <= mouse[1] <= 414) == False:
-                            mbackground = pygame.image.load("images/naissancee4.png").convert()
+                            mbackground = pg.image.load("images/naissancee4.png").convert()
                             show_options = False
                             show_options2 = False
                     if show_category == True:
                         if (278 <= mouse[0] <= 885 and 123 <= mouse[1] <= 642) == False:
-                            mbackground = pygame.image.load("images/naissancee4.png").convert()
+                            mbackground = pg.image.load("images/naissancee4.png").convert()
                             show_category = False
 
                 #play button click
@@ -567,7 +567,7 @@ def main():
                     if m_options_blit.collidepoint(event.pos):
                         if m_sound == 1:
                             menu_click.play()
-                        mbackground = pygame.image.load("images/naissancee4_options.png").convert()
+                        mbackground = pg.image.load("images/naissancee4_options.png").convert()
                         show_options = True
                         show_options2 = True
 
@@ -575,21 +575,21 @@ def main():
                     if m_help_blit.collidepoint(event.pos):
                         if m_sound == 1:
                             menu_click.play()
-                        mbackground = pygame.image.load("images/naissancee4_help.png").convert()
+                        mbackground = pg.image.load("images/naissancee4_help.png").convert()
                         show_help = True
 
                 #profile button click
                     if m_profile_blit.collidepoint(event.pos):
                         if m_sound == 1:
                             menu_click.play()
-                        mbackground = pygame.image.load("images/naissancee4_profile.png").convert()
+                        mbackground = pg.image.load("images/naissancee4_profile.png").convert()
                         show_profile = True
 
                 #category button click
                     if m_category_blit.collidepoint(event.pos):
                         if m_sound == 1:
                             menu_click.play()
-                        mbackground = pygame.image.load("images/naissancee4_category.png").convert()
+                        mbackground = pg.image.load("images/naissancee4_category.png").convert()
                         show_category = True
 
                 #exit button click
@@ -598,7 +598,7 @@ def main():
                         if m_sound == 1:
                             menu_click.play()
                         category_save_file()
-                        pygame.quit()
+                        pg.quit()
                         exit() 
                     
             if show_profile:
@@ -607,13 +607,13 @@ def main():
                 else:
                     color = color_inactive
 
-                pygame.draw.rect(screen, color, name_rect)
+                pg.draw.rect(screen, color, name_rect)
                 name_surface = player_name_font.render(player_name, True, (35,35,35))
                 screen.blit(name_surface, (name_rect.x+5, name_rect.y+5))
 
             #vsync
-            pygame.display.flip()
-            pygame.display.update()
+            pg.display.flip()
+            pg.display.update()
             mainclock.tick(60)
         
         #cateogry save file
@@ -658,7 +658,7 @@ def main():
     #----------------------------------------------------------------------------
 
     #window name
-    pygame.display.set_caption('aenigma')
+    pg.display.set_caption('aenigma')
 
     #importing the questions
     def question_import(filename):  
@@ -720,15 +720,15 @@ def main():
         ,"text/art/q8.txt","text/art/q9.txt","text/art/q10.txt","text/art/q11.txt","text/art/q12.txt","text/art/q13.txt","text/art/q14.txt","text/art/q15.txt"]
 
     #shuffle ques
-    random.shuffle(l_h)
-    random.shuffle(l_m)
-    random.shuffle(l_b)
-    random.shuffle(l_i)
-    random.shuffle(l_a)
-    random.shuffle(l_t)
-    random.shuffle(l_man)
-    random.shuffle(l_v)
-    random.shuffle(l_art)
+    shuffle(l_h)
+    shuffle(l_m)
+    shuffle(l_b)
+    shuffle(l_i)
+    shuffle(l_a)
+    shuffle(l_t)
+    shuffle(l_man)
+    shuffle(l_v)
+    shuffle(l_art)
     global question_list
     question_list = []
 
@@ -736,7 +736,7 @@ def main():
             #we dont simpley add it all so that category order is shuffled
     l_added = []
     temp_lister = [l_h, l_m ,l_b ,l_i, l_a, l_t, l_man, l_v, l_art]
-    random.shuffle(temp_lister)
+    shuffle(temp_lister)
     for lis_que in temp_lister:
         l_added += lis_que
     
@@ -817,15 +817,15 @@ def main():
     global music_list
     music_list=['music/theme/religious_deathnote.mp3', 'music/theme/lacrimosa.mp3', 'music/theme/Elegy for Rem.mp3', 'music/theme/Takt of Heroes.mp3',  
             'music/theme/ruler of death.mp3', 'music/theme/Heavens Feel.mp3', 'music/theme/tlou No Escape.mp3']
-    random.shuffle(music_list)
+    shuffle(music_list)
     music_name = music_list[0]
     music_list.pop(0)
 
-    pygame.mixer.music.load(music_name)
-    pygame.mixer.music.set_endevent(pygame.constants.USEREVENT)
+    pg.mixer.music.load(music_name)
+    pg.mixer.music.set_endevent(pg.constants.USEREVENT)
 
     if m_sound == 1:
-        pygame.mixer.music.play()
+        pg.mixer.music.play()
 
     #----------------------------gamu start----------------------------------    
     def question_screen():
@@ -834,16 +834,16 @@ def main():
         #so now we have question,option_1,option_2,option_3,option_4 and right_answer
         global question, music_list
         color = (255,255,255)
-        smallfont = pygame.font.SysFont('Corbel',35)
+        smallfont = pg.font.SysFont('Corbel',35)
         '''color_dark = (100,100,100)
         color_light = (170,170,170)
         text = smallfont.render('quit' , True , color)''' #used for boundary check, will get rid of later
 
         #background
         if len(question) > 38:
-            background = pygame.image.load("images/hollow_purple_bigger.png").convert()
+            background = pg.image.load("images/hollow_purple_bigger.png").convert()
         else:
-            background = pygame.image.load("images/hollow_purple.png").convert()
+            background = pg.image.load("images/hollow_purple.png").convert()
         background_position = [0,0]
         screen.blit(background,background_position)
         #slicing, so it fits the box
@@ -859,33 +859,33 @@ def main():
         
         #if music category ques
         if music_ques.endswith('.mp3'):
-            pygame.mixer.music.pause()
-            music_ques_theme = pygame.mixer.Sound(music_ques)
+            pg.mixer.music.pause()
+            music_ques_theme = pg.mixer.Sound(music_ques)
             if m_sound == 1:
                 music_ques_theme.play()
         else:
-            pygame.mixer.music.unpause()
+            pg.mixer.music.unpause()
 
         #counters
         global score,lives,game_over,mod_50_used,answer,ques_ans,total_questions,mod_x2_used
 
-        lives_img = pygame.image.load("images/heart.png").convert()
-        lives_grey_img = pygame.image.load("images/heart_grey.png").convert()
+        lives_img = pg.image.load("images/heart.png").convert()
+        lives_grey_img = pg.image.load("images/heart_grey.png").convert()
 
         #sfx lose life
-        normal_hit= pygame.mixer.Sound('music\sfx\Hit Normal Damage.mp3')
-        heavy_hit = pygame.mixer.Sound('music\sfx\Hit Super Effective.mp3')
+        normal_hit= pg.mixer.Sound('music\sfx\Hit Normal Damage.mp3')
+        heavy_hit = pg.mixer.Sound('music\sfx\Hit Super Effective.mp3')
         #sfx score up
-        score_up = pygame.mixer.Sound('music\sfx\sfx_score_up_Level Up!.mp3')
+        score_up = pg.mixer.Sound('music\sfx\sfx_score_up_Level Up!.mp3')
         #sfx first x2 used
-        medium_hit= pygame.mixer.Sound('music\sfx\HighJumpKick.wav')
+        medium_hit= pg.mixer.Sound('music\sfx\HighJumpKick.wav')
         #sfx 50-50 used
-        mod_50_used_sfx = pygame.mixer.Sound('music/sfx/50-50-BodySlam.mp3')
+        mod_50_used_sfx = pg.mixer.Sound('music/sfx/50-50-BodySlam.mp3')
         #change it to something else later
-        mod_x2_used_sfx = pygame.mixer.Sound('music/sfx/50-50-BodySlam.mp3')
+        mod_x2_used_sfx = pg.mixer.Sound('music/sfx/50-50-BodySlam.mp3')
 
         #timer
-        font_timer = pygame.font.SysFont('Raleway', 76)
+        font_timer = pg.font.SysFont('Raleway', 76)
         frame_count = 0
         frame_rate = 60
 
@@ -902,16 +902,16 @@ def main():
                 start_time = 7
             
         #mod images
-        mod_50 = pygame.image.load("images/50-50.png").convert()
-        mod_50_grey = pygame.image.load("images/50-50-grey.png ").convert()
-        mod_x2 = pygame.image.load("images/x2.png").convert()
-        mod_x2_grey = pygame.image.load("images/x2-grey.png").convert()
+        mod_50 = pg.image.load("images/50-50.png").convert()
+        mod_50_grey = pg.image.load("images/50-50-grey.png ").convert()
+        mod_x2 = pg.image.load("images/x2.png").convert()
+        mod_x2_grey = pg.image.load("images/x2-grey.png").convert()
 
         #next
         next_c = (255,255,255)
-        nextfont = pygame.font.SysFont('Raleway',35)
+        nextfont = pg.font.SysFont('Raleway',35)
         
-        pygame.display.update()
+        pg.display.update()
 
         question_answered = False
         bulk_exec = False
@@ -935,14 +935,14 @@ def main():
         answered_option_4 = False
         
         #mod 50-50 effect
-        tv_screen = pygame.image.load("images/tv_screen.jpg").convert()
+        tv_screen = pg.image.load("images/tv_screen.jpg").convert()
         tv_screen_position = [0,0]
-        mod_effect_p1 = pygame.image.load("images/mod_effect_p1.png").convert() #mb use later
-        mod_effect_p2 = pygame.image.load("images/mod_effect_p2.png").convert()
+        mod_effect_p1 = pg.image.load("images/mod_effect_p1.png").convert() #mb use later
+        mod_effect_p2 = pg.image.load("images/mod_effect_p2.png").convert()
 
         while open:
             
-            mouse = pygame.mouse.get_pos()
+            mouse = pg.mouse.get_pos()
 
             #we need to blit something over the screen so that it 
             # gets rid of previous text, hence the background again
@@ -952,7 +952,7 @@ def main():
             if m_showfps == 1:
                 fps = mainclock.get_fps()
                 fps = round(fps, 2)
-                fps_font = pygame.font.Font(None, 18)
+                fps_font = pg.font.Font(None, 18)
                 fps_text = fps_font.render(str(fps) , True , (0,255,0))
                 screen.blit(fps_text,(0,0))
 
@@ -995,31 +995,31 @@ def main():
                 mod_x2_blit = screen.blit(mod_x2_grey, [967, 77])
             
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    pg.quit()
                     exit()
                 #esc key to exit
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:    #turn this into a pause menu later
-                        pygame.quit()
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_ESCAPE:    #turn this into a pause menu later
+                        pg.quit()
                         exit()
 
                 #music, next track
-                if event.type == pygame.constants.USEREVENT:
+                if event.type == pg.constants.USEREVENT:
                     #triggered when song ends
                     if m_sound == 1:
                         if music_list == []:
                             music_list=['music/theme/overlord_dungeon_alt2.mp3', 'music/theme/religious_deathnote.mp3', 'music/theme/lacrimosa.mp3', 'music/theme/Elegy for Rem.mp3', 'music/theme/Takt of Heroes.mp3',  
                                     'music/theme/ruler of death.mp3', 'music/theme/Heavens Feel.mp3', 'music/theme/tlou No Escape.mp3']
-                        random.shuffle(music_list)
+                        shuffle(music_list)
                         music_name = music_list[0]
                         music_list.pop(0)
-                        pygame.mixer.music.load(music_name)
-                        pygame.mixer.music.play()
+                        pg.mixer.music.load(music_name)
+                        pg.mixer.music.play()
 
                 if question_answered == False and question_count <2 :
-                    if event.type == pygame.MOUSEBUTTONDOWN: 
+                    if event.type == pg.MOUSEBUTTONDOWN: 
                     #mod 50-50
                     #& so that it doesnt repeat for the next question
                         if mod_50_used != True:
@@ -1030,7 +1030,7 @@ def main():
                                     mod_50_used_sfx.play()
                                 #mod effect
                                 screen.blit(tv_screen,tv_screen_position)
-                                pygame.display.update()
+                                pg.display.update()
                     #mod x2
                         if mod_x2_used != True:
                             if mod_x2_blit.collidepoint(event.pos):
@@ -1041,14 +1041,14 @@ def main():
                                     mod_x2_used_sfx.play()
                                 #mod effect
                                 screen.blit(mod_effect_p2,tv_screen_position)
-                                pygame.display.update()
-                                pygame.time.delay(60)
+                                pg.display.update()
+                                pg.time.delay(60)
                                 screen.blit(mod_effect_p1,tv_screen_position)
-                                pygame.display.update()
-                                pygame.time.delay(60)
+                                pg.display.update()
+                                pg.time.delay(60)
                                 screen.blit(mod_effect_p2,tv_screen_position)
-                                pygame.display.update()
-                                pygame.time.delay(60)
+                                pg.display.update()
+                                pg.time.delay(60)
 
 
                     #option1
@@ -1102,7 +1102,7 @@ def main():
                     
                 #next button
                 if question_answered == True:
-                    if event.type == pygame.MOUSEBUTTONDOWN: 
+                    if event.type == pg.MOUSEBUTTONDOWN: 
                         if x5 <= mouse[0] <= x5+140 and y5 <= mouse[1] <= y5+40:
                             if lives == 0:
                                     game_over = True
@@ -1156,7 +1156,7 @@ def main():
 
             #timer box
             x6= 468; y6 = 12
-            timerbox = pygame.image.load("images/timerbox.jpg").convert()
+            timerbox = pg.image.load("images/timerbox.jpg").convert()
             if zen_mode == False:
                 screen.blit(timerbox, [x6, y6])
 
@@ -1186,7 +1186,7 @@ def main():
             #mod 50-50 display check, mod_temp to make it run once
             if mod_50_used == True and mod_temp == True and mod_50_being_used == True:
                 option_list = [option_1,option_2,option_3,option_4]
-                random.shuffle(option_list)
+                shuffle(option_list)
                 temp_k=2
                 for temp_option in option_list:
                     if temp_option != right_answer:
@@ -1283,22 +1283,22 @@ def main():
             #change the color, it looks off
             
             if x5 <= mouse[0] <= x5+140 and y5 <= mouse[1] <= y5+40:
-                pygame.draw.rect(screen,'purple',[x5,y5,140,40])   
+                pg.draw.rect(screen,'purple',[x5,y5,140,40])   
             else:
-                pygame.draw.rect(screen,'pink',[x5,y5,140,40])
+                pg.draw.rect(screen,'pink',[x5,y5,140,40])
 
             screen.blit(next_text , (x5+40,y5+10))
 
             #to test the boundaries of the option boxes when needed
             '''
             if x1 <= mouse[0] <= x1+320 and y1 <= mouse[1] <= y1+40:
-                pygame.draw.rect(screen,color_light,[x1,y1,320,45])   
+                pg.draw.rect(screen,color_light,[x1,y1,320,45])   
             else:
-                pygame.draw.rect(screen,color_dark,[x1,y1,320,45])
+                pg.draw.rect(screen,color_dark,[x1,y1,320,45])
             '''
 
-            pygame.display.update()
-            pygame.display.flip()
+            pg.display.update()
+            pg.display.flip()
             #framerate limiter/vsync
             mainclock.tick(60)
     
@@ -1320,7 +1320,7 @@ def main():
     ##########################################################################
 
     #stop music
-    pygame.mixer.music.stop()
+    pg.mixer.music.stop()
 
     #--------------------------GAME OVER-----------------------------------
 
@@ -1329,20 +1329,20 @@ def main():
 
     def game_over_screen():
         #title
-        pygame.display.set_caption("aenigma: Game Over")
+        pg.display.set_caption("aenigma: Game Over")
 
         #music
-        end_theme = pygame.mixer.Sound('music/theme/gameover_kata.mp3')
+        end_theme = pg.mixer.Sound('music/theme/gameover_kata.mp3')
         if m_sound == 1:
             end_theme.play(-1)
 
         #background
-        background_select = random.randint(1,2)
+        background_select = randint(1,2)
 
         if background_select == 1:
-            ebackground = pygame.image.load("images\game_over.png").convert()
+            ebackground = pg.image.load("images\game_over.png").convert()
         else:
-            ebackground = pygame.image.load("images\game_over2.png").convert()
+            ebackground = pg.image.load("images\game_over2.png").convert()
 
         ebackground_position = [0,0]
         
@@ -1358,27 +1358,27 @@ def main():
             if m_showfps == 1:
                 fps = mainclock.get_fps()
                 fps = round(fps, 2)
-                fps_font = pygame.font.Font(None, 18)
+                fps_font = pg.font.Font(None, 18)
                 fps_text = fps_font.render(str(fps) , True , (0,255,0))
                 screen.blit(fps_text,(0,0))
             #exit loop
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    pg.quit()
                     exit()
                 #esc key to exit
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        pygame.quit()
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_ESCAPE:
+                        pg.quit()
                         exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pg.MOUSEBUTTONDOWN:
                     end_theme.stop()
                     done = True
 
             #vsync
             mainclock.tick(60)   
-            pygame.display.flip()
-            pygame.display.update()
+            pg.display.flip()
+            pg.display.update()
 
     if game_over == True:
         game_over_screen()
@@ -1389,15 +1389,15 @@ def main():
 
     def choice_screen():
         #title
-        pygame.display.set_caption("aenigma: Choices")
+        pg.display.set_caption("aenigma: Choices")
 
         #music
-        end_theme = pygame.mixer.Sound('music/theme/matrix_theme.mp3')
+        end_theme = pg.mixer.Sound('music/theme/matrix_theme.mp3')
         if m_sound == 1:
             end_theme.play(-1)
 
         #background
-        pbackground = pygame.image.load("images\choices.jpg").convert()
+        pbackground = pg.image.load("images\choices.jpg").convert()
         pbackground_position = [0,0]
         screen.blit(pbackground,pbackground_position) #stop here
 
@@ -1417,8 +1417,8 @@ def main():
             #count
             question = choices_list[0]
             #slicing
-            if len(question) > 35:
-                question = question[:35] + '...'
+            if len(question) > 32:
+                question = question[:32] + '...'
             option_1 = choices_list[1]
             option_2 = choices_list[2]
             option_3 = choices_list[3]
@@ -1447,9 +1447,9 @@ def main():
             choice_percentage = answer_count/total_count*100
 
         #text blips
-        answer_font = pygame.font.SysFont('Raleway',34)
-        question_font = pygame.font.SysFont('Raleway',42)
-        perc_font = pygame.font.SysFont('Raleway',32)
+        answer_font = pg.font.SysFont('Raleway',34)
+        question_font = pg.font.SysFont('Raleway',42)
+        perc_font = pg.font.SysFont('Raleway',32)
         def text_blip(choice_percentage):
             global question_text,answer_text,perc_text,question,answer
             question_text = question_font.render(question , True , 'azure3')
@@ -1469,9 +1469,9 @@ def main():
                 value_finder(fname4)
                 yl =199
                 xg= xr*choice_percentage/100 ; yg= yr
-                pygame.draw.rect(screen, choice_red, [xl,yl,xr,yr])
-                pygame.draw.rect(screen, choice_green ,[xl,yl,xg,yg])
-                pygame.draw.rect(screen, 'black', [xl,yl,xr,yr], width=2)
+                pg.draw.rect(screen, choice_red, [xl,yl,xr,yr])
+                pg.draw.rect(screen, choice_green ,[xl,yl,xg,yg])
+                pg.draw.rect(screen, 'black', [xl,yl,xr,yr], width=2)
                 text_blip(choice_percentage)
                 screen.blit(question_text, [106, 201])
                 screen.blit(answer_text, [110, 171])
@@ -1482,9 +1482,9 @@ def main():
                 value_finder(fname4)
                 yl =292
                 xg= xr*choice_percentage/100 ; yg= yr
-                pygame.draw.rect(screen, choice_red, [xl,yl,xr,yr])
-                pygame.draw.rect(screen, choice_green ,[xl,yl,xg,yg])
-                pygame.draw.rect(screen, 'black', [xl,yl,xr,yr], width=2)
+                pg.draw.rect(screen, choice_red, [xl,yl,xr,yr])
+                pg.draw.rect(screen, choice_green ,[xl,yl,xg,yg])
+                pg.draw.rect(screen, 'black', [xl,yl,xr,yr], width=2)
                 text_blip(choice_percentage)
                 screen.blit(question_text, [106, 293])
                 screen.blit(answer_text, [110, 259])
@@ -1495,9 +1495,9 @@ def main():
                 value_finder(fname4)
                 yl =384
                 xg= xr*choice_percentage/100 ; yg= yr
-                pygame.draw.rect(screen, choice_red, [xl,yl,xr,yr])
-                pygame.draw.rect(screen, choice_green ,[xl,yl,xg,yg])
-                pygame.draw.rect(screen, 'black', [xl,yl,xr,yr], width=2)
+                pg.draw.rect(screen, choice_red, [xl,yl,xr,yr])
+                pg.draw.rect(screen, choice_green ,[xl,yl,xg,yg])
+                pg.draw.rect(screen, 'black', [xl,yl,xr,yr], width=2)
                 text_blip(choice_percentage)
                 screen.blit(question_text, [106, 385])
                 screen.blit(answer_text, [110, 351])
@@ -1509,9 +1509,9 @@ def main():
                 value_finder(fname4)
                 yl =478
                 xg= xr*choice_percentage/100 ; yg= yr
-                pygame.draw.rect(screen, choice_red, [xl,yl,xr,yr])
-                pygame.draw.rect(screen, choice_green ,[xl,yl,xg,yg])
-                pygame.draw.rect(screen, 'black', [xl,yl,xr,yr], width=2)
+                pg.draw.rect(screen, choice_red, [xl,yl,xr,yr])
+                pg.draw.rect(screen, choice_green ,[xl,yl,xg,yg])
+                pg.draw.rect(screen, 'black', [xl,yl,xr,yr], width=2)
                 text_blip(choice_percentage)
                 screen.blit(question_text, [106, 474])
                 screen.blit(answer_text, [110, 442])
@@ -1522,9 +1522,9 @@ def main():
                 value_finder(fname4)
                 yl =567
                 xg= xr*choice_percentage/100 ; yg= yr
-                pygame.draw.rect(screen, choice_red, [xl,yl,xr,yr])
-                pygame.draw.rect(screen, choice_green ,[xl,yl,xg,yg])
-                pygame.draw.rect(screen, 'black', [xl,yl,xr,yr], width=2)
+                pg.draw.rect(screen, choice_red, [xl,yl,xr,yr])
+                pg.draw.rect(screen, choice_green ,[xl,yl,xg,yg])
+                pg.draw.rect(screen, 'black', [xl,yl,xr,yr], width=2)
                 text_blip(choice_percentage)
                 screen.blit(question_text, [106, 569])
                 screen.blit(answer_text, [110, 534])
@@ -1547,7 +1547,7 @@ def main():
             if m_showfps == 1:
                 fps = mainclock.get_fps()
                 fps = round(fps, 2)
-                fps_font = pygame.font.Font(None, 18)
+                fps_font = pg.font.Font(None, 18)
                 fps_text = fps_font.render(str(fps) , True , (0,255,0))
                 screen.blit(fps_text,(0,0))
 
@@ -1576,16 +1576,16 @@ def main():
             pager(10,45)
 
             #exit loop
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    pg.quit()
                     exit()
                 #esc key to exit
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        pygame.quit()
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_ESCAPE:
+                        pg.quit()
                         exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pg.MOUSEBUTTONDOWN:
                     #click to continue essentially, then scoreboard if last page
                     def stopper(y,z):
                         global doing
@@ -1613,8 +1613,8 @@ def main():
 
             #vsync
             mainclock.tick(60)   
-            pygame.display.flip()
-            pygame.display.update()
+            pg.display.flip()
+            pg.display.update()
 
     
     choice_screen()
@@ -1638,7 +1638,7 @@ def main():
         swamp_green = (2,75,64)
         swamp_ltgreen = (0,66,60)
 
-        smallfont = pygame.font.SysFont('Raleway',35)
+        smallfont = pg.font.SysFont('Raleway',35)
         quit_text = smallfont.render('QUIT' , True , yellow)
 
         #menu button
@@ -1651,14 +1651,14 @@ def main():
         score_text = smallfont.render('SCORE' , True , yellow)
 
         #replace font with the one from hotline miami
-        score_font2 = pygame.font.SysFont('Arial Rounded MT Bold',60)
+        score_font2 = pg.font.SysFont('Arial Rounded MT Bold',60)
 
         #title
-        pygame.display.set_caption("aenigma: Score Board")
+        pg.display.set_caption("aenigma: Score Board")
 
         #time
-        t = time.localtime()
-        current_time = time.strftime("%H:%M:%S", t)
+        t = localtime()
+        current_time = strftime("%H:%M, %d/%m", t)
         
         global first
         while first:
@@ -1671,9 +1671,9 @@ def main():
             #score_saver
             if not zen_mode:
                 if score > 9:
-                    score_file_temp.write('       '+ str(score)+ '                                    ' + current_time + '                         ' +player_name + '\n')
+                    score_file_temp.write('       '+ str(score)+ '                                ' + current_time + '                     ' +player_name + '\n')
                 else: 
-                    score_file_temp.write('       '+ '0' + str(score)+ '                                    ' + current_time + '                         ' +player_name + '\n')
+                    score_file_temp.write('       '+ '0' + str(score)+ '                                ' + current_time + '                     ' +player_name + '\n')
                 #^ to fix alignment
 
             score_file2 = score_file.read()
@@ -1699,9 +1699,9 @@ def main():
             if not zen_mode:
                 score_file = open('text\scoreboard/not_sorted_scores.txt','a')
                 if score > 9:
-                    score_file.write('       '+ str(score)+ '                                    ' + current_time + '                         ' +player_name + '\n')
+                    score_file.write('       '+ str(score)+ '                                ' + current_time + '                     ' +player_name + '\n')
                 else:
-                    score_file.write('       '+ '0' + str(score)+ '                                    ' + current_time + '                         ' +player_name + '\n')
+                    score_file.write('       '+ '0' + str(score)+ '                                ' + current_time + '                     ' +player_name + '\n')
                 score_file.close()
 
             #sort scores
@@ -1734,8 +1734,8 @@ def main():
         #header
         score_display_top = score_font2.render('Score                         Time                           Name', True , yellow)
 
-        score_font = pygame.font.SysFont('papyrus',40)
-        score_font3 = pygame.font.SysFont('papyrus',36)
+        score_font = pg.font.SysFont('papyrus',40)
+        score_font3 = pg.font.SysFont('papyrus',36)
         #sort scores:
         sort_text = score_font3.render( 'Sort by:', True , yellow)
 
@@ -1759,7 +1759,7 @@ def main():
         #^ this whole thing took me three hours to figure out
 
         #background
-        sbackground = pygame.image.load("images\hotline_miami3.jpg").convert()
+        sbackground = pg.image.load("images\hotline_miami3.jpg").convert()
         sbackground_position = [0,0]
 
         x=870
@@ -1789,34 +1789,34 @@ def main():
             if m_showfps == 1:
                 fps = mainclock.get_fps()
                 fps = round(fps, 2)
-                fps_font = pygame.font.Font(None, 18)
+                fps_font = pg.font.Font(None, 18)
                 fps_text = fps_font.render(str(fps) , True , (0,255,0))
                 screen.blit(fps_text,(0,0))
             
-            mouse = pygame.mouse.get_pos()
+            mouse = pg.mouse.get_pos()
             #quit button
             if x <= mouse[0] <= x+140 and y <= mouse[1] <= y+40:
-                pygame.draw.rect(screen,swamp_ltgreen,[x,y,140,40]) 
+                pg.draw.rect(screen,swamp_ltgreen,[x,y,140,40]) 
             else:
-                pygame.draw.rect(screen,swamp_green,[x,y,140,40])  
+                pg.draw.rect(screen,swamp_green,[x,y,140,40])  
 
             #menu button
             if x1 <= mouse[0] <= x1+140 and y <= mouse[1] <= y+40:
-                pygame.draw.rect(screen,swamp_ltgreen,[x1,y,140,40]) 
+                pg.draw.rect(screen,swamp_ltgreen,[x1,y,140,40]) 
             else:
-                pygame.draw.rect(screen,swamp_green,[x1,y,140,40])
+                pg.draw.rect(screen,swamp_green,[x1,y,140,40])
 
             #time button
             if x2 <= mouse[0] <= x2+140 and y <= mouse[1] <= y+40:
-                pygame.draw.rect(screen,swamp_ltgreen,[x2,y,140,40]) 
+                pg.draw.rect(screen,swamp_ltgreen,[x2,y,140,40]) 
             else:
-                pygame.draw.rect(screen,swamp_green,[x2,y,140,40])
+                pg.draw.rect(screen,swamp_green,[x2,y,140,40])
             
             #highscore button
             if x3 <= mouse[0] <= x3+140 and y <= mouse[1] <= y+40:
-                pygame.draw.rect(screen,swamp_ltgreen,[x3,y,140,40]) 
+                pg.draw.rect(screen,swamp_ltgreen,[x3,y,140,40]) 
             else:
-                pygame.draw.rect(screen,swamp_green,[x3,y,140,40])
+                pg.draw.rect(screen,swamp_green,[x3,y,140,40])
             
             #blit text over the buttons
             screen.blit(sort_text , (40,700))
@@ -1826,24 +1826,24 @@ def main():
             screen.blit(score_text , (x3+30,y+10))
             
             #vsync
-            pygame.display.flip()
+            pg.display.flip()
             mainclock.tick(60)
-            pygame.display.update()
+            pg.display.update()
             
             #exit loop
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    pg.quit()
                     exit()
                 #esc key to exit
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        pygame.quit()
+                if event.type == pg.KEYDOWN:
+                    if event.key == pg.K_ESCAPE:
+                        pg.quit()
                         exit()
                 #quit button
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pg.MOUSEBUTTONDOWN:
                         if x <= mouse[0] <= x+140 and y <= mouse[1] <= y+40:
-                            pygame.quit()
+                            pg.quit()
                             exit()
                 #menu button
                         if x1 <= mouse[0] <= x1+140 and y <= mouse[1] <= y+40:
@@ -1863,7 +1863,7 @@ def main():
 
     #music
     global score_theme
-    score_theme = pygame.mixer.Sound('music/theme/yt1s.com - MOON  Crystals Hotline Miami Soundtrack.mp3')
+    score_theme = pg.mixer.Sound('music/theme/yt1s.com - MOON  Crystals Hotline Miami Soundtrack.mp3')
     if m_sound == 1:
         score_theme.play(-1)
     
