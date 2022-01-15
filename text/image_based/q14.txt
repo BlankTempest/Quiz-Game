@@ -1,15 +1,15 @@
-Name the US president not present on ths sculpture
-Abraham Lincoln
-James Garfield
-George Washington
-Thomas Jefferson
-James Garfield
+Name the US president not present on the sculpture
+Lincoln
+Garfield
+Washington
+Jefferson
+Garfield
 q14.jpg
 
 
-James Garfield
-James Garfield
-James Garfield
-James Garfield
-James Garfield
-Thomas Jefferson
+Garfield
+Garfield
+Garfield
+Garfield
+Garfield
+Jefferson

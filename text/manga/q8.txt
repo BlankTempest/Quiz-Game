@@ -10,3 +10,5 @@ Romance
 Romance
 Comedy
 Horror
+Horror
+Comedy

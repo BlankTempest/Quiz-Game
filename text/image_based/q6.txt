@@ -1,4 +1,4 @@
-Name the artist who painted this famous Painting?
+Name the artist who painted this     famous Painting?
 Vincent van Gogh
 Leonardo da Vinci
 Pablo Picasso

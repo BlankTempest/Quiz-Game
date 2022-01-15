@@ -679,6 +679,12 @@ def main():
         music_ques = 'music/music_based/' + music_ques
         image_ques = 'images/image_based/' + image_ques
 
+        option_shuffle_list = [option_1, option_2, option_3, option_4]
+        shuffle(option_shuffle_list)
+        option_1 = option_shuffle_list[0]
+        option_2 = option_shuffle_list[1]
+        option_3 = option_shuffle_list[2]
+        option_4 = option_shuffle_list[3]
         questions_file.close()
 
     #135 questions in total
@@ -1430,6 +1436,7 @@ def main():
             option_2 = choices_list[2]
             option_3 = choices_list[3]
             option_4 = choices_list[4]
+            right_answer = choices_list[5]
 
             #lines 1-4 have answers, so we subtract 1
             option_1_count = choices_list.count(option_1) - 1
@@ -1440,13 +1447,25 @@ def main():
 
             #line 5 also has right_answer, so - 1
             if answer == option_1:
-                answer_count = option_1_count - 1
+                if answer == right_answer:
+                    answer_count = option_1_count - 1
+                else:
+                    answer_count = option_1_count
             elif answer == option_2:
-                answer_count = option_2_count - 1
+                if answer == right_answer:
+                    answer_count = option_2_count - 1
+                else:
+                    answer_count = option_2_count
             elif answer == option_3:
-                answer_count = option_3_count - 1
+                if answer == right_answer:
+                    answer_count = option_3_count - 1
+                else:
+                    answer_count = option_3_count
             elif answer == option_4:
-                answer_count = option_4_count - 1
+                if answer == right_answer:
+                    answer_count = option_4_count - 1
+                else:
+                    answer_count = option_4_count
             
             #find perc
             total_count = option_1_count+ option_2_count+ option_3_count+ option_4_count -1
