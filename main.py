@@ -664,7 +664,7 @@ def main():
     def question_import(filename):  
         questions_file = open(filename, "r" , encoding='cp1252')
         #we'll use these outside
-        global question,option_1,option_2,option_3,option_4,right_answer,music_ques
+        global question,option_1,option_2,option_3,option_4,right_answer,music_ques,image_ques
 
         # .strip() gets rid of blank space at the end
         # add working dir to music questions
@@ -675,7 +675,9 @@ def main():
         option_4 = questions_file.readline().strip() 
         right_answer = questions_file.readline().strip() 
         music_ques = questions_file.readline().strip() 
+        image_ques = music_ques
         music_ques = 'music/music_based/' + music_ques
+        image_ques = 'images/image_based/' + image_ques
 
         questions_file.close()
 
@@ -982,6 +984,11 @@ def main():
 
             next_text = nextfont.render('NEXT' , True , next_c)
 
+            #displaying image for image based questions
+            if image_ques.endswith('.png') or image_ques.endswith('.jpg'):
+                image_ques_display = pg.image.load(image_ques).convert()
+                screen.blit(image_ques_display,(400,100))
+            
             #mods display
             #50-50
             if mod_50_used == False:

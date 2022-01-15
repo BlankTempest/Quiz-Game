@@ -1,10 +1,16 @@
-Sample question
-A
-B
-C
-D
-B
-imager.png
-D
-D
-D
+Which note of the Indian currency     features this place?
+200
+500
+2000
+100
+200
+q1.jpg
+
+200
+200
+200
+200
+200
+200
+200
+200
