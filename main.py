@@ -532,19 +532,33 @@ def main():
                         if (280 <= mouse[0] <= 662 and 390 <= mouse[1] <= 530) == False:
                             mbackground = pg.image.load("images/naissancee4.png").convert()
                             show_profile = False
+                            #sound when you close the window
+                            #collide point ifs makes sure the sound doesn't play when you click on a button
+                            if m_sound == 1 and m_play_blit.collidepoint(event.pos) == False and m_zen_blit.collidepoint(event.pos) == False and m_options_blit.collidepoint(event.pos) == False:
+                                if m_category_blit.collidepoint(event.pos) == False and m_profile_blit.collidepoint(event.pos) == False and m_help_blit.collidepoint(event.pos) == False:
+                                    menu_rollover.play()
                     if show_help == True:
                         if (278 <= mouse[0] <= 885 and 123 <= mouse[1] <= 642) == False:
                             mbackground = pg.image.load("images/naissancee4.png").convert()
                             show_help = False
+                            if m_sound == 1 and m_play_blit.collidepoint(event.pos) == False and m_zen_blit.collidepoint(event.pos) == False and m_options_blit.collidepoint(event.pos) == False:
+                                if m_category_blit.collidepoint(event.pos) == False and m_profile_blit.collidepoint(event.pos) == False and m_help_blit.collidepoint(event.pos) == False:
+                                    menu_rollover.play()
                     if show_options == True:
                         if (286 <= mouse[0] <= 737 and 246 <= mouse[1] <= 414) == False:
                             mbackground = pg.image.load("images/naissancee4.png").convert()
                             show_options = False
                             show_options2 = False
+                            if m_sound == 1 and m_play_blit.collidepoint(event.pos) == False and m_zen_blit.collidepoint(event.pos) == False and m_options_blit.collidepoint(event.pos) == False:
+                                if m_category_blit.collidepoint(event.pos) == False and m_profile_blit.collidepoint(event.pos) == False and m_help_blit.collidepoint(event.pos) == False:
+                                    menu_rollover.play()
                     if show_category == True:
                         if (278 <= mouse[0] <= 885 and 123 <= mouse[1] <= 642) == False:
                             mbackground = pg.image.load("images/naissancee4.png").convert()
                             show_category = False
+                            if m_sound == 1 and m_play_blit.collidepoint(event.pos) == False and m_zen_blit.collidepoint(event.pos) == False and m_options_blit.collidepoint(event.pos) == False:
+                                if m_category_blit.collidepoint(event.pos) == False and m_profile_blit.collidepoint(event.pos) == False and m_help_blit.collidepoint(event.pos) == False:
+                                    menu_rollover.play()
 
                 #play button click
                     if m_play_blit.collidepoint(event.pos):
@@ -687,7 +701,7 @@ def main():
         option_4 = option_shuffle_list[3]
         questions_file.close()
 
-    #135 questions in total
+    #132 questions in total
 
     #if music category selected:
     l_m = ['text\music_based\q1.txt','text\music_based\q2.txt','text\music_based\q3.txt','text\music_based\q4.txt','text\music_based\q5.txt','text\music_based\q6.txt',
@@ -713,7 +727,7 @@ def main():
 
     #tv
     l_t = ["text/tv/q1.txt","text/tv/q2.txt","text/tv/q3.txt","text/tv/q4.txt","text/tv/q5.txt","text/tv/q6.txt","text/tv/q7.txt"
-        ,"text/tv/q8.txt","text/tv/q9.txt","text/tv/q10.txt","text/tv/q11.txt","text/tv/q12.txt","text/tv/q13.txt","text/tv/q14.txt","text/tv/q15.txt"]
+        ,"text/tv/q8.txt","text/tv/q9.txt","text/tv/q10.txt","text/tv/q11.txt","text/tv/q12.txt"]
 
     #manga
     l_man =["text/manga/q1.txt","text/manga/q2.txt","text/manga/q3.txt","text/manga/q4.txt","text/manga/q5.txt","text/manga/q6.txt","text/manga/q7.txt"
