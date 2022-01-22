@@ -1,13 +1,16 @@
+#modules
 import pygame as pg
 from random import shuffle,randint 
-from time import localtime,strftime #scoreboard
+from time import localtime,strftime #for scoreboard
 from os import environ #to set window loc
 
+#initializations
 environ['SDL_VIDEO_WINDOW_POS'] = '480,125'
 pg.init()              
 pg.font.init()           
 pg.display.init()
 pg.mixer.pre_init(44100, -16, 2, 10)
+
 #for timer and vsync
 mainclock = pg.time.Clock()
 
@@ -15,7 +18,7 @@ mainclock = pg.time.Clock()
 size = [1024, 768]
 
 #for borderless option
-resize_file = open('text\options/resizable.txt', 'r')
+resize_file = open('text/options/resizable.txt', 'r')
 m_resize = int(resize_file.readline().strip())
 resize_file.close()
 
@@ -24,8 +27,8 @@ if m_resize == 0:
 elif m_resize == 1:
     screen = pg.display.set_mode(size)
 
-#window icon, change it later
-# make sure icon res is smol
+#window icon, only visible when hovered over from taskbar
+# make sure icon res is small
 image_icon = pg.image.load('images\icon.jpg')
 pg.display.set_icon(image_icon)
 
@@ -48,13 +51,18 @@ def main():
 
         #something for the future
         #screenshot button, cause why not
-        ##im1 = pyautogui.screenshot()
-        ##im1.save('my_screenshot.png')
-        ###im2 = pyautogui.screenshot('my_screenshot2.png')
+        #im1 = pyautogui.screenshot()
+        #im1.save('my_screenshot.png')
+        #or
+        #im2 = pyautogui.screenshot('my_screenshot2.png')
+        #will have to find and increment the number to not replace img
 
         #something else for later
         # pg.mouse.set_cursor(pg.cursors.Cursor)
     
+
+    #since we return back to menu from the score board
+        # we need to reinitialize all the values
     global score,lives,game_over,ques_ans,total_questions,zen_mode
     score = 0
     lives = 3
@@ -199,7 +207,7 @@ def main():
 
         #category save file
         #function so that it can be called when we exit
-        #we add the +cat_name so its easier to debug
+        #we add the +cat_name so its easier to debug/edit/make changes
         def category_save_file():
             cat_file2 = open('text/m_category/category_save.txt', 'w')
             cat_file2.write(c_music + ' music' + '\n')
@@ -215,12 +223,18 @@ def main():
 
         #menu loop
         while not done and  show_menu:
-
+            
+            #we take the mouse pos so that when it is hovered over the desired button
+                #it can change colour & play sfx, also to find out whether a specific mouse click
+                #is over a button
             mouse = pg.mouse.get_pos()
             x= 90
+
+            #the top text will be changed when the mouse is hovered over a specific button
             top_text_str = 'Welcome to aenigma'
             
             #assign these first since we collidepoint underneath
+            #or else background or other blits will overlap
             screen.blit(mbackground,mbackground_position)
             
             #fps init
@@ -327,6 +341,7 @@ def main():
             screen.blit(top_text, [94, 66])
 
             #checkbox render
+                #checks with the values loaded from savefile and also checks realtime
             if show_options2:
                     if m_fullscreen == 1:
                         fullscreen_check = screen.blit(check_ticked,(427,305))
@@ -341,11 +356,14 @@ def main():
                     else:
                         fps_check = screen.blit(check_unticked,(427,375))
 
+            #since fullscreen is toggle, we see if the option is changed with fullscreen_changed
+                #var, else the game'll need to be restarted
             if fullscreen_changed == True: 
                     pg.display.toggle_fullscreen()
                     fullscreen_changed = False
             
             #category sub items
+                #it'll be displayed depending on the save file
             if show_category:
                 if c_music == '1':
                     c_music_display = screen.blit(music_select,(310,218))
@@ -430,6 +448,7 @@ def main():
                     #category item clicks
                     if show_category:
                         
+                        #wrapped fnc which plays sfx and changes whether a category is selected or not
                         def toggle_category_values(category_name):
                             if category_name == '1':
                                 category_name = 0
@@ -483,7 +502,7 @@ def main():
                             c_art = toggle_category_values(c_art)
                             c_art = str(c_art)
                     
-                    #within options
+                #within options
                     #fullscreen check
                     if show_options2:
                         if fullscreen_check.collidepoint(event.pos):
@@ -532,11 +551,12 @@ def main():
                         if (280 <= mouse[0] <= 662 and 390 <= mouse[1] <= 530) == False:
                             mbackground = pg.image.load("images/naissancee4.png").convert()
                             show_profile = False
-                            #sound when you close the window
-                            #collide point ifs makes sure the sound doesn't play when you click on a button
+                        #sound when you close the window
+                            #collide point if's makes sure the sound doesn't play when you click on a button
                             if m_sound == 1 and m_play_blit.collidepoint(event.pos) == False and m_zen_blit.collidepoint(event.pos) == False and m_options_blit.collidepoint(event.pos) == False:
                                 if m_category_blit.collidepoint(event.pos) == False and m_profile_blit.collidepoint(event.pos) == False and m_help_blit.collidepoint(event.pos) == False:
                                     menu_rollover.play()
+
                     if show_help == True:
                         if (278 <= mouse[0] <= 885 and 123 <= mouse[1] <= 642) == False:
                             mbackground = pg.image.load("images/naissancee4.png").convert()
@@ -544,6 +564,7 @@ def main():
                             if m_sound == 1 and m_play_blit.collidepoint(event.pos) == False and m_zen_blit.collidepoint(event.pos) == False and m_options_blit.collidepoint(event.pos) == False:
                                 if m_category_blit.collidepoint(event.pos) == False and m_profile_blit.collidepoint(event.pos) == False and m_help_blit.collidepoint(event.pos) == False:
                                     menu_rollover.play()
+
                     if show_options == True:
                         if (286 <= mouse[0] <= 737 and 246 <= mouse[1] <= 414) == False:
                             mbackground = pg.image.load("images/naissancee4.png").convert()
@@ -552,6 +573,7 @@ def main():
                             if m_sound == 1 and m_play_blit.collidepoint(event.pos) == False and m_zen_blit.collidepoint(event.pos) == False and m_options_blit.collidepoint(event.pos) == False:
                                 if m_category_blit.collidepoint(event.pos) == False and m_profile_blit.collidepoint(event.pos) == False and m_help_blit.collidepoint(event.pos) == False:
                                     menu_rollover.play()
+
                     if show_category == True:
                         if (278 <= mouse[0] <= 885 and 123 <= mouse[1] <= 642) == False:
                             mbackground = pg.image.load("images/naissancee4.png").convert()
@@ -569,7 +591,7 @@ def main():
 
                 #zen button click
                     if m_zen_blit.collidepoint(event.pos):
-                        total_questions = 135
+                        total_questions = 113
                         zen_mode = True
                         lives = 300
                         menu_theme.stop()
@@ -615,6 +637,7 @@ def main():
                         pg.quit()
                         exit() 
                     
+            #player name text box color change
             if show_profile:
                 if active:
                     color = color_active
@@ -632,13 +655,10 @@ def main():
         
         #cateogry save file
         
-        #this method is neither efficient nor random
+            #this is when the user leaves all of the category options unselected
+            #this method is neither efficient nor random
             # this only picks the default first options
-            # we need it to be random
-            #putting everything into a list and changing value wont be efficient cause list values will get updates
-            #so we'll have to update list values every single time and then check again, so no go
-        #just randomizing the list and assigning values back wont work either cause then 
-            #say you chose 2 options, but not the third one, the two get wiped and 2 random options will take its place
+
         if c_sum < 3:
             if c_music != '1':
                 c_music = '1'
@@ -676,6 +696,7 @@ def main():
 
     #importing the questions
     def question_import(filename):  
+
         questions_file = open(filename, "r" , encoding='cp1252')
         #we'll use these outside
         global question,option_1,option_2,option_3,option_4,right_answer,music_ques,image_ques
@@ -693,6 +714,7 @@ def main():
         music_ques = 'music/music_based/' + music_ques
         image_ques = 'images/image_based/' + image_ques
 
+        #shuffling the options
         option_shuffle_list = [option_1, option_2, option_3, option_4]
         shuffle(option_shuffle_list)
         option_1 = option_shuffle_list[0]
@@ -701,7 +723,7 @@ def main():
         option_4 = option_shuffle_list[3]
         questions_file.close()
 
-    #132 questions in total
+    #113 questions in total
 
     #if music category selected:
     l_m = ['text\music_based\q1.txt','text\music_based\q2.txt','text\music_based\q3.txt','text\music_based\q4.txt','text\music_based\q5.txt','text\music_based\q6.txt',
@@ -722,8 +744,7 @@ def main():
         ,"text/image_based/q15.txt"]
 
     #anime
-    l_a = ["text/anime/q1.txt","text/anime/q2.txt","text/anime/q3.txt","text/anime/q4.txt","text/anime/q5.txt","text/anime/q6.txt","text/anime/q7.txt"
-        ,"text/anime/q8.txt","text/anime/q9.txt","text/anime/q10.txt","text/anime/q11.txt","text/anime/q12.txt","text/anime/q13.txt","text/anime/q14.txt","text/anime/q15.txt"]
+    l_a = ["text/anime/q1.txt","text/anime/q2.txt","text/anime/q3.txt","text/anime/q4.txt","text/anime/q5.txt","text/anime/q6.txt"]
 
     #tv
     l_t = ["text/tv/q1.txt","text/tv/q2.txt","text/tv/q3.txt","text/tv/q4.txt","text/tv/q5.txt","text/tv/q6.txt","text/tv/q7.txt"
@@ -738,8 +759,7 @@ def main():
         ,"text/vidya/q8.txt","text/vidya/q9.txt","text/vidya/q10.txt","text/vidya/q11.txt","text/vidya/q12.txt","text/vidya/q13.txt"]
 
     #art
-    l_art =["text/art/q1.txt","text/art/q2.txt","text/art/q3.txt","text/art/q4.txt","text/art/q5.txt","text/art/q6.txt","text/art/q7.txt"
-        ,"text/art/q8.txt","text/art/q9.txt","text/art/q10.txt","text/art/q11.txt","text/art/q12.txt","text/art/q13.txt","text/art/q14.txt","text/art/q15.txt"]
+    l_art =["text/art/q1.txt","text/art/q2.txt","text/art/q3.txt","text/art/q4.txt","text/art/q5.txt"]
 
     #shuffle ques
     shuffle(l_h)
@@ -766,6 +786,7 @@ def main():
     #l_added = l_h+ l_m +l_b +l_i+ l_a+ l_t+ l_man+ l_v+ l_art
 
     global c_history_count, c_music_count, c_books_count, c_image_count, c_anime_count, c_tv_count, c_manga_count, c_vidya_count, c_art_count
+    #we only need to display 5 questions per category for normal mode, so we set a counter
     c_history_count = 1
     c_music_count = 1
     c_books_count = 1
@@ -787,64 +808,76 @@ def main():
             question_import(fname)
 
         else:
-            if c_history == '1' and c_history_count < 6:
-                #when h is selected, we'll display 5 questions from it, then 5 from the next cat
+            #when h is selected, we'll display 5 questions from it, then 5 from the next cat
                 #then append the fname to a list that will be used later to display choices
+                
+            if c_history == '1' and c_history_count < 6:
                 fname = l_h[0]
                 question_list.append(fname)
                 l_h.pop(0)
                 c_history_count += 1
+
             elif c_music == '1' and c_music_count < 6:
                     fname = l_m[0]
                     question_list.append(fname)
                     l_m.pop(0)
                     c_music_count += 1
+
             elif c_books == '1' and c_books_count < 6:
                     fname = l_b[0]
                     question_list.append(fname)
                     l_b.pop(0)
                     c_books_count += 1
+
             elif c_image == '1' and c_image_count < 6:
                     fname = l_i[0]
                     question_list.append(fname)
                     l_i.pop(0)
                     c_image_count += 1
+
             elif c_anime == '1' and c_anime_count < 6:
                     fname = l_a[0]
                     question_list.append(fname)
                     l_a.pop(0)
                     c_anime_count += 1
+
             elif c_tv == '1' and c_tv_count < 6:
                     fname = l_t[0]
                     question_list.append(fname)
                     l_t.pop(0)
                     c_tv_count += 1
+
             elif c_manga == '1' and c_manga_count < 6:
                     fname = l_man[0]
                     question_list.append(fname)
                     l_man.pop(0)
                     c_manga_count += 1
+
             elif c_vidya == '1' and c_vidya_count < 6:
                     fname = l_v[0]
                     question_list.append(fname)
                     l_v.pop(0)
                     c_vidya_count += 1
+
             elif c_art == '1' and c_art_count < 6:
                     fname = l_art[0]
                     question_list.append(fname)
                     l_art.pop(0)
                     c_art_count += 1
+
             question_import(fname)
 
+    #creating a playlist for background music
     global music_list
     music_list=['music/theme/religious_deathnote.mp3', 'music/theme/lacrimosa.mp3', 'music/theme/Elegy for Rem.mp3', 'music/theme/Takt of Heroes.mp3',  
             'music/theme/ruler of death.mp3', 'music/theme/Heavens Feel.mp3', 'music/theme/tlou No Escape.mp3']
+
     shuffle(music_list)
     music_name = music_list[0]
     music_list.pop(0)
 
     pg.mixer.music.load(music_name)
-    pg.mixer.music.set_endevent(pg.constants.USEREVENT)
+    pg.mixer.music.set_endevent(pg.constants.USEREVENT) #when song ends
 
     if m_sound == 1:
         pg.mixer.music.play()
@@ -859,7 +892,7 @@ def main():
         smallfont = pg.font.SysFont('Corbel',35)
         '''color_dark = (100,100,100)
         color_light = (170,170,170)
-        text = smallfont.render('quit' , True , color)''' #used for boundary check, will get rid of later
+        text = smallfont.render('quit' , True , color)''' #used for boundary check, get rid of later
 
         #background
         if len(question) > 38:
@@ -880,6 +913,7 @@ def main():
         y1 = 509; y2 = 595; y3 = 505; y4 = 596; y5 = 665
         
         #if music category ques
+        #we pause the music temporarily
         if music_ques.endswith('.mp3'):
             pg.mixer.music.pause()
             music_ques_theme = pg.mixer.Sound(music_ques)
@@ -939,8 +973,10 @@ def main():
         bulk_exec = False
         third = True
         timed_out = False
+
         answer = ''
         answer2 = ''
+
         #50-50 functionals
         option_1_visible = True
         option_2_visible = True
@@ -948,8 +984,11 @@ def main():
         option_4_visible = True
         mod_temp = True
         mod_50_being_used = False
+
+        #x2 functionals
         mod_x2_being_used = False
         mod_x2_attempts_left = 0
+
         question_count = 0
         answered_option_1 = False
         answered_option_2 = False
@@ -981,7 +1020,7 @@ def main():
             #counters
             #lives_counter = smallfont.render(str(lives) , True , color)
 
-            #render a greyed out heart instead
+            #render a greyed out heart instead when you've lost lives
             if lives > 2:
                 screen.blit(lives_img,(32,60))
                 screen.blit(lives_img,(68,60))
@@ -1028,15 +1067,16 @@ def main():
                     exit()
                 #esc key to exit
                 if event.type == pg.KEYDOWN:
-                    if event.key == pg.K_ESCAPE:    #turn this into a pause menu later
+                    if event.key == pg.K_ESCAPE:    #can turn this into a pause menu
                         pg.quit()
-                        exit()
+                        exit()      #if we use quit() istead of exit, we get a fatal error
 
                 #music, next track
                 if event.type == pg.constants.USEREVENT:
                     #triggered when song ends
                     if m_sound == 1:
                         if music_list == []:
+                            #since we pop the music, we'll recreate the list, shuffle it again and repeat
                             music_list=['music/theme/overlord_dungeon_alt2.mp3', 'music/theme/religious_deathnote.mp3', 'music/theme/lacrimosa.mp3', 'music/theme/Elegy for Rem.mp3', 'music/theme/Takt of Heroes.mp3',  
                                     'music/theme/ruler of death.mp3', 'music/theme/Heavens Feel.mp3', 'music/theme/tlou No Escape.mp3']
                         shuffle(music_list)
@@ -1188,6 +1228,7 @@ def main():
                 screen.blit(timerbox, [x6, y6])
 
             #timer
+                #we count from 0, then subtract it from the timer for a countdown
             total_seconds = frame_count // frame_rate
             total_seconds = start_time - (frame_count // frame_rate)
             if question_answered == True:
@@ -1199,6 +1240,7 @@ def main():
                     third = False
                     timed_out = True
             
+            #no timer for zen mode
             if zen_mode == False:
                 output_string = str(total_seconds)
             else:
@@ -1336,10 +1378,12 @@ def main():
     for question_no in range(1,total_questions+1):
         if game_over != True:
             if zen_mode:
+                #unlimited mods for zen mode
                 mod_50_used = False
                 mod_x2_used = False
             question_screen()
             if question_list != None:
+                    #saving answers in a text time
                     fname2 = question_list[-1]
                     saved_text = open(fname2, 'a')
                     saved_text.write('\n'+answer)
@@ -1351,8 +1395,8 @@ def main():
 
     #--------------------------GAME OVER-----------------------------------
 
-    '''Turn this into a "You lost all your lives, or seems like that's the farthest you'll get screen"
-    You only see this screen if you lost all lives'''
+    '''Turn this into a "You lost all your lives, or seems like that's the farthest you'll get" screen
+    You only see this screen if you lose all lives'''
 
     def game_over_screen():
         #title
@@ -1604,6 +1648,8 @@ def main():
                         fourth_slot(question_list[x+3])
                     if ques_ans >x+4:
                         fifth_slot(question_list[x+4])
+            
+            #displaying the 23 pages
             pager(1,0)
             pager(2,5)
             pager(3,10)
@@ -1614,12 +1660,26 @@ def main():
             pager(8,35)
             pager(9,40)
             pager(10,45)
+            pager(11,50)
+            pager(12,55)
+            pager(13,60)
+            pager(14,65)
+            pager(15,70)
+            pager(16,75)
+            pager(17,80)
+            pager(18,85)
+            pager(19,90)
+            pager(20,95)
+            pager(21,100)
+            pager(22,105)
+            pager(23,110)
 
             #exit loop
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     pg.quit()
                     exit()
+
                 #esc key to exit
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_ESCAPE:
@@ -1632,6 +1692,8 @@ def main():
                         if page == y and ques_ans < z:
                             end_theme.stop()
                             doing = True
+                    
+                    #for the 23 pages
                     stopper(1,6)
                     stopper(2,11)
                     stopper(3,16)
@@ -1642,6 +1704,19 @@ def main():
                     stopper(8,41)
                     stopper(9,46)
                     stopper(10,51)
+                    stopper(11,56)
+                    stopper(12,61)
+                    stopper(13,66)
+                    stopper(14,71)
+                    stopper(15,76)
+                    stopper(16,81)
+                    stopper(17,86)
+                    stopper(18,91)
+                    stopper(19,96)
+                    stopper(20,101)
+                    stopper(21,106)
+                    stopper(22,111)
+                    stopper(23,114)
 
                     #so that it doesnt show bg for the small
                     #split second before it swaps to the score board
@@ -1664,12 +1739,16 @@ def main():
     global show_score_menu,show_highscore_menu, first, second
     show_score_menu = True
     show_highscore_menu = False
+
+    #we only need to save score once, so we make use of 2 temp variables
     first = True
     second = True
 
     #------------------------------Score Board--------------------------------#
     def score_board():
         
+        #based on whether recent/highest is selected, the scoreboard will reblit everything
+
         #these are only the recent scores
         pink = (255, 192, 203)
         yellow = (255,255,0)
@@ -1776,10 +1855,11 @@ def main():
 
         score_font = pg.font.SysFont('papyrus',40)
         score_font3 = pg.font.SysFont('papyrus',36)
+
         #sort scores:
         sort_text = score_font3.render( 'Sort by:', True , yellow)
 
-        #i guess can be shortended with score_display_i in a loop of some sort
+        #idk how to shorten/optimize this, using list didnt work
         var = score_file.readline().strip()
         score_display_1 = score_font.render( var, True , pink)
         var = score_file.readline().strip()
@@ -1816,7 +1896,7 @@ def main():
             
             screen.blit(sbackground,sbackground_position)
 
-            #display scores
+            #display top/recent 7 scores
             screen.blit(score_display_top , (40,58))
             screen.blit(score_display_1 , (40,145))
             screen.blit(score_display_2 , (40,221))
@@ -1825,6 +1905,7 @@ def main():
             screen.blit(score_display_5 , (40,446))
             screen.blit(score_display_6 , (40,519))
             screen.blit(score_display_7 , (40,596))
+
             #fps init
             if m_showfps == 1:
                 fps = mainclock.get_fps()
@@ -1914,3 +1995,6 @@ def main():
 
 while True:
     main()
+
+
+    
