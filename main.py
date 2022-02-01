@@ -27,7 +27,7 @@ if m_resize == 0:
 elif m_resize == 1:
     screen = pg.display.set_mode(size)
 
-#window icon, only visible when hovered over from taskbar
+#window icon (only visible when hovered over from taskbar)
 # make sure icon res is small
 image_icon = pg.image.load('images\icon.jpg')
 pg.display.set_icon(image_icon)
@@ -78,7 +78,7 @@ def main():
         #title
         pg.display.set_caption("aenigma: Menu Screen")
 
-        #player name + profile submenu
+        #player name + profile sub-menu
         global player_name,total_questions,zen_mode, lives
         #options menu vars
         global m_fullscreen, m_sound, m_showfps
@@ -205,7 +205,7 @@ def main():
         c_music = c_music[0]
         c_art = c_art[0]
 
-        #category save file
+        #category-save file
         #function so that it can be called when we exit
         #we add the +cat_name so its easier to debug/edit/make changes
         def category_save_file():
